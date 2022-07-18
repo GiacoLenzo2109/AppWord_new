@@ -1,12 +1,20 @@
+import 'package:app_word/util/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class PageScaffold extends StatefulWidget {
   final Widget child;
-  final Widget? appBar;
   final Widget? navigationBar;
+  final String title;
+  final Widget? leading;
+  final Widget? trailing;
   const PageScaffold(
-      {Key? key, this.appBar, this.navigationBar, required this.child})
+      {Key? key,
+      this.navigationBar,
+      this.leading,
+      this.trailing,
+      required this.title,
+      required this.child})
       : super(key: key);
 
   @override
@@ -17,17 +25,47 @@ class _ScaffoldWidgetState extends State<PageScaffold> {
   @override
   Widget build(BuildContext context) {
     Scaffold scaffold = Scaffold(
-      body: widget.child,
-      bottomNavigationBar: widget.navigationBar != null
-          ? widget.navigationBar as BottomNavigationBar
-          : null,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        title: Text(
+          widget.title,
+          style: TextStyle(color: Theme.of(context).primaryColorDark),
+        ),
+        leading: widget.leading,
+        actions: [widget.trailing != null ? widget.trailing! : const Text("")],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(25),
+        child: widget.child,
+      ),
     );
 
     CupertinoPageScaffold cupertinoScaffold = CupertinoPageScaffold(
-      navigationBar: widget.appBar != null
-          ? widget.appBar as CupertinoNavigationBar
-          : null,
-      child: widget.child,
+      child: CustomScrollView(
+        slivers: <Widget>[
+          CupertinoSliverNavigationBar(
+            border: null,
+            backgroundColor: CupertinoTheme.of(context)
+                .scaffoldBackgroundColor
+                .withOpacity(0.5),
+            leading: widget.leading,
+            largeTitle: Text(widget.title),
+            trailing: widget.trailing,
+          ),
+          SliverFillRemaining(
+              hasScrollBody: false,
+              child: Padding(
+                padding: const EdgeInsets.all(25),
+                child: Column(
+                  children: [
+                    widget.child,
+                    const SizedBox(height: 100),
+                  ],
+                ),
+              ))
+        ],
+      ),
     );
 
     return Theme.of(context).platform == TargetPlatform.android

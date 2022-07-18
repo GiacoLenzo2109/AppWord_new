@@ -16,4 +16,7 @@ class Constants {
 
   ///Defult padding used
   static const padding = EdgeInsets.all(10);
+
+  static const personalBook = "Personale";
+  static const classBook = "Classe";
 }

@@ -1,4 +1,6 @@
 import 'package:app_word/util/constants.dart';
+import 'package:app_word/widgets/scaffold_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -7,10 +9,6 @@ class Book extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(Constants.bookPage),
-      ),
-    );
+    return const PageScaffold(title: "Rubrica", child: Text("Rubrica"));
   }
 }
