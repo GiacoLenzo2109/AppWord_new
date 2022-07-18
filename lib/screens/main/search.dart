@@ -10,8 +10,6 @@ class Search extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const PageScaffold(
-      title: "Cerca", 
-      child: Text("Cerca")
-    ); 
+        title: "Cerca", scrollable: false, child: Text("Cerca"));
   }
 }

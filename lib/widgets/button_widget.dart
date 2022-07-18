@@ -5,20 +5,26 @@ import 'package:flutter/material.dart';
 class ButtonWidget extends StatelessWidget {
   final Color backgroundColor;
   final String text;
+  final double? height;
+  final Function()? onPressed;
 
   const ButtonWidget(
-      {super.key, required this.backgroundColor, required this.text});
+      {super.key,
+      this.height,
+      this.onPressed,
+      required this.backgroundColor,
+      required this.text});
 
   @override
   Widget build(BuildContext context) {
     return Theme.of(context).platform == TargetPlatform.android
         ? ElevatedButton(
-            onPressed: () => {},
+            onPressed: onPressed ?? () {},
             style: ButtonStyle(
               elevation: MaterialStateProperty.all(1.0),
               backgroundColor: MaterialStateProperty.all(backgroundColor),
               minimumSize: MaterialStateProperty.all(
-                  Size(ScreenUtil.getSize(context).width, 50)),
+                  Size(ScreenUtil.getSize(context).width, height ?? 50)),
             ),
             child: Text(
               text,
@@ -30,6 +36,7 @@ class ButtonWidget extends StatelessWidget {
           )
         : CupertinoButton(
             color: backgroundColor,
+            onPressed: onPressed ?? () {},
             child: Text(
               text,
               style: const TextStyle(
@@ -37,7 +44,6 @@ class ButtonWidget extends StatelessWidget {
                   fontSize: 15.0,
                   color: Colors.white),
             ),
-            onPressed: () {},
           );
   }
 }

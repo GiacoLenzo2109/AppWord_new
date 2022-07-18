@@ -10,8 +10,6 @@ class Settings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const PageScaffold(
-      title: "Impostazioni", 
-      child: Text("Impostazioni")
-    ); 
+        title: "Impostazioni", scrollable: false, child: Text("Impostazioni"));
   }
 }

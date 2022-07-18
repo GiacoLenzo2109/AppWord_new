@@ -8,11 +8,13 @@ class PageScaffold extends StatefulWidget {
   final String title;
   final Widget? leading;
   final Widget? trailing;
+  final bool scrollable;
   const PageScaffold(
       {Key? key,
       this.navigationBar,
       this.leading,
       this.trailing,
+      required this.scrollable,
       required this.title,
       required this.child})
       : super(key: key);
@@ -35,10 +37,17 @@ class _ScaffoldWidgetState extends State<PageScaffold> {
         leading: widget.leading,
         actions: [widget.trailing != null ? widget.trailing! : const Text("")],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(25),
-        child: widget.child,
-      ),
+      body: widget.scrollable
+          ? SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Padding(
+                padding: const EdgeInsets.all(25),
+                child: widget.child,
+              ))
+          : Padding(
+              padding: const EdgeInsets.all(25),
+              child: widget.child,
+            ),
     );
 
     CupertinoPageScaffold cupertinoScaffold = CupertinoPageScaffold(
@@ -54,16 +63,17 @@ class _ScaffoldWidgetState extends State<PageScaffold> {
             trailing: widget.trailing,
           ),
           SliverFillRemaining(
-              hasScrollBody: false,
-              child: Padding(
-                padding: const EdgeInsets.all(25),
-                child: Column(
-                  children: [
-                    widget.child,
-                    const SizedBox(height: 100),
-                  ],
-                ),
-              ))
+            hasScrollBody: false,
+            child: Padding(
+              padding: const EdgeInsets.all(25),
+              child: Column(
+                children: [
+                  widget.child,
+                  const SizedBox(height: 100),
+                ],
+              ),
+            ),
+          )
         ],
       ),
     );

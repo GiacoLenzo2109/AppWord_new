@@ -17,6 +17,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int _page = 0;
   List<Widget> _buildScreens() => const [Home(), Book(), Search(), Settings()];
+
   List<PersistentBottomNavBarItem> _navBarsItems() {
     bool isAndroid =
         Theme.of(context).platform == TargetPlatform.android ? true : false;

@@ -1,6 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+class ThemesUtil {
+  static TextStyle titleContainerStyle(context) => TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 20.0,
+        color: Theme.of(context).platform == TargetPlatform.android
+            ? Theme.of(context).primaryColorDark
+            : CupertinoTheme.of(context).primaryContrastingColor,
+      );
+
+  static getThemes(BuildContext context) =>
+      Theme.of(context).platform == TargetPlatform.android
+          ? Theme.of(context)
+          : CupertinoTheme.of(context);
+}
+
 ///Material themes (light/dark)
 class MaterialTheme {
   static ThemeData lightTheme = ThemeData(
