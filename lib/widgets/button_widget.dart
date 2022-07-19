@@ -35,6 +35,7 @@ class ButtonWidget extends StatelessWidget {
             ),
           )
         : CupertinoButton(
+            padding: EdgeInsets.all(0),
             color: backgroundColor,
             onPressed: onPressed ?? () {},
             child: Text(

@@ -26,120 +26,117 @@ class Home extends StatelessWidget {
       ));
     }
 
-    return RefreshIndicator(
-      color: Colors.greenAccent,
+    return PageScaffold(
+      title: "Home",
       onRefresh: () async {},
-      child: PageScaffold(
-        title: "Home",
-        scrollable: true,
-        child: StaggeredGrid.count(
-          crossAxisCount: 1,
-          mainAxisSpacing: 25,
-          children: [
-            // New word
-            ContaienrWidget(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Parola del giorno:",
-                          style: ThemesUtil.titleContainerStyle(context),
-                        ),
-                        const SizedBox(height: 10.0),
-                        SizedBox(
-                            width: ScreenUtil.getSize(context).width / 2,
-                            child: Text(
-                              "Paroladelgiornooooooo",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20.0,
-                                color: Theme.of(context).platform ==
-                                        TargetPlatform.android
-                                    ? Theme.of(context).primaryColor
-                                    : CupertinoTheme.of(context).primaryColor,
-                              ),
-                            )),
-                      ],
-                    ),
-                  ),
-                  Material(
-                    borderRadius: BorderRadius.circular(10.0),
-                    color: Colors.amber[400],
-                    child: Padding(
-                      padding: Constants.padding,
-                      child: Icon(
-                        Icons.lightbulb_rounded,
-                        size: ScreenUtil.getSize(context).height / 30,
-                        color: Colors.white,
+      scrollable: true,
+      child: StaggeredGrid.count(
+        crossAxisCount: 1,
+        mainAxisSpacing: 25,
+        children: [
+          // New word
+          ContaienrWidget(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Parola del giorno:",
+                        style: ThemesUtil.titleContainerStyle(context),
                       ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            // Rubriche
-            ContaienrWidget(
-              child: StaggeredGrid.count(
-                crossAxisCount: 1,
-                mainAxisSpacing: 10,
-                children: [
-                  Text(
-                    "Rubriche:",
-                    style: ThemesUtil.titleContainerStyle(context),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.all(7.5),
-                    color: Colors.grey,
-                    height: 1,
-                  ),
-                  StaggeredGrid.count(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 10,
-                    children: const [
-                      ButtonWidget(
-                          backgroundColor: Colors.red,
-                          text: Constants.personalBook),
-                      ButtonWidget(
-                        backgroundColor: CupertinoColors.activeBlue,
-                        text: Constants.classBook,
-                      ),
+                      const SizedBox(height: 10.0),
+                      SizedBox(
+                          width: ScreenUtil.getSize(context).width / 2,
+                          child: Text(
+                            "Paroladelgiornooooooo",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20.0,
+                              color: Theme.of(context).platform ==
+                                      TargetPlatform.android
+                                  ? Theme.of(context).primaryColor
+                                  : CupertinoTheme.of(context).primaryColor,
+                            ),
+                          )),
                     ],
                   ),
-                ],
-              ),
-            ),
-            //Lista nuove parole
-            ContaienrWidget(
-              child: StaggeredGrid.count(
-                crossAxisCount: 1,
-                mainAxisSpacing: 10,
-                children: [
-                  Text(
-                    "Nuove parole:",
-                    style: ThemesUtil.titleContainerStyle(context),
+                ),
+                Material(
+                  borderRadius: BorderRadius.circular(10.0),
+                  color: Colors.amber[400],
+                  child: Padding(
+                    padding: Constants.padding,
+                    child: Icon(
+                      Icons.lightbulb_rounded,
+                      size: ScreenUtil.getSize(context).height / 30,
+                      color: Colors.white,
+                    ),
                   ),
-                  Container(
-                    margin: const EdgeInsets.all(7.5),
-                    color: Colors.grey,
-                    height: 1,
-                  ),
-                  StaggeredGrid.count(
-                    crossAxisCount: 1,
-                    mainAxisSpacing: 10,
-                    children: newWords,
-                  )
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          // Rubriche
+          ContaienrWidget(
+            child: StaggeredGrid.count(
+              crossAxisCount: 1,
+              mainAxisSpacing: 10,
+              children: [
+                Text(
+                  "Rubriche:",
+                  style: ThemesUtil.titleContainerStyle(context),
+                ),
+                Container(
+                  margin: const EdgeInsets.all(7.5),
+                  color: Colors.grey,
+                  height: 1,
+                ),
+                StaggeredGrid.count(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 10,
+                  children: const [
+                    ButtonWidget(
+                        backgroundColor: Colors.red,
+                        text: Constants.personalBook),
+                    ButtonWidget(
+                      backgroundColor: CupertinoColors.activeBlue,
+                      text: Constants.classBook,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          //Lista nuove parole
+          ContaienrWidget(
+            child: StaggeredGrid.count(
+              crossAxisCount: 1,
+              mainAxisSpacing: 10,
+              children: [
+                Text(
+                  "Nuove parole:",
+                  style: ThemesUtil.titleContainerStyle(context),
+                ),
+                Container(
+                  margin: const EdgeInsets.all(7.5),
+                  color: Colors.grey,
+                  height: 1,
+                ),
+                StaggeredGrid.count(
+                  crossAxisCount: 1,
+                  mainAxisSpacing: 10,
+                  children: newWords,
+                )
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

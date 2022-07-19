@@ -36,65 +36,61 @@ class AlphabetScrollList extends StatelessWidget {
     for (var word in words) {
       wordsWidget.add(Text(word));
     }
-    return RefreshIndicator(
-      color: Colors.greenAccent,
-      onRefresh: () async {},
-      child: AlphabetListScrollView(
-        strList: words,
-        showPreview: true,
-        keyboardUsage: true,
-        normalTextStyle: const TextStyle(
-          color: CupertinoColors.systemGrey,
-          fontWeight: FontWeight.bold,
-        ),
-        highlightTextStyle: TextStyle(
-          color: Theme.of(context).platform == TargetPlatform.android
-              ? Theme.of(context).primaryColor
-              : CupertinoTheme.of(context).primaryColor,
-          fontWeight: FontWeight.bold,
-        ),
-        itemBuilder: (context, index) {
-          return map[words[index]]!
-              ? StaggeredGrid.count(
-                  crossAxisCount: 1,
-                  children: [
-                    Text(
-                      words[index].substring(0, 1).toUpperCase(),
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 25,
-                        color: Colors.red,
-                      ),
-                    ),
-                    Padding(
-                      padding: Constants.padding,
-                      child: StaggeredGrid.count(
-                        crossAxisCount: 1,
-                        mainAxisSpacing: 10,
-                        children: [
-                          Padding(
-                              padding: const EdgeInsets.only(left: 10),
-                              child: Text(words[index])),
-                        ],
-                      ),
-                    ),
-                  ],
-                )
-              : Padding(
-                  padding: Constants.padding,
-                  child: StaggeredGrid.count(
-                    crossAxisCount: 1,
-                    mainAxisSpacing: 10,
-                    children: [
-                      Padding(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: Text(words[index])),
-                    ],
-                  ),
-                );
-        },
-        indexedHeight: (int i) => map[words[i]]! ? 80 : 50,
+    return AlphabetListScrollView(
+      strList: words,
+      showPreview: true,
+      keyboardUsage: true,
+      normalTextStyle: const TextStyle(
+        color: CupertinoColors.systemGrey,
+        fontWeight: FontWeight.bold,
       ),
+      highlightTextStyle: TextStyle(
+        color: Theme.of(context).platform == TargetPlatform.android
+            ? Theme.of(context).primaryColor
+            : CupertinoTheme.of(context).primaryColor,
+        fontWeight: FontWeight.bold,
+      ),
+      itemBuilder: (context, index) {
+        return map[words[index]]!
+            ? StaggeredGrid.count(
+                crossAxisCount: 1,
+                children: [
+                  Text(
+                    words[index].substring(0, 1).toUpperCase(),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25,
+                      color: Colors.red,
+                    ),
+                  ),
+                  Padding(
+                    padding: Constants.padding,
+                    child: StaggeredGrid.count(
+                      crossAxisCount: 1,
+                      mainAxisSpacing: 10,
+                      children: [
+                        Padding(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: Text(words[index])),
+                      ],
+                    ),
+                  ),
+                ],
+              )
+            : Padding(
+                padding: Constants.padding,
+                child: StaggeredGrid.count(
+                  crossAxisCount: 1,
+                  mainAxisSpacing: 10,
+                  children: [
+                    Padding(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: Text(words[index])),
+                  ],
+                ),
+              );
+      },
+      indexedHeight: (int i) => map[words[i]]! ? 80 : 50,
     );
   }
 

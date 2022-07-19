@@ -9,11 +9,13 @@ class PageScaffold extends StatefulWidget {
   final Widget? leading;
   final Widget? trailing;
   final bool scrollable;
+  final Future<void> Function()? onRefresh;
   const PageScaffold(
       {Key? key,
       this.navigationBar,
       this.leading,
       this.trailing,
+      this.onRefresh,
       required this.scrollable,
       required this.title,
       required this.child})
@@ -26,29 +28,34 @@ class PageScaffold extends StatefulWidget {
 class _ScaffoldWidgetState extends State<PageScaffold> {
   @override
   Widget build(BuildContext context) {
-    Scaffold scaffold = Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: Text(
-          widget.title,
-          style: TextStyle(color: Theme.of(context).primaryColorDark),
-        ),
-        leading: widget.leading,
-        actions: [widget.trailing != null ? widget.trailing! : const Text("")],
-      ),
-      body: widget.scrollable
-          ? SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Padding(
-                padding: const EdgeInsets.all(25),
-                child: widget.child,
-              ))
-          : Padding(
-              padding: const EdgeInsets.all(25),
-              child: widget.child,
-            ),
+    var page = Padding(
+      padding: const EdgeInsets.all(25),
+      child: widget.child,
     );
+    var scrollView = SingleChildScrollView(
+        physics: const BouncingScrollPhysics(), child: page);
+
+    Scaffold scaffold = Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          title: Text(
+            widget.title,
+            style: TextStyle(color: Theme.of(context).primaryColorDark),
+          ),
+          leading: widget.leading,
+          actions: [
+            widget.trailing != null ? widget.trailing! : const Text("")
+          ],
+        ),
+        body: widget.onRefresh != null
+            ? RefreshIndicator(
+                onRefresh: widget.onRefresh!,
+                backgroundColor: Colors.greenAccent,
+                child: widget.scrollable ? scrollView : page)
+            : widget.scrollable
+                ? scrollView
+                : page);
 
     CupertinoPageScaffold cupertinoScaffold = CupertinoPageScaffold(
       child: CustomScrollView(
@@ -62,18 +69,17 @@ class _ScaffoldWidgetState extends State<PageScaffold> {
             largeTitle: Text(widget.title),
             trailing: widget.trailing,
           ),
+          if (widget.onRefresh != null)
+            CupertinoSliverRefreshControl(
+              onRefresh: widget.onRefresh,
+            ),
           SliverFillRemaining(
-            hasScrollBody: false,
+            hasScrollBody: true,
             child: Padding(
               padding: const EdgeInsets.all(25),
-              child: Column(
-                children: [
-                  widget.child,
-                  const SizedBox(height: 100),
-                ],
-              ),
+              child: widget.child,
             ),
-          )
+          ),
         ],
       ),
     );
