@@ -6,7 +6,7 @@ class ContaienrWidget extends StatelessWidget {
   final Color? backgroundColor;
   final Widget child;
   final double? padding;
-  final EdgeInsetsGeometry? margin;
+  final double? margin;
 
   const ContaienrWidget(
       {Key? key,
@@ -19,13 +19,14 @@ class ContaienrWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: margin,
+      margin: EdgeInsets.all(margin ?? 0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: backgroundColor ??
             (Theme.of(context).platform == TargetPlatform.android
-                ? Theme.of(context).backgroundColor
-                : CupertinoThemes.backgroundColor(context)),
+                    ? Theme.of(context).backgroundColor
+                    : CupertinoThemes.backgroundColor(context))
+                ?.withOpacity(0.25),
       ),
       child: Padding(
         padding: EdgeInsets.all(padding ?? 25),

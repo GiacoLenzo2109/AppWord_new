@@ -6,6 +6,7 @@ class PageScaffold extends StatefulWidget {
   final Widget child;
   final Widget? navigationBar;
   final String title;
+  final double? padding;
   final Widget? leading;
   final Widget? trailing;
   final bool scrollable;
@@ -16,6 +17,7 @@ class PageScaffold extends StatefulWidget {
       this.leading,
       this.trailing,
       this.onRefresh,
+      this.padding,
       required this.scrollable,
       required this.title,
       required this.child})
@@ -74,9 +76,9 @@ class _ScaffoldWidgetState extends State<PageScaffold> {
               onRefresh: widget.onRefresh,
             ),
           SliverFillRemaining(
-            hasScrollBody: true,
+            hasScrollBody: widget.scrollable,
             child: Padding(
-              padding: const EdgeInsets.all(25),
+              padding: EdgeInsets.all(widget.padding ?? 25),
               child: widget.child,
             ),
           ),

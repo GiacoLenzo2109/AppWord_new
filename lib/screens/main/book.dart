@@ -10,6 +10,7 @@ import 'package:app_word/widgets/tab_bar_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class Book extends StatefulWidget {
   const Book({Key? key}) : super(key: key);
@@ -27,38 +28,21 @@ class _BookState extends State<Book> with SingleTickerProviderStateMixin {
   ];
 
   @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _tabController.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return PageScaffold(
       title: "Rubrica",
+      padding: 0,
       onRefresh: () async {},
       scrollable: false,
-      child: Column(
+      child: StaggeredGrid.count(
+        crossAxisCount: 1,
         children: [
           TabBarWidget(
             tabs: const [Constants.personalBook, Constants.classBook],
-            syncObj: this,
-            tabController: _tabController,
-          ),
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                AlphabetScrollList(Constants.personalBook),
-                AlphabetScrollList(Constants.classBook),
-              ],
-            ),
+            tabsView: [
+              AlphabetScrollList(Constants.personalBook),
+              AlphabetScrollList(Constants.classBook),
+            ],
           ),
         ],
       ),
