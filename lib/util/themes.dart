@@ -1,3 +1,4 @@
+import 'package:app_word/util/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -14,6 +15,16 @@ class ThemesUtil {
       Theme.of(context).platform == TargetPlatform.android
           ? Theme.of(context)
           : CupertinoTheme.of(context);
+
+  static Color getPrimaryColor(BuildContext context) =>
+      Theme.of(context).platform == TargetPlatform.android
+          ? Theme.of(context).primaryColor
+          : CupertinoTheme.of(context).primaryColor;
+
+  static Color getTextColor(BuildContext context) =>
+      Theme.of(context).platform == TargetPlatform.android
+          ? Theme.of(context).primaryColorDark
+          : CupertinoTheme.of(context).primaryContrastingColor;
 }
 
 ///Material themes (light/dark)

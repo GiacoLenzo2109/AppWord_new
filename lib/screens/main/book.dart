@@ -3,7 +3,9 @@
 import 'package:alphabet_list_scroll_view/alphabet_list_scroll_view.dart';
 import 'package:app_word/util/constants.dart';
 import 'package:app_word/util/screen_util.dart';
+import 'package:app_word/util/themes.dart';
 import 'package:app_word/widgets/alphabet_scroll_list.dart';
+import 'package:app_word/widgets/button_widget.dart';
 import 'package:app_word/widgets/material_tab_indicator.dart';
 import 'package:app_word/widgets/scaffold_widget.dart';
 import 'package:app_word/widgets/tab_bar_widget.dart';
@@ -34,11 +36,23 @@ class _BookState extends State<Book> with SingleTickerProviderStateMixin {
       padding: 0,
       onRefresh: () async {},
       scrollable: false,
+      leading: CupertinoButton(
+        padding: const EdgeInsets.all(0),
+        onPressed: () {},
+        child: const Text("Modifica"),
+      ),
+      trailing: GestureDetector(
+        child: const Icon(
+          CupertinoIcons.add,
+          size: 25,
+        ),
+        onTap: () {},
+      ),
       child: StaggeredGrid.count(
         crossAxisCount: 1,
-        children: [
+        children: const [
           TabBarWidget(
-            tabs: const [Constants.personalBook, Constants.classBook],
+            tabs: [Constants.personalBook, Constants.classBook],
             tabsView: [
               AlphabetScrollList(Constants.personalBook),
               AlphabetScrollList(Constants.classBook),

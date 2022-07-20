@@ -6,6 +6,9 @@ class ButtonWidget extends StatelessWidget {
   final Color backgroundColor;
   final String text;
   final double? height;
+  final double? padding;
+  final Icon? icon;
+  final Color? textColor;
   final Function()? onPressed;
 
   const ButtonWidget(
@@ -13,7 +16,10 @@ class ButtonWidget extends StatelessWidget {
       this.height,
       this.onPressed,
       required this.backgroundColor,
-      required this.text});
+      required this.text,
+      this.padding,
+      this.icon,
+      this.textColor});
 
   @override
   Widget build(BuildContext context) {
@@ -26,25 +32,42 @@ class ButtonWidget extends StatelessWidget {
               minimumSize: MaterialStateProperty.all(
                   Size(ScreenUtil.getSize(context).width, height ?? 50)),
             ),
-            child: Text(
-              text,
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15.0,
-                  color: Colors.white),
-            ),
-          )
+            child: Row(
+              children: [
+                icon ?? const Text(""),
+                Text(
+                  text,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15.0,
+                      color: Colors.white),
+                ),
+              ],
+            ))
         : CupertinoButton(
-            padding: EdgeInsets.all(0),
+            padding: EdgeInsets.all(padding ?? 0),
             color: backgroundColor,
             onPressed: onPressed ?? () {},
-            child: Text(
-              text,
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15.0,
-                  color: Colors.white),
-            ),
+            child: icon != null
+                ? Row(
+                    children: [
+                      icon!,
+                      Text(
+                        text,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15.0,
+                            color: textColor ?? Colors.white),
+                      )
+                    ],
+                  )
+                : Text(
+                    text,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15.0,
+                        color: textColor ?? Colors.white),
+                  ),
           );
   }
 }

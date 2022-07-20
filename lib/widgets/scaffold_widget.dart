@@ -64,6 +64,7 @@ class _ScaffoldWidgetState extends State<PageScaffold> {
         slivers: <Widget>[
           CupertinoSliverNavigationBar(
             border: null,
+            stretch: true,
             backgroundColor: CupertinoTheme.of(context)
                 .scaffoldBackgroundColor
                 .withOpacity(0.5),

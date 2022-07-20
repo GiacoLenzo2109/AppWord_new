@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:developer';
 
 import 'package:alphabet_list_scroll_view/alphabet_list_scroll_view.dart';
 import 'package:app_word/util/constants.dart';
@@ -28,6 +29,11 @@ class _AlphabetScrollListState extends State<AlphabetScrollList> {
     "Beta",
     "Cami",
     "Elio",
+    "Elio1",
+    "Elio2",
+    "Elio4",
+    "Elio3",
+    "Elio5",
     "Giaco",
     "Lenzo",
     "Zorro",
@@ -36,97 +42,123 @@ class _AlphabetScrollListState extends State<AlphabetScrollList> {
     "Zorr3"
   ];
 
-  final wordsWidget = [];
+  final double jumpShift = 27.5;
+
+  var selectedLetter = "A";
 
   @override
   Widget build(BuildContext context) {
-    words.sort((a, b) {
-      return a.compareTo(b);
-    });
+    var wordsList = words.toList();
+    wordsList.sort();
 
     /// This variable holds the positions in the ListView. We need that to implement
     /// the functionality of the direct jump to the given letter in the list
-    Map<String, double> _letterPositions = {};
+    Map<String, double> letterPositions = {};
 
     /// Scroll controller is used to well... scroll to the given positions
-    ScrollController _scrollController = new ScrollController();
+    ScrollController scrollController = ScrollController();
 
     /// If we are filtering list by names, we change the layout of widget. These
     /// two variables state whether we are in the search state right now and if we a
     /// are, what searchValue tells what we are looking for.
-    bool _inSearchState = false;
-    late String _searchValue;
+    bool inSearchState = false;
+    late String searchValue = "";
 
     List<Widget> getStartingLetters() {
       /// This functions goes through all contacts details and finds all starting
       /// letters of the names in the list. They are later used to implement quick
       /// jump to the letter functionality
-      if (_inSearchState) {
+      if (inSearchState) {
         /// When we are in the search state we do not need to display that column
         return [];
       }
 
       /// For simplicity, use set to keep unique letter
-      Set<String> out_set = Set();
+      Set<String> outSet = {};
       for (String pc in words) {
-        out_set.add(pc[0]);
+        outSet.add(pc[0]);
       }
 
       /// We then need to sort that letters in the alphabetical order
-      var out_list = out_set.toList();
-      out_list.sort();
+      var outList = outSet.toList();
+      outList.sort();
+
+      Widget buildLetterButton(Function() onPressed, String letter) {
+        return GestureDetector(
+          onTap: onPressed,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(100),
+              color: selectedLetter == letter ? Colors.red : Colors.transparent,
+            ),
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 10, vertical: 3.5),
+              child: Text(
+                letter,
+                style: ThemesUtil.titleContainerStyle(context).copyWith(
+                  color: selectedLetter != letter
+                      ? ThemesUtil.getTextColor(context)
+                      : Colors.white,
+                  fontSize: 15,
+                ),
+              ),
+            ),
+          ),
+        );
+      }
 
       /// Now we just build a list of children for the small Column on the right
       /// hand side
       List<Widget> out = [];
-      for (var l in out_list) {
-        out.add(ButtonWidget(
-          onPressed: () {
-            _scrollController.jumpTo(
-              _letterPositions[l]!,
-            );
-          },
-          text: l,
-          backgroundColor: CupertinoColors.systemRed,
-        ));
+      for (var l in outList) {
+        out.add(
+          buildLetterButton(
+            () {
+              if (selectedLetter != l) {
+                scrollController.jumpTo(
+                  letterPositions[l]!,
+                );
+              }
+              setState(() {
+                selectedLetter = l;
+              });
+            },
+            l,
+          ),
+        );
       }
       return out;
     }
 
     List<Widget> getContactList() {
       List<Widget> out = [];
-      SplayTreeMap<String, Set<String>> groupedContacts = SplayTreeMap();
+      SplayTreeMap<String, Set<String>> wordsMap = SplayTreeMap();
 
-      for (String pc in words) {
-        if (!groupedContacts.containsKey(pc[0])) {
+      for (String word in words) {
+        if (!wordsMap.containsKey(word[0])) {
           /// If a key is missing, add it
-          groupedContacts[pc[0]] = Set<String>();
+          wordsMap[word[0]] = <String>{};
         }
 
         /// Then add a name as well
-        groupedContacts[pc[0]]!.add(pc);
+        wordsMap[word[0]]!.add(word);
       }
 
       /// totalShift is used for quick jump to letter functionality. For a jump we
       /// need to know total height of a jump in pixels. We know how much space
       /// each row occupies, therefore we can pre-calculate positions of all letters
       double totalShift = 0;
-      groupedContacts.forEach((k, v) {
+      wordsMap.forEach((k, v) {
         /// Iterating through all key-value pairs, init jump height with 0
-        _letterPositions[k] = 0;
+        letterPositions[k] = 0;
         out.add(
-          Container(
-            height: 50,
-            color: Colors.grey,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: Text(
-                k,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+          Text(
+            k,
+            style: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
+              color: ThemesUtil.getPrimaryColor(context),
             ),
           ),
         );
@@ -134,16 +166,16 @@ class _AlphabetScrollListState extends State<AlphabetScrollList> {
         int ct = 0;
 
         /// Init jump height we total running height accumulated so far
-        _letterPositions[k] = totalShift;
+        letterPositions[k] = totalShift;
 
         /// Increase jump height by the known height of a Letter row
-        totalShift += 50;
+        totalShift += jumpShift;
 
         for (String name in v) {
           /// Increase jump height by the know height of a name row
-          totalShift += 50;
+          totalShift += jumpShift;
           out.add(SizedBox(
-            height: 50,
+            height: jumpShift,
             child: Text(
               name,
               style: const TextStyle(
@@ -155,8 +187,8 @@ class _AlphabetScrollListState extends State<AlphabetScrollList> {
           /// We just do not want to add a Divider if there are no records left for
           /// this key
           if (ct < l - 1) {
-            out.add(DividerWidget());
-            totalShift += 16;
+            out.add(const DividerWidget());
+            totalShift += jumpShift;
           }
           ct++;
         }
@@ -170,7 +202,7 @@ class _AlphabetScrollListState extends State<AlphabetScrollList> {
       /// any contacts
       List<Widget> out = [];
       for (String name in words) {
-        if (!name.toLowerCase().contains(_searchValue)) {
+        if (!name.toLowerCase().contains(searchValue)) {
           continue;
         }
         if (out.isEmpty) {
@@ -178,7 +210,7 @@ class _AlphabetScrollListState extends State<AlphabetScrollList> {
           /// Otherwise iOS leaves it empty
           out.add(Container(
             color: Colors.grey.shade300,
-            height: 50,
+            height: jumpShift,
             child: const Text(
               "Top search results",
               style: TextStyle(
@@ -186,10 +218,10 @@ class _AlphabetScrollListState extends State<AlphabetScrollList> {
               ),
             ),
           ));
-          out.add(DividerWidget());
+          out.add(const DividerWidget());
         }
         out.add(SizedBox(
-          height: 50,
+          height: jumpShift,
           child: Text(
             name,
             style: const TextStyle(
@@ -197,16 +229,16 @@ class _AlphabetScrollListState extends State<AlphabetScrollList> {
             ),
           ),
         ));
-        out.add(DividerWidget());
+        out.add(const DividerWidget());
       }
       return out;
     }
 
-    List<Widget> getContactListMaster() {
+    List<Widget> getWordsList() {
       /// This is small facade for the drawing widgets.
       /// If we are in the search state, we drawn a normal contact list
       /// Otherwise we are drawing search results widgets
-      if (!_inSearchState) {
+      if (!inSearchState) {
         return getContactList();
       }
       return getSearchResult();
@@ -218,30 +250,14 @@ class _AlphabetScrollListState extends State<AlphabetScrollList> {
       child: Column(
         children: <Widget>[
           Expanded(
-            flex: 3,
-            child: ListView(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: SearchTextField(
-                    onChanged: (searchValue) {
-                      setState(() {
-                        _inSearchState = searchValue.isNotEmpty;
-                        _searchValue = searchValue.toLowerCase();
-                      });
-                    },
-                    // decoration: InputDecoration(
-                    //   border: new OutlineInputBorder(
-                    //     borderRadius: const BorderRadius.all(
-                    //       const Radius.circular(10.0),
-                    //     ),
-                    //   ),
-                    //   hintText: "Search",
-                    //   fillColor: Colors.grey,
-                    // ),
-                  ),
-                ),
-              ],
+            flex: 1,
+            child: SearchTextField(
+              onChanged: (searchValue) {
+                setState(() {
+                  inSearchState = searchValue.isNotEmpty;
+                  searchValue = searchValue.toLowerCase();
+                });
+              },
             ),
           ),
           Expanded(
@@ -249,14 +265,15 @@ class _AlphabetScrollListState extends State<AlphabetScrollList> {
             child: Row(
               children: <Widget>[
                 Expanded(
-                  flex: 30,
+                  flex: 28,
                   child: ListView(
-                    controller: _scrollController,
-                    children: getContactListMaster(),
+                    padding: const EdgeInsets.only(top: 10),
+                    controller: scrollController,
+                    children: getWordsList(),
                   ),
                 ),
                 Expanded(
-                  flex: 1,
+                  flex: 3,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: getStartingLetters(),
