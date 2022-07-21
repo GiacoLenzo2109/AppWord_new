@@ -31,7 +31,7 @@ class _ScaffoldWidgetState extends State<PageScaffold> {
   @override
   Widget build(BuildContext context) {
     var page = Padding(
-      padding: const EdgeInsets.all(25),
+      padding: EdgeInsets.all(widget.padding ?? 25),
       child: widget.child,
     );
     var scrollView = SingleChildScrollView(
@@ -53,7 +53,7 @@ class _ScaffoldWidgetState extends State<PageScaffold> {
         body: widget.onRefresh != null
             ? RefreshIndicator(
                 onRefresh: widget.onRefresh!,
-                backgroundColor: Colors.greenAccent,
+                color: Colors.greenAccent,
                 child: widget.scrollable ? scrollView : page)
             : widget.scrollable
                 ? scrollView

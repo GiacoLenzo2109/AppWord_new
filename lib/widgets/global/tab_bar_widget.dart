@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:app_word/util/constants.dart';
 import 'package:app_word/util/screen_util.dart';
+import 'package:app_word/util/themes.dart';
 import 'package:app_word/widgets/material_tab_indicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -39,32 +40,34 @@ class _TabBarWidgetState extends State<TabBarWidget>
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> _tabs = [];
+    List<Widget> tabs = [];
     for (var tab in widget.tabs) {
-      _tabs.add(Text(tab));
+      tabs.add(Theme.of(context).platform == TargetPlatform.android ?
+        Padding(padding: Constants.padding, child: 
+        Text(tab, style: ThemesUtil.titleContainerStyle(context).copyWith(fontSize: 17),),) :Text(tab),);
     }
 
-    final _selectedColor = Theme.of(context).platform == TargetPlatform.android
+    final selectedColor = Theme.of(context).platform == TargetPlatform.android
         ? Theme.of(context).bottomNavigationBarTheme.selectedItemColor
         : CupertinoTheme.of(context).primaryColor;
 
-    final _unselectedColor =
+    final unselectedColor =
         Theme.of(context).platform == TargetPlatform.android
             ? Theme.of(context).bottomNavigationBarTheme.unselectedItemColor
             : CupertinoTheme.of(context).scaffoldBackgroundColor;
 
     //Android
     var tabBar = TabBar(
-      indicatorWeight: 0,
+      indicatorWeight: 3,
       splashBorderRadius: BorderRadius.circular(10),
       controller: _tabController,
-      labelColor: _unselectedColor,
+      labelColor: unselectedColor,
       labelStyle: const TextStyle(fontWeight: FontWeight.bold),
-      unselectedLabelColor: _unselectedColor,
+      unselectedLabelColor: unselectedColor,
       indicatorSize: TabBarIndicatorSize.label,
       indicator: MaterialDesignIndicator(
-          indicatorHeight: 4, indicatorColor: _selectedColor!),
-      tabs: _tabs,
+          indicatorHeight: 3, indicatorColor: selectedColor!),
+      tabs: tabs,
     );
 
     //iOS
@@ -74,13 +77,13 @@ class _TabBarWidgetState extends State<TabBarWidget>
         i,
         () => Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: _tabs[i],
+          child: tabs[i],
         ),
       );
     }
     var iTabBar = CupertinoSegmentedControl<int>(
-      selectedColor: _selectedColor,
-      unselectedColor: _unselectedColor,
+      selectedColor: selectedColor,
+      unselectedColor: unselectedColor,
       children: _tabsMap,
       groupValue: _tabController.index,
       onValueChanged: (tab) {
@@ -91,7 +94,7 @@ class _TabBarWidgetState extends State<TabBarWidget>
     );
 
     var tabsView = SizedBox(
-      height: ScreenUtil.getSize(context).height - 250,
+      height: ScreenUtil.getSize(context).height - (Theme.of(context).platform == TargetPlatform.android ? 200 : 250),
       child: TabBarView(
         controller: _tabController,
         children: widget.tabsView,

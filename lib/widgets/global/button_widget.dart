@@ -32,7 +32,7 @@ class ButtonWidget extends StatelessWidget {
               minimumSize: MaterialStateProperty.all(
                   Size(ScreenUtil.getSize(context).width, height ?? 50)),
             ),
-            child: Row(
+            child: icon != null ? Row(
               children: [
                 icon ?? const Text(""),
                 Text(
@@ -43,7 +43,13 @@ class ButtonWidget extends StatelessWidget {
                       color: Colors.white),
                 ),
               ],
-            ))
+            ) : Text(
+                  text,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15.0,
+                      color: Colors.white),
+                ),)
         : CupertinoButton(
             padding: EdgeInsets.all(padding ?? 0),
             color: backgroundColor,

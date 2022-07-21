@@ -4,11 +4,11 @@ import 'package:alphabet_list_scroll_view/alphabet_list_scroll_view.dart';
 import 'package:app_word/util/constants.dart';
 import 'package:app_word/util/screen_util.dart';
 import 'package:app_word/util/themes.dart';
-import 'package:app_word/widgets/alphabet_scroll_list.dart';
-import 'package:app_word/widgets/button_widget.dart';
+import 'package:app_word/widgets/book_view/alphabet_scroll_list.dart';
+import 'package:app_word/widgets/global/button_widget.dart';
 import 'package:app_word/widgets/material_tab_indicator.dart';
-import 'package:app_word/widgets/scaffold_widget.dart';
-import 'package:app_word/widgets/tab_bar_widget.dart';
+import 'package:app_word/widgets/global/scaffold_widget.dart';
+import 'package:app_word/widgets/global/tab_bar_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -36,7 +36,12 @@ class _BookState extends State<Book> with SingleTickerProviderStateMixin {
       padding: 0,
       onRefresh: () async {},
       scrollable: false,
-      leading: CupertinoButton(
+      leading: Theme.of(context).platform == TargetPlatform.android ? 
+      GestureDetector(
+        onTap: () {},
+        child: const Icon(Icons.edit),
+      ) :
+      CupertinoButton(
         padding: const EdgeInsets.all(0),
         onPressed: () {},
         child: const Text("Modifica"),

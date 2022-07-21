@@ -25,8 +25,7 @@ class ContaienrWidget extends StatelessWidget {
         color: backgroundColor ??
             (Theme.of(context).platform == TargetPlatform.android
                     ? Theme.of(context).backgroundColor
-                    : CupertinoThemes.backgroundColor(context))
-                ?.withOpacity(0.25),
+                    : CupertinoThemes.backgroundColor(context)),
       ),
       child: Padding(
         padding: EdgeInsets.all(padding ?? 25),

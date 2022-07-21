@@ -5,10 +5,11 @@ import 'package:alphabet_list_scroll_view/alphabet_list_scroll_view.dart';
 import 'package:app_word/util/constants.dart';
 import 'package:app_word/util/screen_util.dart';
 import 'package:app_word/util/themes.dart';
-import 'package:app_word/widgets/button_widget.dart';
-import 'package:app_word/widgets/container_widget.dart';
-import 'package:app_word/widgets/divider_widget.dart';
-import 'package:app_word/widgets/search_text_field.dart';
+import 'package:app_word/widgets/book_view/word_item.dart';
+import 'package:app_word/widgets/global/button_widget.dart';
+import 'package:app_word/widgets/global/container_widget.dart';
+import 'package:app_word/widgets/global/divider_widget.dart';
+import 'package:app_word/widgets/global/search_text_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -35,14 +36,39 @@ class _AlphabetScrollListState extends State<AlphabetScrollList> {
     "Elio3",
     "Elio5",
     "Giaco",
+    "Giaco1",
+    "Giaco2",
+    "Giaco3",
+    "Giaco4",
+    "Giaco5",
+    "Giaco6",
+    "Giaco7",
+    "Giaco8",
+    "Giaco9",
+    "Giaco10",
     "Lenzo",
-    "Zorro",
+    "Zorro3123",
+    "Zorro32134",
+    "Zorro34524",
+    "Zorrorthg2",
+    "Zorrot2351rf",
+    "Zorrotrqwer",
+    "Zorro54t2qf",
+    "Zorrt3213to",
+    "Zorrogwqe",
+    "Zorrowefa",
+    "Zorrofr3",
+    "Zorrofc",
+    "Zorrogeqt4",
+    "Zorrofsaf",
+    "Zorrosadvnjrtew",
     "Zorro1",
     "Zorr2",
     "Zorr3"
   ];
 
-  final double jumpShift = 27.5;
+  final double jumpShiftLetter = 25;
+  final double jumpShiftWord = 45;
 
   var selectedLetter = "A";
 
@@ -131,7 +157,7 @@ class _AlphabetScrollListState extends State<AlphabetScrollList> {
       return out;
     }
 
-    List<Widget> getContactList() {
+    List<Widget> getWordList() {
       List<Widget> out = [];
       SplayTreeMap<String, Set<String>> wordsMap = SplayTreeMap();
 
@@ -165,30 +191,22 @@ class _AlphabetScrollListState extends State<AlphabetScrollList> {
         int l = v.length;
         int ct = 0;
 
-        /// Init jump height we total running height accumulated so far
         letterPositions[k] = totalShift;
 
         /// Increase jump height by the known height of a Letter row
-        totalShift += jumpShift;
+        totalShift += jumpShiftLetter;
 
-        for (String name in v) {
+        for (String word in v) {
           /// Increase jump height by the know height of a name row
-          totalShift += jumpShift;
-          out.add(SizedBox(
-            height: jumpShift,
-            child: Text(
-              name,
-              style: const TextStyle(
-                fontSize: 20,
-              ),
-            ),
-          ));
+          totalShift += jumpShiftWord;
+          out.add( WordItem(word: word),
+          );
 
           /// We just do not want to add a Divider if there are no records left for
           /// this key
           if (ct < l - 1) {
             out.add(const DividerWidget());
-            totalShift += jumpShift;
+            totalShift -= 4;
           }
           ct++;
         }
@@ -210,7 +228,7 @@ class _AlphabetScrollListState extends State<AlphabetScrollList> {
           /// Otherwise iOS leaves it empty
           out.add(Container(
             color: Colors.grey.shade300,
-            height: jumpShift,
+            height: jumpShiftWord,
             child: const Text(
               "Top search results",
               style: TextStyle(
@@ -220,15 +238,7 @@ class _AlphabetScrollListState extends State<AlphabetScrollList> {
           ));
           out.add(const DividerWidget());
         }
-        out.add(SizedBox(
-          height: jumpShift,
-          child: Text(
-            name,
-            style: const TextStyle(
-              fontSize: 20,
-            ),
-          ),
-        ));
+        out.add(WordItem(word: name));
         out.add(const DividerWidget());
       }
       return out;
@@ -239,10 +249,20 @@ class _AlphabetScrollListState extends State<AlphabetScrollList> {
       /// If we are in the search state, we drawn a normal contact list
       /// Otherwise we are drawing search results widgets
       if (!inSearchState) {
-        return getContactList();
+        return getWordList();
       }
       return getSearchResult();
     }
+
+    scrollController.addListener(() {
+      letterPositions.forEach((key, value) {
+        if(scrollController.position.pixels >= value){
+          setState(() {
+            selectedLetter = key;
+          });
+        }
+      });
+    });
 
     return ContaienrWidget(
       padding: 10,
