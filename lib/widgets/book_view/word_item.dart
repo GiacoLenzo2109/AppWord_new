@@ -13,7 +13,7 @@ class WordItem extends StatefulWidget {
 }
 
 class _WordItemState extends State<WordItem> {
-  bool edit = true;
+  bool edit = false;
   var checked = false;
 
   @override

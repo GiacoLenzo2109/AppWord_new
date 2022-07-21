@@ -1,5 +1,7 @@
 import 'package:app_word/database/firebase_global.dart';
 import 'package:app_word/database/firebase_options.dart';
+import 'package:app_word/models/book_model.dart';
+import 'package:app_word/models/navbar_model.dart';
 import 'package:app_word/screens/main/main_page.dart';
 import 'package:app_word/util/constants.dart';
 import 'package:app_word/util/themes.dart';
@@ -7,6 +9,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,7 +20,14 @@ void main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]).then((value) => runApp(const AppWord()));
-  runApp(const AppWord());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => NavbarModel()),
+      ],
+      child: const AppWord(),
+    ),
+  );
 }
 
 class AppWord extends StatefulWidget {
