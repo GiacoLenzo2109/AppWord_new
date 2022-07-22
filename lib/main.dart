@@ -25,7 +25,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (context) => NavbarModel()),
       ],
-      child: const AppWord(),
+      builder: (context, _) => const AppWord(),
     ),
   );
 }
@@ -68,7 +68,7 @@ class _AppWordState extends State<AppWord> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     String title = "AppWord";
 
-    Widget home = FirebaseGlobal.auth.currentUser == null
+    Widget home() => FirebaseGlobal.auth.currentUser == null
         //? FirebaseGlobal.auth.currentUser!.emailVerified
         ? const MainPage()
         : const Text(
@@ -81,7 +81,7 @@ class _AppWordState extends State<AppWord> with WidgetsBindingObserver {
       theme: _brightness == Brightness.light
           ? CupertinoThemes.lightThemeCupertino
           : CupertinoThemes.darkThemeCupertino,
-      home: home,
+      home: home(),
     );
 
     //ANDROID
@@ -93,7 +93,7 @@ class _AppWordState extends State<AppWord> with WidgetsBindingObserver {
       theme: MaterialTheme.lightTheme,
       darkTheme: MaterialTheme.darkTheme,
       themeMode: ThemeMode.system,
-      home: home,
+      home: home(),
     );
 
     return Theme.of(context).platform == TargetPlatform.iOS

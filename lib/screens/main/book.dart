@@ -1,5 +1,7 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers
 
+import 'dart:developer';
+
 import 'package:alphabet_list_scroll_view/alphabet_list_scroll_view.dart';
 import 'package:app_word/models/book_model.dart';
 import 'package:app_word/models/navbar_model.dart';
@@ -27,35 +29,59 @@ class Book extends StatefulWidget {
 class _BookState extends State<Book> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
+    final navbarProvider = Provider.of<NavbarModel>(context);
+    final bookProvider = Provider.of<BookModel>(context);
+
     return PageScaffold(
       title: "Rubrica",
       padding: 0,
-      onRefresh: () async {},
+      onRefresh: () async {
+        //TO-DO: Refresh delle parole nella rubrica (da decidere ancora se farlo o no)
+      },
       scrollable: false,
       leading: Theme.of(context).platform == TargetPlatform.android
           ? GestureDetector(
-              onTap: () =>
-                  Provider.of<NavbarModel>(context, listen: false).tapLeading(),
-              child: const Icon(Icons.edit),
+              onTap: () => navbarProvider.tapLeading(),
+              child: Icon(!navbarProvider.leading ? Icons.edit : Icons.done),
             )
           : CupertinoButton(
               padding: const EdgeInsets.all(0),
-              onPressed: () => Provider.of<NavbarModel>(context).tapTrailing(),
-              child: const Text("Modifica"),
+              onPressed: () => navbarProvider.tapTrailing(),
+              child: Text(
+                !navbarProvider.leading ? "Modifica" : "Fatto",
+              ),
             ),
       trailing: GestureDetector(
-        child: const Icon(
-          CupertinoIcons.add,
-          size: 25,
+        child: Padding(
+          padding: const EdgeInsets.only(right: 10),
+          child: Icon(
+            !navbarProvider.leading ? CupertinoIcons.add : CupertinoIcons.trash,
+            color:
+                navbarProvider.leading ? Colors.redAccent : Colors.greenAccent,
+            size: 25,
+          ),
         ),
-        onTap: () {},
+        onTap: () {
+          if (navbarProvider.leading) {
+            for (var word
+                in bookProvider.selectedWords[bookProvider.selectedBook]!) {
+              bookProvider.remove(bookProvider.selectedBook, word);
+            }
+            navbarProvider.tapLeading();
+          }
+        },
       ),
       child: StaggeredGrid.count(
         crossAxisCount: 1,
-        children: const [
+        children: [
           TabBarWidget(
-            tabs: [Constants.personalBook, Constants.classBook],
-            tabsView: [
+            onValueChanged: (value) {
+              bookProvider.setSelectedBook(
+                value == 0 ? Constants.personalBook : Constants.classBook,
+              );
+            },
+            tabs: const [Constants.personalBook, Constants.classBook],
+            tabsView: const [
               AlphabetScrollList(Constants.personalBook),
               AlphabetScrollList(Constants.classBook),
             ],

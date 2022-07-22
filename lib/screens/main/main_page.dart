@@ -1,11 +1,15 @@
+import 'package:app_word/models/book_model.dart';
+import 'package:app_word/models/navbar_model.dart';
 import 'package:app_word/screens/main/book.dart';
 import 'package:app_word/screens/main/home.dart';
 import 'package:app_word/screens/main/search.dart';
 import 'package:app_word/screens/main/settings.dart';
 import 'package:app_word/util/constants.dart';
+import 'package:app_word/util/themes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:provider/provider.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -16,7 +20,31 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int _page = 0;
-  List<Widget> _buildScreens() => const [Home(), Book(), Search(), Settings()];
+  List<Widget> _buildScreens() => [
+        ChangeNotifierProvider(
+          create: (context) => NavbarModel(),
+          builder: (context, child) => const Home(),
+        ),
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider(
+              create: (context) => NavbarModel(),
+            ),
+            ChangeNotifierProvider(
+              create: (context) => BookModel(),
+            ),
+          ],
+          builder: (context, child) => const Book(),
+        ),
+        // ChangeNotifierProvider(
+        //   create: (context) => NavbarModel(),
+        //   builder: (context, child) => const Search(),
+        // ),
+        ChangeNotifierProvider(
+          create: (context) => NavbarModel(),
+          builder: (context, child) => const Settings(),
+        ),
+      ];
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
     bool isAndroid =
@@ -24,7 +52,8 @@ class _MainPageState extends State<MainPage> {
     return [
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.home_rounded),
-        title: ("Home"),
+        title: "Home",
+        textStyle: const TextStyle(fontWeight: FontWeight.bold),
         activeColorPrimary: isAndroid
             ? Theme.of(context).bottomNavigationBarTheme.selectedItemColor!
             : CupertinoTheme.of(context).primaryColor,
@@ -34,7 +63,8 @@ class _MainPageState extends State<MainPage> {
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.book),
-        title: ("Rubrica"),
+        title: "Rubrica",
+        textStyle: const TextStyle(fontWeight: FontWeight.bold),
         activeColorPrimary: isAndroid
             ? Theme.of(context).bottomNavigationBarTheme.selectedItemColor!
             : CupertinoTheme.of(context).primaryColor,
@@ -42,19 +72,20 @@ class _MainPageState extends State<MainPage> {
             ? Theme.of(context).bottomNavigationBarTheme.unselectedItemColor!
             : CupertinoTheme.of(context).primaryContrastingColor,
       ),
-      PersistentBottomNavBarItem(
-        icon: const Icon(Icons.search_rounded),
-        title: ("Cerca"),
-        activeColorPrimary: isAndroid
-            ? Theme.of(context).bottomNavigationBarTheme.selectedItemColor!
-            : CupertinoTheme.of(context).primaryColor,
-        inactiveColorPrimary: isAndroid
-            ? Theme.of(context).bottomNavigationBarTheme.unselectedItemColor!
-            : CupertinoTheme.of(context).primaryContrastingColor,
-      ),
+      // PersistentBottomNavBarItem(
+      //   icon: const Icon(Icons.search_rounded),
+      //   title: ("Cerca"),
+      //   activeColorPrimary: isAndroid
+      //       ? Theme.of(context).bottomNavigationBarTheme.selectedItemColor!
+      //       : CupertinoTheme.of(context).primaryColor,
+      //   inactiveColorPrimary: isAndroid
+      //       ? Theme.of(context).bottomNavigationBarTheme.unselectedItemColor!
+      //       : CupertinoTheme.of(context).primaryContrastingColor,
+      // ),
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.settings_rounded),
-        title: ("Impostazioni"),
+        title: "Impostazioni",
+        textStyle: const TextStyle(fontWeight: FontWeight.bold),
         activeColorPrimary: isAndroid
             ? Theme.of(context).bottomNavigationBarTheme.selectedItemColor!
             : CupertinoTheme.of(context).primaryColor,
@@ -74,6 +105,7 @@ class _MainPageState extends State<MainPage> {
       body: PersistentTabView(
         context,
         controller: controller,
+        navBarHeight: 75,
         screens: _buildScreens(),
         items: _navBarsItems(),
         confineInSafeArea: true,
@@ -104,7 +136,7 @@ class _MainPageState extends State<MainPage> {
         //   duration: Duration(milliseconds: 200),
         // ),
         navBarStyle:
-            NavBarStyle.style13, // Choose the nav bar style with this property.
+            NavBarStyle.style9, // Choose the nav bar style with this property.
       ),
 
       /*body: IndexedStack(

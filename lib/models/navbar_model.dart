@@ -9,6 +9,13 @@ class NavbarModel extends ChangeNotifier {
   bool get leading => _leading;
   bool get trailing => _trailing;
 
-  void tapLeading() => _leading = !_leading;
-  void tapTrailing() => _trailing = !_trailing;
+  void tapLeading() {
+    _leading = !_leading;
+    notifyListeners();
+  }
+
+  void tapTrailing() {
+    _trailing = !_trailing;
+    notifyListeners();
+  }
 }

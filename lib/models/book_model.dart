@@ -1,31 +1,49 @@
+import 'package:app_word/util/constants.dart';
 import 'package:app_word/widgets/book_view/word_item.dart';
 import 'package:flutter/widgets.dart';
 
 class BookModel extends ChangeNotifier {
-  final List<String> _words = [];
-  final List<String> _selectedWords = [];
+  final Map<String, List<String>> _words = {
+    Constants.personalBook: [],
+    Constants.classBook: [],
+  };
+  final Map<String, List<String>> _selectedWords = {};
+  var selectedBook = Constants.personalBook;
 
-  List<String> get words => _words;
-  List<String> get selectedWords => _selectedWords;
+  Map<String, List<String>> get words => _words;
+  Map<String, List<String>> get selectedWords => _selectedWords;
+
+  void setSelectedBook(String book) => selectedBook = book;
 
   /// Adds [word] to words. This and [removeAll] are the only ways to modify the
   /// cart from the outside.
-  void add(String word) {
-    _words.add(word);
+  void add(String book, String word) {
+    if (_words[book] == null) {
+      _words[book] = [];
+    }
+    _words[book]!.add(word);
     // This call tells the widgets that are listening to this model to rebuild.
     notifyListeners();
   }
 
+  void remove(String book, String word) {
+    if (_words[book] != null) _words[book]!.remove(word);
+    notifyListeners();
+  }
+
   /// Removes all items from the cart.
-  void removeAll() {
-    _words.clear();
+  void removeAll(String book) {
+    if (_words[book] != null) _words.clear();
     // This call tells the widgets that are listening to this model to rebuild.
     notifyListeners();
   }
 
   /// Adds [word] to selectedWords to delete.
-  void addSelectedWord(String word) {
-    _selectedWords.add(word);
+  void addSelectedWord(String book, String word) {
+    if (_selectedWords[book] == null) {
+      _selectedWords[book] = [];
+    }
+    _selectedWords[book]!.add(word);
     // This call tells the widgets that are listening to this model to rebuild.
     notifyListeners();
   }
