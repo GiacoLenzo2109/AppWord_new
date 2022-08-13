@@ -1,13 +1,14 @@
-import 'package:app_word/models/book_model.dart';
-import 'package:app_word/models/navbar_model.dart';
+import 'package:app_word/providers/book_model.dart';
+import 'package:app_word/providers/navbar_model.dart';
+import 'package:app_word/providers/theme_provider.dart';
 import 'package:app_word/screens/main/book.dart';
 import 'package:app_word/screens/main/home.dart';
-import 'package:app_word/screens/main/search.dart';
 import 'package:app_word/screens/main/settings.dart';
 import 'package:app_word/util/constants.dart';
 import 'package:app_word/util/themes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
@@ -40,8 +41,15 @@ class _MainPageState extends State<MainPage> {
         //   create: (context) => NavbarModel(),
         //   builder: (context, child) => const Search(),
         // ),
-        ChangeNotifierProvider(
-          create: (context) => NavbarModel(),
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider(
+              create: (context) => NavbarModel(),
+            ),
+            ChangeNotifierProvider(
+              create: (context) => ThemeProvider(),
+            ),
+          ],
           builder: (context, child) => const Settings(),
         ),
       ];
@@ -192,10 +200,10 @@ class _MainPageState extends State<MainPage> {
             icon: Icon(CupertinoIcons.book),
             label: Constants.bookPage,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.search),
-            label: Constants.search,
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(CupertinoIcons.search),
+          //   label: Constants.search,
+          // ),
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.settings),
             label: Constants.settings,
@@ -203,14 +211,9 @@ class _MainPageState extends State<MainPage> {
         ],
       ),
       tabBuilder: (_, index) => CupertinoTabView(
-        builder: (context) {
-          return CupertinoPageScaffold(
-            child: IndexedStack(
-              index: index,
-              children: _buildScreens(),
-            ),
-          );
-        },
+        builder: (context) => CupertinoScaffold(
+          body: _buildScreens()[index],
+        ),
       ),
     );
 

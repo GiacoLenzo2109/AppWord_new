@@ -1,15 +1,18 @@
-import 'package:app_word/models/book_model.dart';
-import 'package:app_word/models/navbar_model.dart';
+import 'package:app_word/models/word.dart';
+import 'package:app_word/providers/book_model.dart';
+import 'package:app_word/providers/navbar_model.dart';
+import 'package:app_word/screens/others/word_page.dart';
 import 'package:app_word/util/screen_util.dart';
 import 'package:app_word/util/themes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 class WordItem extends StatefulWidget {
   final String book;
-  final String word;
+  final Word word;
 
   const WordItem({Key? key, required this.word, required this.book})
       : super(key: key);
@@ -51,7 +54,7 @@ class _WordItemState extends State<WordItem> {
               width: edit ? 10 : 0,
             ),
             Text(
-              widget.word,
+              widget.word.word,
               style: const TextStyle(fontSize: 17),
             )
           ],
@@ -60,10 +63,24 @@ class _WordItemState extends State<WordItem> {
       onTap: () => {
         if (edit)
           {
-            bookProvider.addSelectedWord(widget.book, widget.word),
+            bookProvider.addSelectedWord(widget.book, widget.word.word),
             setState(() {
               checked = !checked;
             })
+          }
+        else
+          {
+            Navigator.of(context).push(
+              MaterialWithModalsPageRoute(
+                  //context: context,
+                  builder: (context) => WordPage(word: widget.word)),
+            ),
+            // Navigator.of(context).push(
+            //     Theme.of(context).platform == TargetPlatform.android
+            //         ? MaterialPageRoute(
+            //             builder: (context) => WordPage(word: widget.word))
+            //         : CupertinoPageRoute(
+            //             builder: (context) => WordPage(word: widget.word))),
           }
       },
     );

@@ -2,7 +2,8 @@ import 'dart:collection';
 import 'dart:developer';
 
 import 'package:alphabet_list_scroll_view/alphabet_list_scroll_view.dart';
-import 'package:app_word/models/book_model.dart';
+import 'package:app_word/models/word.dart';
+import 'package:app_word/providers/book_model.dart';
 import 'package:app_word/util/constants.dart';
 import 'package:app_word/util/screen_util.dart';
 import 'package:app_word/util/themes.dart';
@@ -69,6 +70,8 @@ class _AlphabetScrollListState extends State<AlphabetScrollList> {
     "Zorr3"
   ];
 
+  final Map<String, Word> _wordsMap = {};
+
   final double jumpShiftLetter = 25;
   final double jumpShiftWord = 50;
 
@@ -76,6 +79,28 @@ class _AlphabetScrollListState extends State<AlphabetScrollList> {
 
   bool searching = false;
   var searchValue = "";
+
+  @override
+  void initState() {
+    if (_wordsMap.isEmpty) {
+      for (String word in _words) {
+        _wordsMap.putIfAbsent(
+          word,
+          () => Word(
+            type: Word.verb,
+            word: word,
+            definitions: ['def1', 'def2'],
+            semanticFields: ['sem1', 'sem2'],
+            examplePhrases: ['ex1', 'ex2'],
+            italianType: Word.literature,
+            synonyms: ['s1'],
+            antonyms: ['a1', 'a2', 'a3'],
+          ),
+        );
+      }
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -144,9 +169,11 @@ class _AlphabetScrollListState extends State<AlphabetScrollList> {
         out.add(
           buildLetterButton(
             () {
-              if (selectedLetter != l) {
-                scrollController.jumpTo(
+              if (selectedLetter != l && !searching) {
+                scrollController.animateTo(
                   letterPositions[l]!,
+                  curve: Curves.easeIn,
+                  duration: const Duration(milliseconds: 250),
                 );
               }
               setState(() {
@@ -206,7 +233,7 @@ class _AlphabetScrollListState extends State<AlphabetScrollList> {
           /// Increase jump height by the know height of a name row
           totalShift += jumpShiftWord;
           out.add(
-            WordItem(book: widget.book, word: word),
+            WordItem(book: widget.book, word: _wordsMap[word]!),
           );
 
           /// We just do not want to add a Divider if there are no records left for
@@ -245,7 +272,7 @@ class _AlphabetScrollListState extends State<AlphabetScrollList> {
           ));
           out.add(const DividerWidget());
         }
-        out.add(WordItem(book: widget.book, word: word));
+        out.add(WordItem(book: widget.book, word: _wordsMap[word]!));
         out.add(const DividerWidget());
       }
       return out;
@@ -265,9 +292,8 @@ class _AlphabetScrollListState extends State<AlphabetScrollList> {
       });
     });
 
-    return ContaienrWidget(
-      padding: 10,
-      margin: 25,
+    return Padding(
+      padding: const EdgeInsets.all(15),
       child: Column(
         children: <Widget>[
           Expanded(
@@ -310,7 +336,8 @@ class _AlphabetScrollListState extends State<AlphabetScrollList> {
                 )
               ],
             ),
-          )
+          ),
+          const SizedBox(height: 25),
         ],
       ),
     );

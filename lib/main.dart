@@ -1,8 +1,14 @@
+import 'dart:js';
+
 import 'package:app_word/database/firebase_global.dart';
 import 'package:app_word/database/firebase_options.dart';
-import 'package:app_word/models/book_model.dart';
-import 'package:app_word/models/navbar_model.dart';
+import 'package:app_word/providers/book_model.dart';
+import 'package:app_word/providers/navbar_model.dart';
+import 'package:app_word/providers/theme_provider.dart';
+import 'package:app_word/screens/main/book.dart';
+import 'package:app_word/screens/main/home.dart';
 import 'package:app_word/screens/main/main_page.dart';
+import 'package:app_word/screens/main/settings.dart';
 import 'package:app_word/util/constants.dart';
 import 'package:app_word/util/themes.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -23,6 +29,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (context) => ThemeProvider()),
         ChangeNotifierProvider(create: (context) => NavbarModel()),
       ],
       builder: (context, _) => const AppWord(),
@@ -82,6 +89,11 @@ class _AppWordState extends State<AppWord> with WidgetsBindingObserver {
           ? CupertinoThemes.lightThemeCupertino
           : CupertinoThemes.darkThemeCupertino,
       home: home(),
+      routes: <String, WidgetBuilder>{
+        '/home': (BuildContext context) => const Home(),
+        '/book': (BuildContext context) => const Book(),
+        '/settings': (BuildContext context) => const Settings(),
+      },
     );
 
     //ANDROID

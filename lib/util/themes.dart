@@ -94,5 +94,5 @@ class CupertinoThemes {
   static Color? backgroundColor(BuildContext context) =>
       CupertinoTheme.brightnessOf(context) == Brightness.dark
           ? CupertinoColors.darkBackgroundGray
-          : Colors.white;
+          : CupertinoColors.extraLightBackgroundGray;
 }

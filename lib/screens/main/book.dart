@@ -3,8 +3,9 @@
 import 'dart:developer';
 
 import 'package:alphabet_list_scroll_view/alphabet_list_scroll_view.dart';
-import 'package:app_word/models/book_model.dart';
-import 'package:app_word/models/navbar_model.dart';
+import 'package:app_word/providers/book_model.dart';
+import 'package:app_word/providers/navbar_model.dart';
+import 'package:app_word/screens/others/new_word_page.dart';
 import 'package:app_word/util/constants.dart';
 import 'package:app_word/util/screen_util.dart';
 import 'package:app_word/util/themes.dart';
@@ -17,6 +18,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
 class Book extends StatefulWidget {
@@ -42,24 +44,25 @@ class _BookState extends State<Book> with SingleTickerProviderStateMixin {
       leading: Theme.of(context).platform == TargetPlatform.android
           ? GestureDetector(
               onTap: () => navbarProvider.tapLeading(),
-              child: Icon(!navbarProvider.leading ? Icons.edit : Icons.done),
+              child: Icon(
+                !navbarProvider.leading ? Icons.edit : Icons.done,
+                color: CupertinoColors.activeBlue,
+              ),
             )
           : CupertinoButton(
               padding: const EdgeInsets.all(0),
-              onPressed: () => navbarProvider.tapTrailing(),
+              onPressed: () => navbarProvider.tapLeading(),
               child: Text(
                 !navbarProvider.leading ? "Modifica" : "Fatto",
               ),
             ),
       trailing: GestureDetector(
-        child: Padding(
-          padding: const EdgeInsets.only(right: 10),
-          child: Icon(
-            !navbarProvider.leading ? CupertinoIcons.add : CupertinoIcons.trash,
-            color:
-                navbarProvider.leading ? Colors.redAccent : Colors.greenAccent,
-            size: 25,
-          ),
+        child: Icon(
+          !navbarProvider.leading ? CupertinoIcons.add : CupertinoIcons.trash,
+          color: navbarProvider.leading
+              ? Colors.redAccent
+              : CupertinoColors.activeBlue,
+          size: 25,
         ),
         onTap: () {
           if (navbarProvider.leading) {
@@ -68,12 +71,16 @@ class _BookState extends State<Book> with SingleTickerProviderStateMixin {
               bookProvider.remove(bookProvider.selectedBook, word);
             }
             navbarProvider.tapLeading();
+          } else {
+            CupertinoScaffold.showCupertinoModalBottomSheet(
+                context: context, builder: (context) => const AddWordPage());
           }
         },
       ),
       child: StaggeredGrid.count(
         crossAxisCount: 1,
         children: [
+          const SizedBox(height: 20),
           TabBarWidget(
             onValueChanged: (value) {
               bookProvider.setSelectedBook(

@@ -11,13 +11,15 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class TabBarWidget extends StatefulWidget {
   final List<String> tabs;
-  final List<Widget> tabsView;
+  final List<Widget>? tabsView;
   final Function(int value) onValueChanged;
+  final double? padding;
 
   const TabBarWidget({
     Key? key,
     required this.tabs,
-    required this.tabsView,
+    this.tabsView,
+    this.padding,
     required this.onValueChanged,
   }) : super(key: key);
 
@@ -31,7 +33,7 @@ class _TabBarWidgetState extends State<TabBarWidget>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: widget.tabs.length, vsync: this);
   }
 
   @override
@@ -81,9 +83,9 @@ class _TabBarWidgetState extends State<TabBarWidget>
     );
 
     //iOS
-    Map<int, Widget> _tabsMap = {};
+    Map<int, Widget> tabsMap = {};
     for (int i = 0; i < widget.tabs.length; i++) {
-      _tabsMap.putIfAbsent(
+      tabsMap.putIfAbsent(
         i,
         () => Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -94,8 +96,9 @@ class _TabBarWidgetState extends State<TabBarWidget>
     var iTabBar = CupertinoSegmentedControl<int>(
       selectedColor: selectedColor,
       unselectedColor: unselectedColor,
-      children: _tabsMap,
+      children: tabsMap,
       groupValue: _tabController.index,
+      padding: EdgeInsets.symmetric(horizontal: widget.padding ?? 15),
       onValueChanged: (tab) {
         setState(() {
           _tabController.index = tab;
@@ -108,7 +111,7 @@ class _TabBarWidgetState extends State<TabBarWidget>
           (Theme.of(context).platform == TargetPlatform.android ? 200 : 250),
       child: TabBarView(
         controller: _tabController,
-        children: widget.tabsView,
+        children: widget.tabsView ?? [],
       ),
     );
 
@@ -120,7 +123,9 @@ class _TabBarWidgetState extends State<TabBarWidget>
       crossAxisCount: 1,
       children: [
         Theme.of(context).platform == TargetPlatform.android ? tabBar : iTabBar,
-        tabsView
+        if (Theme.of(context).platform == TargetPlatform.iOS &&
+            widget.tabsView != null)
+          tabsView
       ],
     );
   }

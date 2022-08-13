@@ -1,9 +1,10 @@
 import 'package:app_word/util/screen_util.dart';
+import 'package:app_word/util/themes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ButtonWidget extends StatelessWidget {
-  final Color backgroundColor;
+  final Color? backgroundColor;
   final String text;
   final double? height;
   final double? padding;
@@ -15,7 +16,7 @@ class ButtonWidget extends StatelessWidget {
       {super.key,
       this.height,
       this.onPressed,
-      required this.backgroundColor,
+      this.backgroundColor,
       required this.text,
       this.padding,
       this.icon,
@@ -28,31 +29,36 @@ class ButtonWidget extends StatelessWidget {
             onPressed: onPressed ?? () {},
             style: ButtonStyle(
               elevation: MaterialStateProperty.all(1.0),
-              backgroundColor: MaterialStateProperty.all(backgroundColor),
+              backgroundColor: MaterialStateProperty.all(
+                backgroundColor ?? ThemesUtil.getPrimaryColor(context),
+              ),
               minimumSize: MaterialStateProperty.all(
                   Size(ScreenUtil.getSize(context).width, height ?? 50)),
             ),
-            child: icon != null ? Row(
-              children: [
-                icon ?? const Text(""),
-                Text(
-                  text,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15.0,
-                      color: Colors.white),
-                ),
-              ],
-            ) : Text(
-                  text,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15.0,
-                      color: Colors.white),
-                ),)
+            child: icon != null
+                ? Row(
+                    children: [
+                      icon ?? const Text(""),
+                      Text(
+                        text,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15.0,
+                            color: Colors.white),
+                      ),
+                    ],
+                  )
+                : Text(
+                    text,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15.0,
+                        color: Colors.white),
+                  ),
+          )
         : CupertinoButton(
             padding: EdgeInsets.all(padding ?? 0),
-            color: backgroundColor,
+            color: backgroundColor ?? ThemesUtil.getPrimaryColor(context),
             onPressed: onPressed ?? () {},
             child: icon != null
                 ? Row(

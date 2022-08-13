@@ -1,5 +1,4 @@
 import 'package:app_word/util/constants.dart';
-import 'package:app_word/util/global.dart';
 import 'package:app_word/util/screen_util.dart';
 import 'package:app_word/util/themes.dart';
 import 'package:app_word/widgets/global/button_widget.dart';
@@ -83,36 +82,36 @@ class Home extends StatelessWidget {
             ),
           ),
           // Rubriche
-          ContaienrWidget(
-            child: StaggeredGrid.count(
-              crossAxisCount: 1,
-              mainAxisSpacing: 10,
-              children: [
-                Text(
-                  "Rubriche:",
-                  style: ThemesUtil.titleContainerStyle(context),
-                ),
-                Container(
-                  margin: const EdgeInsets.all(7.5),
-                  color: Colors.grey,
-                  height: 1,
-                ),
-                StaggeredGrid.count(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 10,
-                  children: const [
-                    ButtonWidget(
-                        backgroundColor: Colors.red,
-                        text: Constants.personalBook),
-                    ButtonWidget(
-                      backgroundColor: CupertinoColors.activeBlue,
-                      text: Constants.classBook,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+          // ContaienrWidget(
+          //   child: StaggeredGrid.count(
+          //     crossAxisCount: 1,
+          //     mainAxisSpacing: 10,
+          //     children: [
+          //       Text(
+          //         "Rubriche:",
+          //         style: ThemesUtil.titleContainerStyle(context),
+          //       ),
+          //       Container(
+          //         margin: const EdgeInsets.all(7.5),
+          //         color: Colors.grey,
+          //         height: 1,
+          //       ),
+          //       StaggeredGrid.count(
+          //         crossAxisCount: 2,
+          //         crossAxisSpacing: 10,
+          //         children: const [
+          //           ButtonWidget(
+          //               backgroundColor: Colors.red,
+          //               text: Constants.personalBook),
+          //           ButtonWidget(
+          //             backgroundColor: CupertinoColors.activeBlue,
+          //             text: Constants.classBook,
+          //           ),
+          //         ],
+          //       ),
+          //     ],
+          //   ),
+          // ),
           //Lista nuove parole
           ContaienrWidget(
             child: StaggeredGrid.count(

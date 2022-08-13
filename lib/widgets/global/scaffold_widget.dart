@@ -1,10 +1,11 @@
+import 'dart:math';
+
 import 'package:app_word/util/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class PageScaffold extends StatefulWidget {
   final Widget child;
-  final Widget? navigationBar;
   final String title;
   final double? padding;
   final Widget? leading;
@@ -13,7 +14,6 @@ class PageScaffold extends StatefulWidget {
   final Future<void> Function()? onRefresh;
   const PageScaffold(
       {Key? key,
-      this.navigationBar,
       this.leading,
       this.trailing,
       this.onRefresh,
@@ -59,9 +59,34 @@ class _ScaffoldWidgetState extends State<PageScaffold> {
                 ? scrollView
                 : page);
 
+    Widget _buildSpinnerOnlyRefreshIndicator(
+        BuildContext context,
+        RefreshIndicatorMode refreshState,
+        double pulledExtent,
+        double refreshTriggerPullDistance,
+        double refreshIndicatorExtent) {
+      const Curve opacityCurve = Interval(0.4, 0.8, curve: Curves.easeInOut);
+      return Align(
+        alignment: Alignment.bottomCenter,
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 16.0),
+          child: Opacity(
+            opacity: opacityCurve
+                .transform(min(pulledExtent / refreshIndicatorExtent, 1.0)),
+            child: const CupertinoActivityIndicator(radius: 14.0),
+          ),
+        ),
+      );
+    }
+
     CupertinoPageScaffold cupertinoScaffold = CupertinoPageScaffold(
       child: CustomScrollView(
         slivers: <Widget>[
+          if (widget.onRefresh != null)
+            CupertinoSliverRefreshControl(
+              onRefresh: widget.onRefresh,
+              builder: _buildSpinnerOnlyRefreshIndicator,
+            ),
           CupertinoSliverNavigationBar(
             border: null,
             stretch: true,
@@ -72,10 +97,6 @@ class _ScaffoldWidgetState extends State<PageScaffold> {
             largeTitle: Text(widget.title),
             trailing: widget.trailing,
           ),
-          if (widget.onRefresh != null)
-            CupertinoSliverRefreshControl(
-              onRefresh: widget.onRefresh,
-            ),
           SliverFillRemaining(
             hasScrollBody: widget.scrollable,
             child: Padding(

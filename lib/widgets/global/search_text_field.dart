@@ -50,6 +50,7 @@ class _SearchTextFieldState extends State<SearchTextField> {
     );
 
     var iSearchTextField = CupertinoSearchTextField(
+      placeholder: "Cerca",
       onChanged: widget.onChanged,
     );
 
