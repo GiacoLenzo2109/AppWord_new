@@ -2,24 +2,23 @@
 
 import 'dart:developer';
 
-import 'package:alphabet_list_scroll_view/alphabet_list_scroll_view.dart';
 import 'package:app_word/providers/book_model.dart';
 import 'package:app_word/providers/navbar_model.dart';
 import 'package:app_word/screens/others/new_word_page.dart';
 import 'package:app_word/util/constants.dart';
+import 'package:app_word/util/dialog_util.dart';
 import 'package:app_word/util/screen_util.dart';
 import 'package:app_word/util/themes.dart';
 import 'package:app_word/widgets/book_view/alphabet_scroll_list.dart';
-import 'package:app_word/widgets/global/button_widget.dart';
-import 'package:app_word/widgets/material_tab_indicator.dart';
+import 'package:app_word/widgets/book_view/alphabet_scroll_list_view.dart';
+import 'package:app_word/widgets/global/search_text_field.dart';
 import 'package:app_word/widgets/global/scaffold_widget.dart';
 import 'package:app_word/widgets/global/tab_bar_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 class Book extends StatefulWidget {
   const Book({Key? key}) : super(key: key);
@@ -29,24 +28,34 @@ class Book extends StatefulWidget {
 }
 
 class _BookState extends State<Book> with SingleTickerProviderStateMixin {
+  var personalBook = const AlphabetScrollList(Constants.personalBook);
+  var classBook = const AlphabetScrollList(Constants.classBook);
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final navbarProvider = Provider.of<NavbarModel>(context);
     final bookProvider = Provider.of<BookModel>(context);
 
     return PageScaffold(
-      title: "Rubrica",
+      title:
+          ThemesUtil.isAndroid(context) ? "Rubrica" : bookProvider.selectedBook,
       padding: 0,
       onRefresh: () async {
         //TO-DO: Refresh delle parole nella rubrica (da decidere ancora se farlo o no)
       },
-      scrollable: false,
+      rounded: false,
+      scrollable: true,
       leading: Theme.of(context).platform == TargetPlatform.android
           ? GestureDetector(
               onTap: () => navbarProvider.tapLeading(),
               child: Icon(
                 !navbarProvider.leading ? Icons.edit : Icons.done,
-                color: CupertinoColors.activeBlue,
+                color: Theme.of(context).appBarTheme.titleTextStyle!.color,
               ),
             )
           : CupertinoButton(
@@ -54,33 +63,44 @@ class _BookState extends State<Book> with SingleTickerProviderStateMixin {
               onPressed: () => navbarProvider.tapLeading(),
               child: Text(
                 !navbarProvider.leading ? "Modifica" : "Fatto",
+                style: const TextStyle(fontSize: 17),
               ),
             ),
-      trailing: GestureDetector(
-        child: Icon(
-          !navbarProvider.leading ? CupertinoIcons.add : CupertinoIcons.trash,
-          color: navbarProvider.leading
-              ? Colors.redAccent
-              : CupertinoColors.activeBlue,
-          size: 25,
+      trailing: Padding(
+        padding: EdgeInsets.only(
+          right: Theme.of(context).platform == TargetPlatform.android ? 10 : 0,
         ),
-        onTap: () {
-          if (navbarProvider.leading) {
-            for (var word
-                in bookProvider.selectedWords[bookProvider.selectedBook]!) {
-              bookProvider.remove(bookProvider.selectedBook, word);
+        child: GestureDetector(
+          child: Icon(
+            !navbarProvider.leading ? CupertinoIcons.add : CupertinoIcons.trash,
+            color: navbarProvider.leading
+                ? Colors.redAccent
+                : Theme.of(context).platform == TargetPlatform.iOS
+                    ? CupertinoColors.activeBlue
+                    : Theme.of(context).appBarTheme.titleTextStyle!.color,
+            size: 25,
+          ),
+          onTap: () {
+            if (navbarProvider.leading) {
+              for (var word
+                  in bookProvider.selectedWords[bookProvider.selectedBook]!) {
+                bookProvider.remove(bookProvider.selectedBook, word);
+              }
+              log(bookProvider.words.toString());
+              navbarProvider.tapLeading();
+            } else {
+              DialogUtil.showModalBottomSheet(
+                  context: context, builder: (context) => const AddWordPage());
             }
-            navbarProvider.tapLeading();
-          } else {
-            CupertinoScaffold.showCupertinoModalBottomSheet(
-                context: context, builder: (context) => const AddWordPage());
-          }
-        },
+          },
+        ),
       ),
+      childSliver: AlphabetScrollListView(book: bookProvider.selectedBook),
       child: StaggeredGrid.count(
         crossAxisCount: 1,
         children: [
-          const SizedBox(height: 20),
+          if (Theme.of(context).platform == TargetPlatform.iOS)
+            const SizedBox(height: 25),
           TabBarWidget(
             onValueChanged: (value) {
               bookProvider.setSelectedBook(

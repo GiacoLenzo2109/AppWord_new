@@ -3,7 +3,10 @@ import 'dart:developer';
 import 'package:app_word/models/word.dart';
 import 'package:app_word/providers/navbar_model.dart';
 import 'package:app_word/util/constants.dart';
+import 'package:app_word/util/dialog_util.dart';
 import 'package:app_word/util/screen_util.dart';
+import 'package:app_word/util/themes.dart';
+import 'package:app_word/widgets/global/bottom_picker.dart';
 import 'package:app_word/widgets/global/button_widget.dart';
 import 'package:app_word/widgets/global/scaffold_widget.dart';
 import 'package:app_word/widgets/global/tab_bar_widget.dart';
@@ -13,6 +16,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 
@@ -54,14 +58,6 @@ class _AddWordPageState extends State<AddWordPage> {
     "Pronome",
     "Preposizione"
   ];
-
-  List<Text> getTipologies() {
-    List<Text> list = [];
-    for (var item in tipologies) {
-      list.add(Text(item));
-    }
-    return list;
-  }
 
   TextfieldTagsController synController = TextfieldTagsController(),
       antController = TextfieldTagsController(),
@@ -148,351 +144,340 @@ class _AddWordPageState extends State<AddWordPage> {
     return PageScaffold(
       title: widget.word != null ? "Modifica vocabolo" : "Aggiungi vocabolo",
       scrollable: true,
+      padding: 0,
       child: Padding(
         padding: const EdgeInsets.only(bottom: 0),
         child: StaggeredGrid.count(
           crossAxisCount: 1,
           children: [
-            StaggeredGrid.count(
-              crossAxisCount: 1,
-              mainAxisSpacing: 14,
-              children: [
-                TabBarWidget(
-                  tabs: const [Word.verb, Word.noun, Word.other],
-                  padding: 0,
-                  onValueChanged: (value) {
-                    setState(() {
-                      if (widget.word == null) {
-                        switch (value) {
-                          case 0:
-                            selectedValue = Word.verb;
-                            break;
-                          case 1:
-                            selectedValue = Word.noun;
-                            break;
-                          case 2:
-                            selectedValue = Word.other;
-                            break;
-                        }
-                        switch (selectedValue) {
-                          case Word.noun:
-                            word.gender = Word.male;
-                            word.multeplicity = Word.singular;
-                            break;
-                          case Word.other:
-                            word.tipology = tipologies.first;
-                            selectedTipology = 0;
-                            break;
-                          default:
-                            word.gender = "";
-                            word.multeplicity = "";
-                            word.tipology = '';
-                        }
-                        word.type = selectedValue;
-                      }
-                    });
-                  },
-                ),
-                Visibility(
-                  visible: selectedValue == Word.other ? true : false,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          const Text(
-                            "Tipologia: ",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(width: 10),
-                          Text(
-                            selectedTipology != null
-                                ? tipologies.elementAt(selectedTipology!)
-                                : "",
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: ScreenUtil.getSize(context).height / 55,
-                      ),
-                      StaggeredGrid.count(
-                        crossAxisCount: 1,
-                        children: [
-                          ButtonWidget(
-                            backgroundColor: CupertinoColors.activeOrange,
-                            text: "Scegliere tipologia",
-                            onPressed: () => Theme.of(context).platform ==
-                                    TargetPlatform.iOS
-                                ? showCupertinoModalPopup<void>(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return _buildBottomPicker(
-                                          CupertinoPicker(
-                                            itemExtent: 30,
-                                            scrollController:
-                                                FixedExtentScrollController(
-                                                    initialItem:
-                                                        selectedTipology != null
-                                                            ? selectedTipology!
-                                                            : 1),
-                                            onSelectedItemChanged: (index) {
-                                              setState(() {
-                                                selectedTipology = index;
-                                                word.tipology =
-                                                    tipologies.elementAt(
-                                                        selectedTipology!);
-                                              });
-                                            },
-                                            children: getTipologies(),
-                                          ),
-                                          context);
-                                    },
-                                  )
-                                : {},
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                TextFieldWidget(
-                  placeholder: "Inserisci vocabolo",
-                  icon: CupertinoIcons.text_cursor,
-                  maxLines: 1,
-                  onChanged: (value) => word.word = value,
-                  text: widget.word != null ? word.word : null,
-                ),
-                Visibility(
-                  visible: selectedValue == "Sostantivo" ? true : false,
-                  child: StaggeredGrid.count(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 10,
-                    children: [
-                      CupertinoSlidingSegmentedControl(
-                          groupValue: genderValue,
-                          children: const {
-                            Word.male: Text("M"),
-                            Word.female: Text("F"),
-                          },
-                          onValueChanged: (String? index) {
-                            setState(() {
-                              genderValue = index!;
-                              word.gender = genderValue;
-                            });
-                          }),
-                      CupertinoSlidingSegmentedControl(
-                          groupValue: multeplicityValue,
-                          children: const {
-                            Word.singular: Text("S"),
-                            Word.plural: Text("P"),
-                          },
-                          onValueChanged: (String? index) {
-                            setState(() {
-                              multeplicityValue = index!;
-                              word.multeplicity = multeplicityValue;
-                            });
-                          }),
-                    ],
-                  ),
-                ),
-                TextFieldTagsWidget(
-                  errorPhrase: "Definizione già inserita",
-                  insertPhrase: "Inserisci definizione",
-                  separator: null,
-                  controller: definitionController,
-                  icon: CupertinoIcons.text_justify,
-                  initialTags:
-                      widget.word != null ? widget.word!.definitions : null,
-                ),
-                TextFieldTagsWidget(
-                  errorPhrase: "Campo semantico già inserito",
-                  insertPhrase: "Inserisci campo semantico",
-                  separator: null,
-                  controller: semanticFieldController,
-                  icon: CupertinoIcons.textbox,
-                  initialTags:
-                      widget.word != null ? widget.word!.semanticFields : null,
-                ),
-                TextFieldTagsWidget(
-                  errorPhrase: "Frase già inserita!",
-                  insertPhrase: "Inserire una frase",
-                  separator: null,
-                  controller: phraseController,
-                  icon: CupertinoIcons.text_quote,
-                  initialTags:
-                      widget.word != null ? widget.word!.examplePhrases : null,
-                ),
-                Visibility(
-                  visible: true, //selectedValue != "Altro" ? true : false,
-                  child: StaggeredGrid.count(
-                    crossAxisCount: 1,
-                    mainAxisSpacing: 15,
-                    children: [
-                      TextFieldTagsWidget(
-                        errorPhrase: "Sinonimo già inserito!",
-                        insertPhrase: "Inserire un sinonimo",
-                        separator: " ",
-                        controller: synController,
-                        icon: CupertinoIcons.sun_max,
-                        initialTags:
-                            widget.word != null ? widget.word!.synonyms : null,
-                      ),
-                      TextFieldTagsWidget(
-                        errorPhrase: "Contrario già inserito!",
-                        insertPhrase: "Inseriro un contrario",
-                        separator: " ",
-                        controller: antController,
-                        icon: CupertinoIcons.moon,
-                        initialTags:
-                            widget.word != null ? widget.word!.antonyms : null,
-                      ),
-                    ],
-                  ),
-                ),
-                CupertinoSlidingSegmentedControl(
-                    groupValue: itaValue,
-                    children: const {
-                      Word.modern: Text("Ita moderno"),
-                      Word.literature: Text("Ita letteratura"),
-                    },
-                    onValueChanged: (value) {
-                      setState(() {
-                        itaValue = value as String;
-                        word.italianCorrespondence = itaValue;
-                      });
-                    }),
-                Visibility(
-                  visible: itaValue == Word.literature ? true : false,
-                  child: TextFieldWidget(
-                      placeholder: "Corrispondenza italiano moderno",
-                      maxLines: 1,
-                      icon: CupertinoIcons.text_cursor,
-                      onChanged: (value) => word.italianCorrespondence = value,
-                      text: widget.word != null
-                          ? word.italianCorrespondence
-                          : null),
-                ),
-                const SizedBox(height: 10),
-              ],
+            TabBarWidget(
+              tabs: const [Word.verb, Word.noun, Word.other],
+              padding: ThemesUtil.isAndroid(context) ? 0 : 10,
+              onValueChanged: (value) {
+                setState(() {
+                  switch (value) {
+                    case 0:
+                      selectedValue = Word.verb;
+                      break;
+                    case 1:
+                      selectedValue = Word.noun;
+                      break;
+                    case 2:
+                      selectedValue = Word.other;
+                      break;
+                  }
+                  switch (selectedValue) {
+                    case Word.noun:
+                      word.gender = Word.male;
+                      word.multeplicity = Word.singular;
+                      break;
+                    case Word.other:
+                      word.tipology = tipologies.first;
+                      selectedTipology = 0;
+                      break;
+                    default:
+                      word.gender = "";
+                      word.multeplicity = "";
+                      word.tipology = '';
+                  }
+                  word.type = selectedValue;
+                });
+              },
             ),
-            Row(
-              children: [
-                Expanded(
-                  child: ButtonWidget(
-                    text: widget.word != null ? "Aggiorna parola" : "Aggiungi",
-                    onPressed: () async {
-                      word.definitions.clear();
-                      word.semanticFields.clear();
-                      word.synonyms.clear();
-                      word.antonyms.clear();
-                      word.examplePhrases.clear();
-
-                      if (definitionController.getTags != null) {
-                        for (var def in definitionController.getTags!) {
-                          word.definitions.add(def);
-                        }
-                      }
-                      if (semanticFieldController.getTags != null) {
-                        for (var sem in semanticFieldController.getTags!) {
-                          word.semanticFields.add(sem);
-                        }
-                      }
-                      if (phraseController.getTags != null) {
-                        for (var phrase in phraseController.getTags!) {
-                          word.examplePhrases.add(phrase);
-                        }
-                      }
-                      if (synController.getTags != null) {
-                        for (var syn in synController.getTags!) {
-                          word.synonyms.add(syn);
-                        }
-                      }
-                      if (antController.getTags != null) {
-                        for (var ant in antController.getTags!) {
-                          word.antonyms.add(ant);
-                        }
-                      }
-                      // if (word.word.isEmpty) {
-                      //   if (widget.word != null) {
-                      //     word.word = widget.word!.word;
-                      //   } else {
-                      //     showCupertinoDialog(
-                      //       context: context,
-                      //       builder: (context) => const ErrorDialogWidget(
-                      //           "Inserire il vocabolo!"),
-                      //     );
-                      //   }
-                      // } else if (word.definitions!.isEmpty) {
-                      //   showCupertinoDialog(
-                      //     context: context,
-                      //     builder: (context) => const ErrorDialogWidget(
-                      //         "Inserire la definizione!"),
-                      //   );
-                      // } else if (word.semanticFields!.isEmpty) {
-                      //   showCupertinoDialog(
-                      //     context: context,
-                      //     builder: (context) => const ErrorDialogWidget(
-                      //         "Inserire il campo semantico!"),
-                      //   );
-                      // } else if (word.italianType == Word.literature &&
-                      //     word.italianCorrespondence!.isEmpty) {
-                      //   showCupertinoDialog(
-                      //     context: context,
-                      //     builder: (context) => const ErrorDialogWidget(
-                      //         "Inserire il termine in italiano moderno!"),
-                      //   );
-                      // } else {
-                      //   showCupertinoDialog(
-                      //     context: context,
-                      //     builder: (context) => const LoadingWidget(),
-                      //   );
-
-                      // if (widget.word != null) {
-                      //   if (word.word!.isEmpty) {
-                      //     word.word = widget.word!.word!;
-                      //     if (word.italianCorrespondence!.isEmpty) {
-                      //       word.italianCorrespondence =
-                      //           widget.word!.italianCorrespondence!;
-                      //     }
-                      //   }
-                      //   log("1_ Word to edit: " + word.toString());
-                      //   await FirestoreRepository.updateWord(
-                      //       word, model.selectedBook);
-                      //   log("3_ Word updated");
-                      // } else {
-                      //   if (model.dailyWord) {
-                      //     model.setDailyWord(false);
-                      //     log("1_ Word to add: " + word.toString());
-                      //     await FirestoreRepository.addDailyWord(word);
-                      //     log("3_ Word added");
-                      //   } else {
-                      //     log("1_ Word to add: " + word.toString());
-                      //     await FirestoreRepository.addWord(
-                      //         word, model.selectedBook);
-                      //     log("3_ Word added");
-                      //   }
-                      // }
-                      //Navigator.pop(context);
-                      //Navigator.pop(context);
-                      //}
-                    },
+            Padding(
+              padding: const EdgeInsets.all(15),
+              child: StaggeredGrid.count(
+                crossAxisCount: 1,
+                mainAxisSpacing: 14,
+                children: [
+                  Visibility(
+                    visible: selectedValue == Word.other,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Text(
+                              "Tipologia: ",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 18),
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              selectedTipology != null
+                                  ? tipologies.elementAt(selectedTipology!)
+                                  : "",
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: ScreenUtil.getSize(context).height / 55,
+                        ),
+                        StaggeredGrid.count(
+                          crossAxisCount: 1,
+                          children: [
+                            ButtonWidget(
+                              backgroundColor: CupertinoColors.activeOrange,
+                              text: "Scegliere tipologia",
+                              onPressed: () => DialogUtil.showModalPopupSheet(
+                                context: context,
+                                builder: (context) => BottomPickerWidget(
+                                  onSelect: (index) {
+                                    setState(() {
+                                      selectedTipology = index;
+                                      word.tipology = tipologies
+                                          .elementAt(selectedTipology!);
+                                    });
+                                  },
+                                  items: tipologies,
+                                  initialItem: selectedTipology ?? 1,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                  TextFieldWidget(
+                    placeholder: "Inserisci vocabolo",
+                    icon: CupertinoIcons.text_cursor,
+                    maxLines: 1,
+                    onChanged: (value) => word.word = value,
+                    text: widget.word != null ? word.word : null,
+                  ),
+                  Visibility(
+                    visible: selectedValue == "Sostantivo",
+                    child: StaggeredGrid.count(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 10,
+                      children: [
+                        CupertinoSlidingSegmentedControl(
+                            groupValue: genderValue,
+                            children: const {
+                              Word.male: Text("M"),
+                              Word.female: Text("F"),
+                            },
+                            onValueChanged: (String? index) {
+                              setState(() {
+                                genderValue = index!;
+                                word.gender = genderValue;
+                              });
+                            }),
+                        CupertinoSlidingSegmentedControl(
+                            groupValue: multeplicityValue,
+                            children: const {
+                              Word.singular: Text("S"),
+                              Word.plural: Text("P"),
+                            },
+                            onValueChanged: (String? index) {
+                              setState(() {
+                                multeplicityValue = index!;
+                                word.multeplicity = multeplicityValue;
+                              });
+                            }),
+                      ],
+                    ),
+                  ),
+                  TextFieldTagsWidget(
+                    errorPhrase: "Definizione già inserita",
+                    insertPhrase: "Inserisci definizione",
+                    separator: null,
+                    controller: definitionController,
+                    icon: CupertinoIcons.text_justify,
+                    initialTags:
+                        widget.word != null ? widget.word!.definitions : null,
+                  ),
+                  TextFieldTagsWidget(
+                    errorPhrase: "Campo semantico già inserito",
+                    insertPhrase: "Inserisci campo semantico",
+                    separator: null,
+                    controller: semanticFieldController,
+                    icon: CupertinoIcons.textbox,
+                    initialTags: widget.word != null
+                        ? widget.word!.semanticFields
+                        : null,
+                  ),
+                  TextFieldTagsWidget(
+                    errorPhrase: "Frase già inserita!",
+                    insertPhrase: "Inserire una frase",
+                    separator: null,
+                    controller: phraseController,
+                    icon: CupertinoIcons.text_quote,
+                    initialTags: widget.word != null
+                        ? widget.word!.examplePhrases
+                        : null,
+                  ),
+                  Visibility(
+                    visible: true, //selectedValue != "Altro",
+                    child: StaggeredGrid.count(
+                      crossAxisCount: 1,
+                      mainAxisSpacing: 15,
+                      children: [
+                        TextFieldTagsWidget(
+                          errorPhrase: "Sinonimo già inserito!",
+                          insertPhrase: "Inserire un sinonimo",
+                          separator: " ",
+                          controller: synController,
+                          icon: CupertinoIcons.sun_max,
+                          initialTags: widget.word != null
+                              ? widget.word!.synonyms
+                              : null,
+                        ),
+                        TextFieldTagsWidget(
+                          errorPhrase: "Contrario già inserito!",
+                          insertPhrase: "Inseriro un contrario",
+                          separator: " ",
+                          controller: antController,
+                          icon: CupertinoIcons.moon,
+                          initialTags: widget.word != null
+                              ? widget.word!.antonyms
+                              : null,
+                        ),
+                      ],
+                    ),
+                  ),
+                  CupertinoSlidingSegmentedControl(
+                      groupValue: itaValue,
+                      children: const {
+                        Word.modern: Text("Ita moderno"),
+                        Word.literature: Text("Ita letteratura"),
+                      },
+                      onValueChanged: (value) {
+                        setState(() {
+                          itaValue = value as String;
+                          word.italianType = value;
+
+                          if (word.italianType == Word.literature) {
+                            word.italianCorrespondence =
+                                word.italianCorrespondence;
+                          }
+                        });
+                      }),
+                  Visibility(
+                    visible: itaValue == Word.literature,
+                    child: TextFieldWidget(
+                        placeholder: "Corrispondenza italiano moderno",
+                        maxLines: 1,
+                        icon: CupertinoIcons.text_cursor,
+                        onChanged: (value) =>
+                            word.italianCorrespondence = value,
+                        text: widget.word != null
+                            ? word.italianCorrespondence
+                            : null),
+                  ),
+                  const SizedBox(height: 10),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(15),
+              child: //Expanded(
+                  ButtonWidget(
+                text: widget.word != null ? "Aggiorna parola" : "Aggiungi",
+                onPressed: () async {
+                  word.definitions.clear();
+                  word.semanticFields.clear();
+                  word.synonyms.clear();
+                  word.antonyms.clear();
+                  word.examplePhrases.clear();
+
+                  if (definitionController.getTags != null) {
+                    for (var def in definitionController.getTags!) {
+                      word.definitions.add(def);
+                    }
+                  }
+                  if (semanticFieldController.getTags != null) {
+                    for (var sem in semanticFieldController.getTags!) {
+                      word.semanticFields.add(sem);
+                    }
+                  }
+                  if (phraseController.getTags != null) {
+                    for (var phrase in phraseController.getTags!) {
+                      word.examplePhrases.add(phrase);
+                    }
+                  }
+                  if (synController.getTags != null) {
+                    for (var syn in synController.getTags!) {
+                      word.synonyms.add(syn);
+                    }
+                  }
+                  if (antController.getTags != null) {
+                    for (var ant in antController.getTags!) {
+                      word.antonyms.add(ant);
+                    }
+                  }
+                  // if (word.word.isEmpty) {
+                  //   if (widget.word != null) {
+                  //     word.word = widget.word!.word;
+                  //   } else {
+                  //     showCupertinoDialog(
+                  //       context: context,
+                  //       builder: (context) => const ErrorDialogWidget(
+                  //           "Inserire il vocabolo!"),
+                  //     );
+                  //   }
+                  // } else if (word.definitions!.isEmpty) {
+                  //   showCupertinoDialog(
+                  //     context: context,
+                  //     builder: (context) => const ErrorDialogWidget(
+                  //         "Inserire la definizione!"),
+                  //   );
+                  // } else if (word.semanticFields!.isEmpty) {
+                  //   showCupertinoDialog(
+                  //     context: context,
+                  //     builder: (context) => const ErrorDialogWidget(
+                  //         "Inserire il campo semantico!"),
+                  //   );
+                  // } else if (word.italianType == Word.literature &&
+                  //     word.italianCorrespondence!.isEmpty) {
+                  //   showCupertinoDialog(
+                  //     context: context,
+                  //     builder: (context) => const ErrorDialogWidget(
+                  //         "Inserire il termine in italiano moderno!"),
+                  //   );
+                  // } else {
+                  //   showCupertinoDialog(
+                  //     context: context,
+                  //     builder: (context) => const LoadingWidget(),
+                  //   );
+
+                  // if (widget.word != null) {
+                  //   if (word.word!.isEmpty) {
+                  //     word.word = widget.word!.word!;
+                  //     if (word.italianCorrespondence!.isEmpty) {
+                  //       word.italianCorrespondence =
+                  //           widget.word!.italianCorrespondence!;
+                  //     }
+                  //   }
+                  //   log("1_ Word to edit: " + word.toString());
+                  //   await FirestoreRepository.updateWord(
+                  //       word, model.selectedBook);
+                  //   log("3_ Word updated");
+                  // } else {
+                  //   if (model.dailyWord) {
+                  //     model.setDailyWord(false);
+                  //     log("1_ Word to add: " + word.toString());
+                  //     await FirestoreRepository.addDailyWord(word);
+                  //     log("3_ Word added");
+                  //   } else {
+                  //     log("1_ Word to add: " + word.toString());
+                  //     await FirestoreRepository.addWord(
+                  //         word, model.selectedBook);
+                  //     log("3_ Word added");
+                  //   }
+                  // }
+                  //Navigator.pop(context);
+                  //Navigator.pop(context);
+                  //}
+                },
+              ),
             ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildBottomPicker(Widget picker, BuildContext context) {
-    return Container(
-      height: 150,
-      color: CupertinoTheme.of(context).scaffoldBackgroundColor,
-      padding: const EdgeInsets.only(top: 6.0),
-      child: picker,
     );
   }
 }

@@ -105,6 +105,7 @@ class _AlphabetScrollListState extends State<AlphabetScrollList> {
   @override
   Widget build(BuildContext context) {
     final bookProvider = Provider.of<BookModel>(context);
+
     List<String> words() => bookProvider.words[widget.book]!;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (words().isEmpty) {
@@ -337,7 +338,7 @@ class _AlphabetScrollListState extends State<AlphabetScrollList> {
               ],
             ),
           ),
-          const SizedBox(height: 25),
+          SizedBox(height: ThemesUtil.isAndroid(context) ? 25 : 100),
         ],
       ),
     );

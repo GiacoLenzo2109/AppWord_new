@@ -52,11 +52,17 @@ class _TabBarWidgetState extends State<TabBarWidget>
                 padding: Constants.padding,
                 child: Text(
                   tab,
-                  style: ThemesUtil.titleContainerStyle(context)
-                      .copyWith(fontSize: 17),
+                  style: TextStyle(
+                    color: Theme.of(context).appBarTheme.titleTextStyle!.color,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17,
+                  ),
                 ),
               )
-            : Text(tab),
+            : Text(
+                tab,
+                style: const TextStyle(fontSize: 15),
+              ),
       );
     }
 
@@ -65,21 +71,31 @@ class _TabBarWidgetState extends State<TabBarWidget>
         : CupertinoTheme.of(context).primaryColor;
 
     final unselectedColor = Theme.of(context).platform == TargetPlatform.android
-        ? Theme.of(context).bottomNavigationBarTheme.unselectedItemColor
+        ? Theme.of(context).scaffoldBackgroundColor
         : CupertinoTheme.of(context).scaffoldBackgroundColor;
 
     //Android
-    var tabBar = TabBar(
-      indicatorWeight: 3,
-      splashBorderRadius: BorderRadius.circular(10),
-      controller: _tabController,
-      labelColor: unselectedColor,
-      labelStyle: const TextStyle(fontWeight: FontWeight.bold),
-      unselectedLabelColor: unselectedColor,
-      indicatorSize: TabBarIndicatorSize.label,
-      indicator: MaterialDesignIndicator(
-          indicatorHeight: 3, indicatorColor: selectedColor!),
-      tabs: tabs,
+    var tabBar = Container(
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(10),
+          bottomRight: Radius.circular(10),
+        ),
+        color: Theme.of(context).appBarTheme.backgroundColor,
+      ),
+      child: TabBar(
+        indicatorWeight: 3,
+        splashBorderRadius: BorderRadius.circular(10),
+        controller: _tabController,
+        indicatorSize: TabBarIndicatorSize.label,
+        indicator: MaterialDesignIndicator(
+          indicatorHeight: 7.5,
+          indicatorColor: ThemesUtil.isAndroid(context)
+              ? Theme.of(context).appBarTheme.titleTextStyle!.color!
+              : Colors.transparent,
+        ),
+        tabs: tabs,
+      ),
     );
 
     //iOS
@@ -107,8 +123,7 @@ class _TabBarWidgetState extends State<TabBarWidget>
     );
 
     var tabsView = SizedBox(
-      height: ScreenUtil.getSize(context).height -
-          (Theme.of(context).platform == TargetPlatform.android ? 200 : 250),
+      height: ScreenUtil.getSize(context).height - 150,
       child: TabBarView(
         controller: _tabController,
         children: widget.tabsView ?? [],
@@ -123,9 +138,7 @@ class _TabBarWidgetState extends State<TabBarWidget>
       crossAxisCount: 1,
       children: [
         Theme.of(context).platform == TargetPlatform.android ? tabBar : iTabBar,
-        if (Theme.of(context).platform == TargetPlatform.iOS &&
-            widget.tabsView != null)
-          tabsView
+        if (widget.tabsView != null) tabsView
       ],
     );
   }

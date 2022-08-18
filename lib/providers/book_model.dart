@@ -8,12 +8,14 @@ class BookModel extends ChangeNotifier {
     Constants.classBook: [],
   };
   final Map<String, List<String>> _selectedWords = {};
-  var selectedBook = Constants.personalBook;
+  var _selectedBook = Constants.personalBook;
 
   Map<String, List<String>> get words => _words;
   Map<String, List<String>> get selectedWords => _selectedWords;
 
-  void setSelectedBook(String book) => selectedBook = book;
+  String get selectedBook => _selectedBook;
+
+  void setSelectedBook(String book) => _selectedBook = book;
 
   /// Adds [word] to words. This and [removeAll] are the only ways to modify the
   /// cart from the outside.

@@ -3,12 +3,13 @@ import 'package:app_word/util/themes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class ButtonWidget extends StatelessWidget {
+class ButtonWidget extends StatefulWidget {
   final Color? backgroundColor;
   final String text;
   final double? height;
   final double? padding;
   final Icon? icon;
+  final Icon? suffixIcon;
   final Color? textColor;
   final Function()? onPressed;
 
@@ -20,65 +21,79 @@ class ButtonWidget extends StatelessWidget {
       required this.text,
       this.padding,
       this.icon,
+      this.suffixIcon,
       this.textColor});
 
+  @override
+  State<ButtonWidget> createState() => _ButtonWidgetState();
+}
+
+class _ButtonWidgetState extends State<ButtonWidget> {
   @override
   Widget build(BuildContext context) {
     return Theme.of(context).platform == TargetPlatform.android
         ? ElevatedButton(
-            onPressed: onPressed ?? () {},
+            onPressed: widget.onPressed ?? () {},
             style: ButtonStyle(
               elevation: MaterialStateProperty.all(1.0),
               backgroundColor: MaterialStateProperty.all(
-                backgroundColor ?? ThemesUtil.getPrimaryColor(context),
+                widget.backgroundColor ?? ThemesUtil.getPrimaryColor(context),
               ),
               minimumSize: MaterialStateProperty.all(
-                  Size(ScreenUtil.getSize(context).width, height ?? 50)),
+                  Size(ScreenUtil.getSize(context).width, widget.height ?? 50)),
             ),
-            child: icon != null
+            child: widget.icon != null
                 ? Row(
                     children: [
-                      icon ?? const Text(""),
+                      widget.icon ?? const Text(""),
                       Text(
-                        text,
+                        widget.text,
                         style: const TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 15.0,
+                            fontSize: 18.0,
                             color: Colors.white),
                       ),
                     ],
                   )
                 : Text(
-                    text,
+                    widget.text,
                     style: const TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 15.0,
+                        fontSize: 18.0,
                         color: Colors.white),
                   ),
           )
         : CupertinoButton(
-            padding: EdgeInsets.all(padding ?? 0),
-            color: backgroundColor ?? ThemesUtil.getPrimaryColor(context),
-            onPressed: onPressed ?? () {},
-            child: icon != null
+            padding: EdgeInsets.all(widget.padding ?? 0),
+            color:
+                widget.backgroundColor ?? ThemesUtil.getPrimaryColor(context),
+            onPressed: widget.onPressed ?? () {},
+            child: widget.icon != null
                 ? Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      icon!,
-                      Text(
-                        text,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15.0,
-                            color: textColor ?? Colors.white),
-                      )
+                      Row(
+                        children: [
+                          widget.icon!,
+                          const SizedBox(width: 15),
+                          Text(
+                            widget.text,
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15.0,
+                                color: widget.textColor ?? Colors.white),
+                          ),
+                        ],
+                      ),
+                      widget.suffixIcon ?? const SizedBox(),
                     ],
                   )
                 : Text(
-                    text,
+                    widget.text,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 15.0,
-                        color: textColor ?? Colors.white),
+                        color: widget.textColor ?? Colors.white),
                   ),
           );
   }

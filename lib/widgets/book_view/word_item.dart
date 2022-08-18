@@ -2,6 +2,7 @@ import 'package:app_word/models/word.dart';
 import 'package:app_word/providers/book_model.dart';
 import 'package:app_word/providers/navbar_model.dart';
 import 'package:app_word/screens/others/word_page.dart';
+import 'package:app_word/util/dialog_util.dart';
 import 'package:app_word/util/screen_util.dart';
 import 'package:app_word/util/themes.dart';
 import 'package:flutter/cupertino.dart';
@@ -70,17 +71,21 @@ class _WordItemState extends State<WordItem> {
           }
         else
           {
+            // DialogUtil.openDialog(
+            //   context: context,
+            //   builder: (context) => WordPage(word: widget.word),
+            // ),
             Navigator.of(context).push(
-              MaterialWithModalsPageRoute(
-                  //context: context,
-                  builder: (context) => WordPage(word: widget.word)),
+              Theme.of(context).platform == TargetPlatform.android
+                  ? MaterialPageRoute(
+                      builder: (context) => WordPage(word: widget.word),
+                    )
+                  : CupertinoPageRoute(
+                      builder: (context) => CupertinoScaffold(
+                        body: WordPage(word: widget.word),
+                      ),
+                    ),
             ),
-            // Navigator.of(context).push(
-            //     Theme.of(context).platform == TargetPlatform.android
-            //         ? MaterialPageRoute(
-            //             builder: (context) => WordPage(word: widget.word))
-            //         : CupertinoPageRoute(
-            //             builder: (context) => WordPage(word: widget.word))),
           }
       },
     );

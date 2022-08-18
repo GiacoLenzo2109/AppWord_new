@@ -3,6 +3,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ThemesUtil {
+  static bool isAndroid(BuildContext context) =>
+      Theme.of(context).platform == TargetPlatform.android;
+  static Color getContrastingColor(BuildContext context) =>
+      Theme.of(context).platform == TargetPlatform.android
+          ? Theme.of(context).primaryColorDark
+          : CupertinoTheme.of(context).primaryContrastingColor;
+
   static TextStyle titleContainerStyle(context) => TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 20.0,
@@ -25,6 +32,11 @@ class ThemesUtil {
       Theme.of(context).platform == TargetPlatform.android
           ? Theme.of(context).primaryColorDark
           : CupertinoTheme.of(context).primaryContrastingColor;
+
+  static Color getBackgroundColor(BuildContext context) =>
+      Theme.of(context).platform == TargetPlatform.android
+          ? Theme.of(context).primaryColorDark
+          : CupertinoTheme.of(context).scaffoldBackgroundColor;
 }
 
 ///Material themes (light/dark)
@@ -55,11 +67,14 @@ class MaterialTheme {
     backgroundColor: CupertinoColors.darkBackgroundGray,
     scaffoldBackgroundColor: Colors.black,
     colorScheme: const ColorScheme.dark(),
-    appBarTheme: const AppBarTheme(
+    appBarTheme: AppBarTheme(
       centerTitle: true,
       titleTextStyle: TextStyle(
-          color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25.0),
-      backgroundColor: Color.fromARGB(255, 39, 108, 255),
+        color: Colors.grey[350],
+        fontWeight: FontWeight.bold,
+        fontSize: 25.0,
+      ),
+      backgroundColor: CupertinoColors.darkBackgroundGray,
     ),
     bottomAppBarColor: CupertinoColors.darkBackgroundGray,
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
@@ -80,19 +95,22 @@ class CupertinoThemes {
     brightness: Brightness.light,
     primaryColor: CupertinoColors.activeBlue,
     primaryContrastingColor: CupertinoColors.darkBackgroundGray,
-    scaffoldBackgroundColor: CupertinoColors.lightBackgroundGray,
-    barBackgroundColor: Colors.white.withOpacity(0.50),
+    scaffoldBackgroundColor: CupertinoColors.extraLightBackgroundGray,
+    barBackgroundColor:
+        CupertinoColors.extraLightBackgroundGray.withOpacity(0.50),
   );
-  static CupertinoThemeData darkThemeCupertino = CupertinoThemeData(
+  static CupertinoThemeData darkThemeCupertino = const CupertinoThemeData(
     brightness: Brightness.dark,
     primaryColor: CupertinoColors.activeBlue,
     primaryContrastingColor: Colors.white,
-    scaffoldBackgroundColor: CupertinoColors.black,
-    barBackgroundColor: CupertinoColors.darkBackgroundGray.withOpacity(0.50),
+    scaffoldBackgroundColor: Color.fromARGB(255, 17, 17, 17),
+    barBackgroundColor: CupertinoColors.darkBackgroundGray,
+    textTheme:
+        CupertinoTextThemeData(textStyle: TextStyle(color: Colors.white)),
   );
 
   static Color? backgroundColor(BuildContext context) =>
       CupertinoTheme.brightnessOf(context) == Brightness.dark
           ? CupertinoColors.darkBackgroundGray
-          : CupertinoColors.extraLightBackgroundGray;
+          : CupertinoColors.white;
 }

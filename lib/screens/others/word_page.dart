@@ -1,5 +1,7 @@
 import 'package:app_word/models/word.dart';
+import 'package:app_word/screens/others/new_word_page.dart';
 import 'package:app_word/util/constants.dart';
+import 'package:app_word/util/dialog_util.dart';
 import 'package:app_word/util/screen_util.dart';
 import 'package:app_word/util/themes.dart';
 import 'package:app_word/widgets/global/container_widget.dart';
@@ -19,6 +21,26 @@ class WordPage extends StatelessWidget {
       onRefresh: () async {},
       scrollable: true,
       title: word.word,
+      trailing: Padding(
+        padding: EdgeInsets.only(
+          right: Theme.of(context).platform == TargetPlatform.android ? 10 : 0,
+        ),
+        child: GestureDetector(
+          child: Icon(
+            CupertinoIcons.pencil,
+            color: Theme.of(context).platform == TargetPlatform.iOS
+                ? CupertinoColors.activeBlue
+                : Theme.of(context).appBarTheme.titleTextStyle!.color,
+            size: 25,
+          ),
+          onTap: () {
+            DialogUtil.showModalBottomSheet(
+              context: context,
+              builder: (context) => AddWordPage(word: word),
+            );
+          },
+        ),
+      ),
       child: StaggeredGrid.count(
         crossAxisCount: 1,
         mainAxisSpacing: 14,
@@ -32,6 +54,7 @@ class WordPage extends StatelessWidget {
             style: const TextStyle(
               color: CupertinoColors.systemGrey,
               fontStyle: FontStyle.italic,
+              fontSize: 18,
             ),
           ),
           ContaienrWidget(
@@ -43,13 +66,14 @@ class WordPage extends StatelessWidget {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 25,
-                    color: CupertinoTheme.of(context).primaryContrastingColor,
+                    color: ThemesUtil.getContrastingColor(context),
                   ),
                 ),
                 SizedBox(
                   width: ScreenUtil.getSize(context).width,
                   height: (word.definitions.length * 23).toDouble(),
                   child: ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
                     padding: const EdgeInsets.all(0),
                     itemExtent: 23,
                     itemCount: word.definitions.length,
@@ -59,15 +83,13 @@ class WordPage extends StatelessWidget {
                           "${index + 1}. ",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: CupertinoTheme.of(context)
-                                .primaryContrastingColor,
+                            color: ThemesUtil.getTextColor(context),
                           ),
                         ),
                         Text(
-                          "${index}. ${word.definitions.elementAt(index)}",
+                          "$index. ${word.definitions.elementAt(index)}",
                           style: TextStyle(
-                            color: CupertinoTheme.of(context)
-                                .primaryContrastingColor,
+                            color: ThemesUtil.getTextColor(context),
                           ),
                         ),
                       ],
@@ -86,13 +108,14 @@ class WordPage extends StatelessWidget {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 25,
-                    color: CupertinoTheme.of(context).primaryContrastingColor,
+                    color: ThemesUtil.getTextColor(context),
                   ),
                 ),
                 SizedBox(
                   width: ScreenUtil.getSize(context).width,
                   height: (word.semanticFields.length * 23).toDouble(),
                   child: ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
                     padding: const EdgeInsets.all(0),
                     itemExtent: 23,
                     itemCount: word.semanticFields.length,
@@ -102,15 +125,13 @@ class WordPage extends StatelessWidget {
                           "${index + 1}. ",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: CupertinoTheme.of(context)
-                                .primaryContrastingColor,
+                            color: ThemesUtil.getTextColor(context),
                           ),
                         ),
                         Text(
                           word.semanticFields.elementAt(index),
                           style: TextStyle(
-                            color: CupertinoTheme.of(context)
-                                .primaryContrastingColor,
+                            color: ThemesUtil.getTextColor(context),
                           ),
                         ),
                       ],
@@ -131,13 +152,14 @@ class WordPage extends StatelessWidget {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 25,
-                      color: CupertinoTheme.of(context).primaryContrastingColor,
+                      color: ThemesUtil.getTextColor(context),
                     ),
                   ),
                   SizedBox(
                     width: ScreenUtil.getSize(context).width,
                     height: (word.examplePhrases.length * 23).toDouble(),
                     child: ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
                       padding: const EdgeInsets.all(0),
                       itemExtent: 23,
                       itemCount: word.examplePhrases.length,
@@ -147,15 +169,13 @@ class WordPage extends StatelessWidget {
                             "${index + 1}. ",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              color: CupertinoTheme.of(context)
-                                  .primaryContrastingColor,
+                              color: ThemesUtil.getTextColor(context),
                             ),
                           ),
                           Text(
                             '"${word.examplePhrases.elementAt(index)}"',
                             style: TextStyle(
-                              color: CupertinoTheme.of(context)
-                                  .primaryContrastingColor,
+                              color: ThemesUtil.getTextColor(context),
                             ),
                           ),
                         ],
@@ -176,7 +196,7 @@ class WordPage extends StatelessWidget {
                     crossAxisCount: 1,
                     children: [
                       Visibility(
-                        visible: word.synonyms.isNotEmpty ? true : false,
+                        visible: word.synonyms.isNotEmpty,
                         child: const Text(
                           "Sinonimi:",
                           style: TextStyle(
@@ -184,11 +204,12 @@ class WordPage extends StatelessWidget {
                         ),
                       ),
                       Visibility(
-                        visible: word.synonyms.isNotEmpty ? true : false,
+                        visible: word.synonyms.isNotEmpty,
                         child: SizedBox(
                           width: ScreenUtil.getSize(context).width,
                           height: (word.synonyms.length * 23).toDouble(),
                           child: ListView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
                             padding: const EdgeInsets.all(0),
                             itemExtent: 23,
                             itemCount: word.synonyms.length,
@@ -203,7 +224,7 @@ class WordPage extends StatelessWidget {
                     crossAxisCount: 1,
                     children: [
                       Visibility(
-                        visible: word.antonyms.isNotEmpty ? true : false,
+                        visible: word.antonyms.isNotEmpty,
                         child: const Text(
                           "Contrari:",
                           style: TextStyle(
@@ -211,11 +232,12 @@ class WordPage extends StatelessWidget {
                         ),
                       ),
                       Visibility(
-                        visible: word.antonyms.isNotEmpty ? true : false,
+                        visible: word.antonyms.isNotEmpty,
                         child: SizedBox(
                           width: ScreenUtil.getSize(context).width,
                           height: (word.antonyms.length * 23).toDouble(),
                           child: ListView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
                             padding: const EdgeInsets.all(0),
                             itemExtent: 23,
                             itemCount: word.antonyms.length,
@@ -232,20 +254,20 @@ class WordPage extends StatelessWidget {
             ),
           ),
           Visibility(
-            visible: word.italianType == Word.literature ? true : false,
+            visible: word.italianType == Word.literature,
             child: ContaienrWidget(
               child: StaggeredGrid.count(
                 crossAxisCount: 1,
                 children: [
                   Text(
-                    "Campo semantico:",
+                    "Corrispondente italiano moderno:",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 25,
-                      color: CupertinoTheme.of(context).primaryContrastingColor,
+                      color: ThemesUtil.getTextColor(context),
                     ),
                   ),
-                  const Text("Valore moderno"),
+                  Text(word.italianCorrespondence),
                 ],
               ),
             ),

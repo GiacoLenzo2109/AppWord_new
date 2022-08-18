@@ -1,3 +1,4 @@
+import 'package:app_word/util/themes.dart';
 import 'package:flutter/material.dart';
 
 class DividerWidget extends StatelessWidget {
@@ -5,12 +6,10 @@ class DividerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 1,
-      child: Container(
-        margin: const EdgeInsets.only(right: 10),
-        color: Colors.grey,
-      ),
+    return Container(
+      height: .15,
+      margin: EdgeInsets.only(right: ThemesUtil.isAndroid(context) ? 10 : 0),
+      color: Colors.grey,
     );
   }
 }

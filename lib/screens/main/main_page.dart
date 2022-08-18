@@ -1,7 +1,8 @@
 import 'package:app_word/providers/book_model.dart';
 import 'package:app_word/providers/navbar_model.dart';
-import 'package:app_word/providers/theme_provider.dart';
-import 'package:app_word/screens/main/book.dart';
+import 'package:app_word/screens/main/book/book.dart';
+import 'package:app_word/screens/main/book/book_list.dart';
+import 'package:app_word/theme/theme_provider.dart';
 import 'package:app_word/screens/main/home.dart';
 import 'package:app_word/screens/main/settings.dart';
 import 'package:app_word/util/constants.dart';
@@ -26,28 +27,23 @@ class _MainPageState extends State<MainPage> {
           create: (context) => NavbarModel(),
           builder: (context, child) => const Home(),
         ),
+        ThemesUtil.isAndroid(context)
+            ? MultiProvider(
+                providers: [
+                  ChangeNotifierProvider(
+                    create: (context) => NavbarModel(),
+                  ),
+                  ChangeNotifierProvider(
+                    create: (context) => BookModel(),
+                  ),
+                ],
+                builder: (context, child) => const Book(),
+              )
+            : const BookList(),
         MultiProvider(
           providers: [
             ChangeNotifierProvider(
               create: (context) => NavbarModel(),
-            ),
-            ChangeNotifierProvider(
-              create: (context) => BookModel(),
-            ),
-          ],
-          builder: (context, child) => const Book(),
-        ),
-        // ChangeNotifierProvider(
-        //   create: (context) => NavbarModel(),
-        //   builder: (context, child) => const Search(),
-        // ),
-        MultiProvider(
-          providers: [
-            ChangeNotifierProvider(
-              create: (context) => NavbarModel(),
-            ),
-            ChangeNotifierProvider(
-              create: (context) => ThemeProvider(),
             ),
           ],
           builder: (context, child) => const Settings(),
@@ -55,8 +51,7 @@ class _MainPageState extends State<MainPage> {
       ];
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
-    bool isAndroid =
-        Theme.of(context).platform == TargetPlatform.android ? true : false;
+    bool isAndroid = Theme.of(context).platform == TargetPlatform.android;
     return [
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.home_rounded),
@@ -80,16 +75,6 @@ class _MainPageState extends State<MainPage> {
             ? Theme.of(context).bottomNavigationBarTheme.unselectedItemColor!
             : CupertinoTheme.of(context).primaryContrastingColor,
       ),
-      // PersistentBottomNavBarItem(
-      //   icon: const Icon(Icons.search_rounded),
-      //   title: ("Cerca"),
-      //   activeColorPrimary: isAndroid
-      //       ? Theme.of(context).bottomNavigationBarTheme.selectedItemColor!
-      //       : CupertinoTheme.of(context).primaryColor,
-      //   inactiveColorPrimary: isAndroid
-      //       ? Theme.of(context).bottomNavigationBarTheme.unselectedItemColor!
-      //       : CupertinoTheme.of(context).primaryContrastingColor,
-      // ),
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.settings_rounded),
         title: "Impostazioni",
@@ -137,46 +122,9 @@ class _MainPageState extends State<MainPage> {
           duration: Duration(milliseconds: 200),
           curve: Curves.ease,
         ),
-        // screenTransitionAnimation: const ScreenTransitionAnimation(
-        //   // Screen transition animation on change of selected tab.
-        //   animateTabTransition: true,
-        //   curve: Curves.ease,
-        //   duration: Duration(milliseconds: 200),
-        // ),
         navBarStyle:
             NavBarStyle.style9, // Choose the nav bar style with this property.
       ),
-
-      /*body: IndexedStack(
-        index: _page,
-        children: pages,
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.red,
-        selectedItemColor: const Color.fromARGB(255, 39, 108, 255),
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_rounded),
-            label: Constants.home,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.book),
-            label: Constants.bookPage,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search_rounded),
-            label: Constants.search,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings_rounded),
-            label: Constants.settings,
-          ),
-        ],
-        currentIndex: _page,
-        onTap: (index) => {
-          setState(() => _page = index),
-        },
-      ),*/
     );
 
     //iOS
@@ -200,10 +148,6 @@ class _MainPageState extends State<MainPage> {
             icon: Icon(CupertinoIcons.book),
             label: Constants.bookPage,
           ),
-          // BottomNavigationBarItem(
-          //   icon: Icon(CupertinoIcons.search),
-          //   label: Constants.search,
-          // ),
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.settings),
             label: Constants.settings,

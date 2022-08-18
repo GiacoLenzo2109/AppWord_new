@@ -1,11 +1,12 @@
-import 'dart:js';
+import 'dart:developer';
 
 import 'package:app_word/database/firebase_global.dart';
 import 'package:app_word/database/firebase_options.dart';
 import 'package:app_word/providers/book_model.dart';
 import 'package:app_word/providers/navbar_model.dart';
-import 'package:app_word/providers/theme_provider.dart';
-import 'package:app_word/screens/main/book.dart';
+import 'package:app_word/screens/main/book/book.dart';
+import 'package:app_word/theme/theme_preference.dart';
+import 'package:app_word/theme/theme_provider.dart';
 import 'package:app_word/screens/main/home.dart';
 import 'package:app_word/screens/main/main_page.dart';
 import 'package:app_word/screens/main/settings.dart';
@@ -46,12 +47,17 @@ class AppWord extends StatefulWidget {
 
 class _AppWordState extends State<AppWord> with WidgetsBindingObserver {
   Brightness? _brightness;
+  ThemeProvider themeProvider = ThemeProvider();
+
+  void getCurrentAppTheme() async {
+    themeProvider.theme = await themeProvider.themePreference.getTheme();
+  }
 
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
-    _brightness = WidgetsBinding.instance.window.platformBrightness;
     super.initState();
+    getCurrentAppTheme();
   }
 
   @override
@@ -63,8 +69,15 @@ class _AppWordState extends State<AppWord> with WidgetsBindingObserver {
   @override
   void didChangePlatformBrightness() {
     if (mounted) {
-      setState(() {
-        _brightness = WidgetsBinding.instance.window.platformBrightness;
+      setState(() async {
+        if (await themeProvider.themePreference.getTheme() ==
+            ThemePreference.SYSTEM_THEME) {
+          themeProvider.theme =
+              WidgetsBinding.instance.window.platformBrightness ==
+                      Brightness.dark
+                  ? ThemePreference.DARK_THEME
+                  : ThemePreference.LIGHT_THEME;
+        }
       });
     }
 
@@ -83,33 +96,43 @@ class _AppWordState extends State<AppWord> with WidgetsBindingObserver {
     //: const Text("OnBoardingActivity"); //TO-DO: Insert OnBoarding page
 
     //iOS
-    CupertinoApp cupertinoApp = CupertinoApp(
-      title: title,
-      theme: _brightness == Brightness.light
-          ? CupertinoThemes.lightThemeCupertino
-          : CupertinoThemes.darkThemeCupertino,
-      home: home(),
-      routes: <String, WidgetBuilder>{
-        '/home': (BuildContext context) => const Home(),
-        '/book': (BuildContext context) => const Book(),
-        '/settings': (BuildContext context) => const Settings(),
-      },
-    );
+    CupertinoApp cupertinoApp() => CupertinoApp(
+          title: title,
+          theme: themeProvider.isDarkTheme
+              ? CupertinoThemes.darkThemeCupertino
+              : CupertinoThemes.lightThemeCupertino,
+          localizationsDelegates: const [
+            DefaultMaterialLocalizations.delegate,
+            DefaultCupertinoLocalizations.delegate,
+            DefaultWidgetsLocalizations.delegate,
+          ],
+          home: home(),
+          routes: <String, WidgetBuilder>{
+            '/home': (BuildContext context) => const Home(),
+            '/book': (BuildContext context) => const Book(),
+            '/settings': (BuildContext context) => const Settings(),
+          },
+        );
 
     //ANDROID
-    MaterialApp materialApp = MaterialApp(
-      title: title,
-      // theme: _brightness == Brightness.light
-      //     ? MaterialTheme.lightTheme
-      //     : MaterialTheme.darkTheme,
-      theme: MaterialTheme.lightTheme,
-      darkTheme: MaterialTheme.darkTheme,
-      themeMode: ThemeMode.system,
-      home: home(),
-    );
+    MaterialApp materialApp() => MaterialApp(
+          title: title,
+          theme: MaterialTheme.lightTheme,
+          darkTheme: MaterialTheme.darkTheme,
+          themeMode:
+              themeProvider.isDarkTheme ? ThemeMode.dark : ThemeMode.light,
+          debugShowCheckedModeBanner: false,
+          home: home(),
+        );
 
-    return Theme.of(context).platform == TargetPlatform.iOS
-        ? cupertinoApp
-        : materialApp;
+    return ChangeNotifierProvider(
+      create: (_) => themeProvider,
+      child: Consumer<ThemeProvider>(
+        builder: (BuildContext context, value, Widget? child) =>
+            Theme.of(context).platform == TargetPlatform.iOS
+                ? cupertinoApp()
+                : materialApp(),
+      ),
+    );
   }
 }

@@ -24,8 +24,8 @@ class ContaienrWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         color: backgroundColor ??
             (Theme.of(context).platform == TargetPlatform.android
-                    ? Theme.of(context).backgroundColor
-                    : CupertinoThemes.backgroundColor(context)),
+                ? Theme.of(context).backgroundColor
+                : CupertinoThemes.backgroundColor(context)),
       ),
       child: Padding(
         padding: EdgeInsets.all(padding ?? 25),

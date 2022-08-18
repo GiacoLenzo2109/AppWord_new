@@ -2,29 +2,22 @@ import 'package:app_word/util/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class SearchTextField extends StatefulWidget {
+class SearchSliverTextField extends SliverPersistentHeaderDelegate {
   final Function(String) onChanged;
   final Function() onStop;
 
-  const SearchTextField(
-      {Key? key, required this.onChanged, required this.onStop})
-      : super(key: key);
+  const SearchSliverTextField(
+      {Key? key, required this.onChanged, required this.onStop});
 
   @override
-  State<SearchTextField> createState() => _SearchTextFieldState();
-}
-
-class _SearchTextFieldState extends State<SearchTextField> {
-  var isTyping = false;
-  var controller = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    //Android
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    var controller = TextEditingController();
+    var isTyping = false;
     var searchTextField = TextField(
       controller: controller,
       onChanged: (value) {
-        widget.onChanged(value);
+        onChanged(value);
         isTyping = true;
       },
       decoration: InputDecoration(
@@ -34,7 +27,7 @@ class _SearchTextFieldState extends State<SearchTextField> {
         suffixIcon: isTyping
             ? GestureDetector(
                 onTap: () {
-                  widget.onStop();
+                  onStop();
                   isTyping = false;
                   controller.clear();
                 },
@@ -49,15 +42,29 @@ class _SearchTextFieldState extends State<SearchTextField> {
       ),
     );
 
-    var iSearchTextField = CupertinoSearchTextField(
-      placeholder: "Cerca",
-      onChanged: widget.onChanged,
-      padding: const EdgeInsets.all(0),
-      prefixInsets: const EdgeInsets.symmetric(horizontal: 7.5),
+    var iSearchTextField = Stack(
+      fit: StackFit.expand,
+      children: [
+        CupertinoSearchTextField(
+          placeholder: "Cerca",
+          onChanged: onChanged,
+          padding: const EdgeInsets.all(0),
+        ),
+      ],
     );
 
     return Theme.of(context).platform == TargetPlatform.android
         ? searchTextField
         : iSearchTextField;
   }
+
+  @override
+  double get maxExtent => 35;
+
+  @override
+  double get minExtent => 35;
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
+      true;
 }
