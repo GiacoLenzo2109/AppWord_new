@@ -176,14 +176,24 @@ class _AlphabetScrollListViewState extends State<AlphabetScrollListView> {
         slivers.add(
           SliverStickyHeader.builder(
             controller: controller,
-            builder: (context, state) => Container(
-              color: (ThemesUtil.isAndroid(context)
-                      ? Theme.of(context).scaffoldBackgroundColor
-                      : CupertinoTheme.of(context).barBackgroundColor)
-                  .withOpacity(!state.isPinned ? state.scrollPercentage : 1),
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-              child: Text(letter),
+            builder: (context, state) => ClipRect(
+              clipBehavior: Clip.hardEdge,
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 9.5),
+                child: Container(
+                  color: ThemesUtil.isAndroid(context)
+                      ? Theme.of(context).scaffoldBackgroundColor.withOpacity(
+                          !state.isPinned ? state.scrollPercentage : 0.5)
+                      : CupertinoTheme.of(context)
+                          .barBackgroundColor
+                          .withOpacity(
+                              !state.isPinned ? state.scrollPercentage : 0.5),
+                  alignment: Alignment.centerLeft,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                  child: Text(letter),
+                ),
+              ),
             ),
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate(
@@ -259,26 +269,6 @@ class _AlphabetScrollListViewState extends State<AlphabetScrollListView> {
 
     List<Widget> getWordsList() {
       return searching ? getSearchResult() : getWordList(words());
-    }
-
-    Widget _buildSpinnerOnlyRefreshIndicator(
-        BuildContext context,
-        RefreshIndicatorMode refreshState,
-        double pulledExtent,
-        double refreshTriggerPullDistance,
-        double refreshIndicatorExtent) {
-      const Curve opacityCurve = Interval(0.4, 0.8, curve: Curves.easeInOut);
-      return Align(
-        alignment: Alignment.bottomCenter,
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 50.0),
-          child: Opacity(
-            opacity: opacityCurve
-                .transform(min(pulledExtent / refreshIndicatorExtent, 1.0)),
-            child: const CupertinoActivityIndicator(radius: 14.0),
-          ),
-        ),
-      );
     }
 
     return MultiSliver(

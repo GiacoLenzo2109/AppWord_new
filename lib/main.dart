@@ -20,13 +20,14 @@ import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]).then((value) => runApp(const AppWord()));
+  await Firebase.initializeApp();
+  //options: DefaultFirebaseOptions.currentPlatform,
+  //);
+  // SystemChrome.setPreferredOrientations([
+  //   DeviceOrientation.portraitUp,
+  // ]).then(
+  //   (value) =>
+  // );
   runApp(
     MultiProvider(
       providers: [
@@ -46,7 +47,6 @@ class AppWord extends StatefulWidget {
 }
 
 class _AppWordState extends State<AppWord> with WidgetsBindingObserver {
-  Brightness? _brightness;
   ThemeProvider themeProvider = ThemeProvider();
 
   void getCurrentAppTheme() async {
@@ -72,11 +72,12 @@ class _AppWordState extends State<AppWord> with WidgetsBindingObserver {
       setState(() async {
         if (await themeProvider.themePreference.getTheme() ==
             ThemePreference.SYSTEM_THEME) {
-          themeProvider.theme =
-              WidgetsBinding.instance.window.platformBrightness ==
-                      Brightness.dark
-                  ? ThemePreference.DARK_THEME
-                  : ThemePreference.LIGHT_THEME;
+          // themeProvider.theme =
+          //     WidgetsBinding.instance.window.platformBrightness ==
+          //             Brightness.dark
+          //         ? ThemePreference.DARK_THEME
+          //         : ThemePreference.LIGHT_THEME;
+          themeProvider.theme = ThemePreference.SYSTEM_THEME;
         }
       });
     }
@@ -88,11 +89,11 @@ class _AppWordState extends State<AppWord> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     String title = "AppWord";
 
-    Widget home() => FirebaseGlobal.auth.currentUser == null
+    Widget home() => //FirebaseGlobal.auth.currentUser == null
         //? FirebaseGlobal.auth.currentUser!.emailVerified
-        ? const MainPage()
-        : const Text(
-            "Email verification page"); //TO-DO: Insert email verification page
+        const MainPage();
+    // : const Text(
+    //     "Email verification page"); //TO-DO: Insert email verification page
     //: const Text("OnBoardingActivity"); //TO-DO: Insert OnBoarding page
 
     //iOS

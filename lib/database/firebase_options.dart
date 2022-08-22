@@ -17,7 +17,10 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -29,6 +32,16 @@ class DefaultFirebaseOptions {
           'DefaultFirebaseOptions have not been configured for macos - '
           'you can reconfigure this by running the FlutterFire CLI again.',
         );
+      case TargetPlatform.windows:
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for windows - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
+      case TargetPlatform.linux:
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for linux - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       default:
         throw UnsupportedError(
           'DefaultFirebaseOptions are not supported for this platform.',
@@ -36,32 +49,21 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyABHXClfGnKDoVQ_E8-1RpHCuiCowlK8gQ',
-    appId: '1:640994654508:web:16633a632f73125ebb1489',
-    messagingSenderId: '640994654508',
-    projectId: 'starvation-addword',
-    authDomain: 'starvation-addword.firebaseapp.com',
-    storageBucket: 'starvation-addword.appspot.com',
-    measurementId: 'G-RWE5KZGPMD',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDlBy5U6ukw8G-ByBKX7bUlQt4Hdnro3eQ',
-    appId: '1:640994654508:android:45110879f914e7a9bb1489',
-    messagingSenderId: '640994654508',
-    projectId: 'starvation-addword',
-    storageBucket: 'starvation-addword.appspot.com',
+    apiKey: 'AIzaSyBy4ddlty8VyRRT48Dgj4WLmBrjtqKLXv8',
+    appId: '1:684137879377:android:1dd2f54b1e4a8e796e2570',
+    messagingSenderId: '684137879377',
+    projectId: 'starvation-appword',
+    storageBucket: 'starvation-appword.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBMDwCCD-kMKhKvVg7XdwVMXs9DAKd9DDI',
-    appId: '1:640994654508:ios:c2d3f05b7245b14ebb1489',
-    messagingSenderId: '640994654508',
-    projectId: 'starvation-addword',
-    storageBucket: 'starvation-addword.appspot.com',
-    iosClientId:
-        '640994654508-vtn8kt7qe2j4dek439ipl7p6v0ac73s6.apps.googleusercontent.com',
+    apiKey: 'AIzaSyCliNa_AHapcbKbBzZsydtiOjt6-bYMLJo',
+    appId: '1:684137879377:ios:8774586f846ff7eb6e2570',
+    messagingSenderId: '684137879377',
+    projectId: 'starvation-appword',
+    storageBucket: 'starvation-appword.appspot.com',
+    iosClientId: '684137879377-s1al0p1ko3eg7m7k5sjdb0nt21q31fo2.apps.googleusercontent.com',
     iosBundleId: 'com.starvation.appword.app',
   );
 }

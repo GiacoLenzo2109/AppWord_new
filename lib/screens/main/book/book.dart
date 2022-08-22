@@ -58,14 +58,15 @@ class _BookState extends State<Book> with SingleTickerProviderStateMixin {
                 color: Theme.of(context).appBarTheme.titleTextStyle!.color,
               ),
             )
-          : CupertinoButton(
-              padding: const EdgeInsets.all(0),
-              onPressed: () => navbarProvider.tapLeading(),
-              child: Text(
-                !navbarProvider.leading ? "Modifica" : "Fatto",
-                style: const TextStyle(fontSize: 17),
-              ),
-            ),
+          : null,
+      // : CupertinoButton(
+      //     padding: const EdgeInsets.all(0),
+      //     onPressed: () => navbarProvider.tapLeading(),
+      //     child: Text(
+      //       !navbarProvider.leading ? "Modifica" : "Fatto",
+      //       style: const TextStyle(fontSize: 17),
+      //     ),
+      //   ),
       trailing: Padding(
         padding: EdgeInsets.only(
           right: Theme.of(context).platform == TargetPlatform.android ? 10 : 0,

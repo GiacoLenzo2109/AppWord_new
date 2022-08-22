@@ -143,7 +143,9 @@ class _DialogWidgetState extends State<DialogWidget> {
         widget.title ??
             (widget.type == DialogWidget.EMAIL
                 ? "Cambia email"
-                : "Cambia password"),
+                : widget.type == DialogWidget.PASSWORD
+                    ? "Cambia password"
+                    : ""),
       ),
       content: widget.body ??
           SizedBox(
@@ -181,12 +183,16 @@ class _DialogWidgetState extends State<DialogWidget> {
           child: const Text('Cancella'),
         ),
         CupertinoButton(
-          onPressed: widget.onPressed ??
-              () {
-                widget.type == DialogWidget.EMAIL
-                    ? () {/*UPDATE EMAIL*/}
-                    : () {/*UPDATE PASSWORD*/};
-              },
+          onPressed: widget.onPressed != null
+              ? () {
+                  widget.onPressed;
+                  Navigator.of(context).pop();
+                }
+              : () {
+                  widget.type == DialogWidget.EMAIL
+                      ? () {/*UPDATE EMAIL*/}
+                      : () {/*UPDATE PASSWORD*/};
+                },
           child: const Text('Fatto'),
         ),
       ],

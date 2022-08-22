@@ -36,6 +36,7 @@ class BookList extends StatelessWidget {
           ButtonWidget(
             text: book,
             padding: 15,
+            textColor: ThemesUtil.getTextColor(context),
             backgroundColor: ThemesUtil.isAndroid(context)
                 ? Theme.of(context).backgroundColor
                 : CupertinoThemes.backgroundColor(context),
@@ -74,6 +75,7 @@ class BookList extends StatelessWidget {
     return PageScaffold(
       scrollable: false,
       title: "Elenco",
+      onRefresh: () async {},
       child: StaggeredGrid.count(
         crossAxisCount: 1,
         mainAxisSpacing: 10,
