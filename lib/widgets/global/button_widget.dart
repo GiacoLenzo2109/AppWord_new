@@ -8,7 +8,7 @@ class ButtonWidget extends StatefulWidget {
   final String text;
   final double? height;
   final double? padding;
-  final Icon? icon;
+  final Widget? icon;
   final Icon? suffixIcon;
   final Color? textColor;
   final Function()? onPressed;
@@ -70,22 +70,27 @@ class _ButtonWidgetState extends State<ButtonWidget> {
             onPressed: widget.onPressed ?? () {},
             child: widget.icon != null
                 ? Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: widget.suffixIcon != null
+                        ? MainAxisAlignment.spaceBetween
+                        : MainAxisAlignment.center,
                     children: [
-                      Row(
-                        children: [
-                          widget.icon!,
-                          const SizedBox(width: 15),
-                          Text(
-                            widget.text,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15.0,
-                                color: widget.textColor ?? Colors.white),
-                          ),
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Row(
+                          children: [
+                            widget.icon!,
+                            const SizedBox(width: 15),
+                            Text(
+                              widget.text,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15.0,
+                                  color: widget.textColor ?? Colors.white),
+                            ),
+                          ],
+                        ),
                       ),
-                      widget.suffixIcon ?? const SizedBox(),
+                      if (widget.suffixIcon != null) widget.suffixIcon!,
                     ],
                   )
                 : Text(

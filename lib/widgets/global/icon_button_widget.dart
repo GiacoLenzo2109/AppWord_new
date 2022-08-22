@@ -5,7 +5,7 @@ import 'package:material_dialogs/widgets/buttons/icon_button.dart';
 
 class IconButtonWidget extends StatefulWidget {
   final Function() onPressed;
-  final Icon icon;
+  final Widget icon;
 
   const IconButtonWidget(
       {Key? key, required this.icon, required this.onPressed})

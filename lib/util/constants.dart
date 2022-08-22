@@ -8,9 +8,6 @@ class Constants {
   ///Books page title
   static const bookPage = "Rubrica";
 
-  ///Search page title
-  static const search = "Cerca";
-
   ///Settings page title
   static const settings = "Impostazioni";
 

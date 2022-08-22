@@ -157,3 +157,38 @@ class _ScaffoldWidgetState extends State<PageScaffold> {
         : cupertinoScaffold;
   }
 }
+
+class SimplePageScaffold extends StatefulWidget {
+  final Widget body;
+  const SimplePageScaffold({
+    Key? key,
+    required this.body,
+  }) : super(key: key);
+
+  @override
+  State<SimplePageScaffold> createState() => _SimpleScaffoldWidgetState();
+}
+
+class _SimpleScaffoldWidgetState extends State<SimplePageScaffold> {
+  @override
+  Widget build(BuildContext context) {
+    Scaffold scaffold = Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+      ),
+      body: widget.body,
+    );
+
+    CupertinoPageScaffold cupertinoScaffold = CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        border: null,
+        backgroundColor: ThemesUtil.getBackgroundColor(context),
+      ),
+      child: widget.body,
+    );
+
+    return Theme.of(context).platform == TargetPlatform.android
+        ? scaffold
+        : cupertinoScaffold;
+  }
+}

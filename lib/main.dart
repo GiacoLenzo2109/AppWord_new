@@ -1,10 +1,17 @@
+import 'package:app_word/database/firebase_global.dart';
 import 'package:app_word/providers/navbar_model.dart';
 import 'package:app_word/screens/main/book/book.dart';
+import 'package:app_word/screens/on_boarding/on_boarding.dart';
+import 'package:app_word/screens/signin/email_verification_page.dart';
+import 'package:app_word/screens/signin/login_page.dart';
+import 'package:app_word/screens/signin/register_page.dart';
+import 'package:app_word/screens/signin/signin_page.dart';
 import 'package:app_word/theme/theme_preference.dart';
 import 'package:app_word/theme/theme_provider.dart';
 import 'package:app_word/screens/main/home.dart';
 import 'package:app_word/screens/main/main_page.dart';
 import 'package:app_word/screens/main/settings.dart';
+import 'package:app_word/util/navigator_util.dart';
 import 'package:app_word/util/themes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
@@ -82,12 +89,11 @@ class _AppWordState extends State<AppWord> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     String title = "AppWord";
 
-    Widget home() => //FirebaseGlobal.auth.currentUser == null
-        //? FirebaseGlobal.auth.currentUser!.emailVerified
-        const MainPage();
-    // : const Text(
-    //     "Email verification page"); //TO-DO: Insert email verification page
-    //: const Text("OnBoardingActivity"); //TO-DO: Insert OnBoarding page
+    Widget home() => FirebaseGlobal.auth.currentUser != null
+        ? FirebaseGlobal.auth.currentUser!.emailVerified
+            ? const MainPage()
+            : const OnBoardingPage()
+        : const LoginPage();
 
     //iOS
     CupertinoApp cupertinoApp() => CupertinoApp(
@@ -102,9 +108,15 @@ class _AppWordState extends State<AppWord> with WidgetsBindingObserver {
           ],
           home: home(),
           routes: <String, WidgetBuilder>{
-            '/home': (BuildContext context) => const Home(),
-            '/book': (BuildContext context) => const Book(),
-            '/settings': (BuildContext context) => const Settings(),
+            NavigatorUtil.HOME: (BuildContext context) => const Home(),
+            NavigatorUtil.BOOK: (BuildContext context) => const Book(),
+            NavigatorUtil.SETTINGS: (BuildContext context) => const Settings(),
+            NavigatorUtil.REGISTER: (BuildContext context) =>
+                const RegisterPage(),
+            NavigatorUtil.LOGIN: (BuildContext context) => const LoginPage(),
+            NavigatorUtil.SIGNIN: (BuildContext context) => const SignInPage(),
+            NavigatorUtil.EMAIL_VERIFICATION: (BuildContext context) =>
+                const EmailVerificationPage(),
           },
         );
 

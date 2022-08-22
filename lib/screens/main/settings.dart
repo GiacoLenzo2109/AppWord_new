@@ -1,9 +1,11 @@
 import 'dart:developer';
 
+import 'package:app_word/database/firebase_global.dart';
 import 'package:app_word/theme/theme_preference.dart';
 import 'package:app_word/theme/theme_provider.dart';
 import 'package:app_word/util/constants.dart';
 import 'package:app_word/util/dialog_util.dart';
+import 'package:app_word/util/navigator_util.dart';
 import 'package:app_word/util/screen_util.dart';
 import 'package:app_word/util/themes.dart';
 import 'package:app_word/widgets/dialogs/dialog_widget.dart';
@@ -146,7 +148,12 @@ class _SettingsState extends State<Settings> {
             child: ButtonWidget(
               text: "Logout",
               backgroundColor: CupertinoColors.systemRed,
-              onPressed: () {},
+              onPressed: () => FirebaseGlobal.auth
+                  .signOut()
+                  .whenComplete(() => NavigatorUtil.navigateAndReplace(
+                        context: context,
+                        route: NavigatorUtil.SIGNIN,
+                      )),
             ),
           ),
         ],
