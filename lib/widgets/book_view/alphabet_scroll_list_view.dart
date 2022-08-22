@@ -4,6 +4,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:app_word/models/word.dart';
+import 'package:app_word/theme/theme_provider.dart';
 import 'package:app_word/util/constants.dart';
 import 'package:app_word/util/spinner_refresh_util.dart';
 import 'package:app_word/util/themes.dart';
@@ -187,7 +188,13 @@ class _AlphabetScrollListViewState extends State<AlphabetScrollListView> {
                       : CupertinoTheme.of(context)
                           .barBackgroundColor
                           .withOpacity(
-                              !state.isPinned ? state.scrollPercentage : 0.5),
+                            !state.isPinned
+                                ? state.scrollPercentage
+                                : Provider.of<ThemeProvider>(context)
+                                        .isDarkTheme
+                                    ? 1
+                                    : 0.5,
+                          ),
                   alignment: Alignment.centerLeft,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 15, vertical: 5),

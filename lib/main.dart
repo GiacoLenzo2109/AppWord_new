@@ -1,8 +1,3 @@
-import 'dart:developer';
-
-import 'package:app_word/database/firebase_global.dart';
-import 'package:app_word/database/firebase_options.dart';
-import 'package:app_word/providers/book_model.dart';
 import 'package:app_word/providers/navbar_model.dart';
 import 'package:app_word/screens/main/book/book.dart';
 import 'package:app_word/theme/theme_preference.dart';
@@ -10,12 +5,10 @@ import 'package:app_word/theme/theme_provider.dart';
 import 'package:app_word/screens/main/home.dart';
 import 'package:app_word/screens/main/main_page.dart';
 import 'package:app_word/screens/main/settings.dart';
-import 'package:app_word/util/constants.dart';
 import 'package:app_word/util/themes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 void main() async {

@@ -72,6 +72,8 @@ class _WordItemState extends State<WordItem> {
                       "Sei sicuro di voler rimuovere il vocabolo ${widget.word.word}?",
                   onPressed: () => bookProvider.remove(
                       bookProvider.selectedBook, widget.word.word),
+                  doneText: "Elimina",
+                  doneColorText: CupertinoColors.systemRed,
                 ),
               ),
               backgroundColor: CupertinoColors.systemRed,

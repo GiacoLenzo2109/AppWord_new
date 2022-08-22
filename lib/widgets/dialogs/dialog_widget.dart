@@ -25,6 +25,8 @@ class DialogWidget extends StatefulWidget {
   String? type;
   DialogType? dType;
   Widget? body;
+  String? doneText;
+  Color? doneColorText;
 
   DialogWidget({
     Key? key,
@@ -34,6 +36,8 @@ class DialogWidget extends StatefulWidget {
     this.msg,
     this.dType,
     this.body,
+    this.doneText,
+    this.doneColorText,
   }) : super(key: key);
 
   DialogWidget.email({
@@ -185,7 +189,7 @@ class _DialogWidgetState extends State<DialogWidget> {
         CupertinoButton(
           onPressed: widget.onPressed != null
               ? () {
-                  widget.onPressed;
+                  widget.onPressed!();
                   Navigator.of(context).pop();
                 }
               : () {
@@ -193,7 +197,10 @@ class _DialogWidgetState extends State<DialogWidget> {
                       ? () {/*UPDATE EMAIL*/}
                       : () {/*UPDATE PASSWORD*/};
                 },
-          child: const Text('Fatto'),
+          child: Text(
+            widget.doneText ?? 'Fatto',
+            style: TextStyle(color: widget.doneColorText),
+          ),
         ),
       ],
     );

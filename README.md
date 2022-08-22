@@ -1,4 +1,4 @@
-# app_word
+# appword
 
 A new Flutter project.
 
