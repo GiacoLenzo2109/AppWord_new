@@ -193,16 +193,17 @@ class _DialogWidgetState extends State<DialogWidget> {
           child: const Text('Cancella'),
         ),
         CupertinoButton(
-          onPressed: widget.onPressed != null
-              ? () {
-                  widget.onPressed!();
-                  Navigator.of(context).pop();
-                }
-              : () {
-                  widget.type == DialogWidget.EMAIL
-                      ? () {/*UPDATE EMAIL*/}
-                      : () {/*UPDATE PASSWORD*/};
-                },
+          onPressed: () {
+            if (widget.onPressed != null) {
+              widget.onPressed!();
+            }
+            if (widget.type != null) {
+              widget.type == DialogWidget.EMAIL
+                  ? () {/*UPDATE EMAIL*/}
+                  : () {/*UPDATE PASSWORD*/};
+            }
+            Navigator.of(context).pop();
+          },
           child: Text(
             widget.doneText ?? 'Fatto',
             style: TextStyle(color: widget.doneColorText),
