@@ -1,8 +1,11 @@
 import 'dart:developer';
 
 import 'package:app_word/database/firebase_global.dart';
+import 'package:app_word/screens/signin/signin_page.dart';
+import 'package:app_word/service/navigation_service.dart';
 import 'package:app_word/theme/theme_preference.dart';
 import 'package:app_word/theme/theme_provider.dart';
+import 'package:app_word/database/repository/authentication_repository.dart';
 import 'package:app_word/util/constants.dart';
 import 'package:app_word/util/dialog_util.dart';
 import 'package:app_word/util/navigator_util.dart';
@@ -15,6 +18,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 
@@ -28,6 +32,9 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
+  bool isGoogleUser =
+      FirebaseGlobal.auth.currentUser!.providerData[0].providerId ==
+          'google.com';
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context, listen: true);
@@ -40,7 +47,7 @@ class _SettingsState extends State<Settings> {
         crossAxisCount: 1,
         children: [
           SizedBox(
-            height: ScreenUtil.getSize(context).height / 3,
+            height: ScreenUtil.getSize(context).height - 325,
             child: SettingsList(
               physics: const NeverScrollableScrollPhysics(),
               lightTheme: const SettingsThemeData(
@@ -57,14 +64,15 @@ class _SettingsState extends State<Settings> {
                 SettingsSection(
                   title: const Text('Account'),
                   tiles: <SettingsTile>[
-                    SettingsTile.navigation(
-                      leading: const Icon(CupertinoIcons.mail),
-                      title: const Text('Email'),
-                      onPressed: (context) => DialogUtil.openDialog(
-                        context: context,
-                        builder: (context) => DialogWidget.email(),
+                    if (AuthenticationRepository.isGoogleLogged())
+                      SettingsTile.navigation(
+                        leading: const Icon(CupertinoIcons.mail),
+                        title: const Text('Email'),
+                        onPressed: (context) => DialogUtil.openDialog(
+                          context: context,
+                          builder: (context) => DialogWidget.email(),
+                        ),
                       ),
-                    ),
                     SettingsTile.navigation(
                       leading: const Icon(CupertinoIcons.lock),
                       title: const Text('Cambia password'),
@@ -130,7 +138,6 @@ class _SettingsState extends State<Settings> {
                           ),
                           title:
                               "Tema: ${themeProvider.isDarkTheme ? "Scuro" : "Chiaro"}",
-                          onPressed: () => Navigator.of(context).pop(),
                         ),
                       ),
                       leading: const Icon(CupertinoIcons.paintbrush),
@@ -148,12 +155,14 @@ class _SettingsState extends State<Settings> {
             child: ButtonWidget(
               text: "Logout",
               backgroundColor: CupertinoColors.systemRed,
-              onPressed: () => FirebaseGlobal.auth
-                  .signOut()
-                  .whenComplete(() => NavigatorUtil.navigateAndReplace(
-                        context: context,
-                        route: NavigatorUtil.SIGNIN,
-                      )),
+              onPressed: () async {
+                await AuthenticationRepository.signOut(
+                    context: NavigationService.navigatorKey.currentContext!);
+                NavigatorUtil.navigateAndReplace(
+                  context: NavigationService.navigatorKey.currentContext!,
+                  route: NavigatorUtil.SIGNIN,
+                );
+              },
             ),
           ),
         ],

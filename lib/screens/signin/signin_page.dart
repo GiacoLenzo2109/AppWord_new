@@ -50,10 +50,7 @@ class SignInPage extends StatelessWidget {
                     context: context,
                     builder: (context) => const RegisterPage(),
                   ),
-                  backgroundColor:
-                      Theme.of(context).platform == TargetPlatform.android
-                          ? Theme.of(context).backgroundColor
-                          : CupertinoColors.systemGrey5,
+                  backgroundColor: CupertinoColors.systemRed,
                 ),
               ],
             ),

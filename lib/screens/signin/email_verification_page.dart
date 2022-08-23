@@ -1,29 +1,43 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:app_word/database/firebase_global.dart';
 import 'package:app_word/screens/signin/signin_page.dart';
+import 'package:app_word/database/repository/authentication_repository.dart';
 import 'package:app_word/util/navigator_util.dart';
 import 'package:app_word/util/screen_util.dart';
 import 'package:app_word/util/themes.dart';
 import 'package:app_word/widgets/global/button_widget.dart';
 import 'package:app_word/widgets/global/scaffold_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:material_dialogs/material_dialogs.dart';
 
-class EmailVerificationPage extends StatelessWidget {
+class EmailVerificationPage extends StatefulWidget {
   const EmailVerificationPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    if (FirebaseGlobal.auth.currentUser != null &&
-        FirebaseGlobal.auth.currentUser!.emailVerified) {
-      NavigatorUtil.navigateAndReplace(
-        context: context,
-        route: NavigatorUtil.HOME,
-      );
-    }
+  State<EmailVerificationPage> createState() => _EmailVerificationPageState();
+}
 
+class _EmailVerificationPageState extends State<EmailVerificationPage> {
+  Timer? timer;
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    timer = Timer.periodic(
+      const Duration(seconds: 1),
+      (timer) => AuthenticationRepository.checkEmailVerified(context: context),
+    );
     return SimplePageScaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

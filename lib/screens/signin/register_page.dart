@@ -4,7 +4,7 @@ import 'package:app_word/database/firebase_global.dart';
 import 'package:app_word/screens/main/main_page.dart';
 import 'package:app_word/screens/signin/email_verification_page.dart';
 import 'package:app_word/screens/signin/login_page.dart';
-import 'package:app_word/util/authentication.dart';
+import 'package:app_word/database/repository/authentication_repository.dart';
 import 'package:app_word/util/constants.dart';
 import 'package:app_word/util/dialog_util.dart';
 import 'package:app_word/util/global_func.dart';
@@ -36,6 +36,8 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  var usernameController = TextEditingController();
+
   var emailController = TextEditingController();
 
   var passwordController = TextEditingController();
@@ -46,39 +48,21 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     var error = "";
 
-    void register({required String email, required String password}) async {
-      try {
-        await FirebaseGlobal.auth
-            .createUserWithEmailAndPassword(email: email, password: password);
-        if (FirebaseGlobal.auth.currentUser != null) {
-          DialogUtil.openDialog(
-            context: context,
-            builder: (context) => const LoadingWidget(),
-          );
-          await FirebaseGlobal.auth.currentUser!.sendEmailVerification();
-          () => NavigatorUtil.navigateAndReplace(
-                context: context,
-                route: NavigatorUtil.EMAIL_VERIFICATION,
-              );
-        }
-      } on FirebaseAuthException catch (e) {
-        log(e.code);
-        if (e.code == 'user-not-found') {
-          error = 'Email o password sbagliata!';
-        } else if (e.code == 'wrong-password') {
-          error = 'Password sbagliata, riprova!';
-        }
-        DialogUtil.openDialog(
-          context: context,
-          builder: (context) => ErrorDialogWidget(error),
-        );
-      } catch (e) {
-        log(e.toString());
-      }
-    }
-
     bool areValidFields() {
-      return GlobalFunc.isEmail(emailController.text) &&
+      if (usernameController.text.isEmpty) {
+        error = "Username non valido!";
+      }
+      if (!GlobalFunc.isEmail(emailController.text)) {
+        error = "Email non valida!";
+      }
+      if (passwordController.text.isEmpty) {
+        error = "Password non valida!";
+      }
+      if (passwordController.text != confirmPasswordController.text) {
+        error = "Le password non combaciano!";
+      }
+      return usernameController.text.isNotEmpty &&
+          GlobalFunc.isEmail(emailController.text) &&
           passwordController.text.isNotEmpty &&
           confirmPasswordController.text.isNotEmpty &&
           passwordController.text == confirmPasswordController.text;
@@ -111,6 +95,11 @@ class _RegisterPageState extends State<RegisterPage> {
                 mainAxisSpacing: 15,
                 children: [
                   TextFieldWidget(
+                    controller: usernameController,
+                    placeholder: "Username",
+                    icon: CupertinoIcons.person,
+                  ),
+                  TextFieldWidget(
                     controller: emailController,
                     placeholder: "Email",
                     icon: CupertinoIcons.mail,
@@ -137,20 +126,15 @@ class _RegisterPageState extends State<RegisterPage> {
                     text: "Registrati",
                     onPressed: () {
                       areValidFields()
-                          ? register(
+                          ? AuthenticationRepository.createUser(
+                              context: context,
+                              username: usernameController.text,
                               email: emailController.text,
                               password: passwordController.text,
                             )
                           : DialogUtil.openDialog(
                               context: context,
-                              builder: (context) => DialogWidget(
-                                title: "Errore!",
-                                msg: passwordController.text !=
-                                        confirmPasswordController.text
-                                    ? "Le password non combaciano!"
-                                    : "Mail non valida!",
-                                dType: DialogType.ERROR,
-                              ),
+                              builder: (context) => ErrorDialogWidget(error),
                             );
                     },
                   ),
@@ -166,7 +150,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     backgroundColor: CupertinoColors.activeOrange,
                     onPressed: () {
-                      Authentication.signInWithGoogle(context: context)
+                      AuthenticationRepository.signInWithGoogle(
+                              context: context)
                           .then(
                             (value) => {
                               DialogUtil.openDialog(
@@ -178,7 +163,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           .whenComplete(
                             () => NavigatorUtil.navigateAndReplace(
                               context: context,
-                              route: NavigatorUtil.HOME,
+                              route: NavigatorUtil.MAIN,
                             ),
                           );
                       // : DialogUtil.openDialog(
@@ -208,7 +193,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     backgroundColor: Colors.transparent,
                     textColor: CupertinoColors.activeBlue,
                     onPressed: () => Navigator.canPop(context)
-                        ? NavigatorUtil.navigateAndReplace(
+                        ? NavigatorUtil.navigatePopAndGo(
                             context: context, route: NavigatorUtil.LOGIN)
                         : NavigatorUtil.navigateTo(
                             context: context,

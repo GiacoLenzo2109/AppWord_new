@@ -77,7 +77,7 @@ class _WordItemState extends State<WordItem> {
                 ),
               ),
               backgroundColor: CupertinoColors.systemRed,
-              foregroundColor: ThemesUtil.getContrastingColor(context),
+              foregroundColor: Colors.white,
               icon: Icons.delete,
               label: 'Elimina',
               autoClose: true,

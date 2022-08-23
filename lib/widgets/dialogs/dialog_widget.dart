@@ -2,7 +2,9 @@
 
 import 'dart:developer';
 
+import 'package:app_word/database/firebase_global.dart';
 import 'package:app_word/util/constants.dart';
+import 'package:app_word/util/screen_util.dart';
 import 'package:app_word/util/themes.dart';
 import 'package:app_word/widgets/global/button_widget.dart';
 import 'package:app_word/widgets/global/text_field.dart';
@@ -118,7 +120,9 @@ class _DialogWidgetState extends State<DialogWidget> {
                           ? email = t
                           : password = t,
                       placeholder: widget.type == DialogWidget.EMAIL
-                          ? "esempio@gmail.com"
+                          ? FirebaseGlobal.auth.currentUser != null
+                              ? FirebaseGlobal.auth.currentUser!.email
+                              : "esempio@gmail.com"
                           : "Nuova password",
                       icon: widget.type == DialogWidget.EMAIL
                           ? CupertinoIcons.mail
@@ -160,7 +164,9 @@ class _DialogWidgetState extends State<DialogWidget> {
                       const SizedBox(height: 15),
                       TextFieldWidget(
                         placeholder: widget.type == DialogWidget.EMAIL
-                            ? "esempio@gmail.com"
+                            ? FirebaseGlobal.auth.currentUser != null
+                                ? FirebaseGlobal.auth.currentUser!.email
+                                : "esempio@gmail.com"
                             : "Nuova password",
                         icon: widget.type == DialogWidget.EMAIL
                             ? CupertinoIcons.mail

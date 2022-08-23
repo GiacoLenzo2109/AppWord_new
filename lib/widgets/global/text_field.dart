@@ -71,7 +71,8 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
         prefixIcon: Icon(widget.icon),
         suffixIcon: widget.isPassword
             ? IconButton(
-                icon: const Icon(CupertinoIcons.eye),
+                icon: Icon(
+                    !obscure ? CupertinoIcons.eye : CupertinoIcons.eye_slash),
                 splashRadius: 20,
                 onPressed: () => setState(() {
                   obscure = !obscure;
@@ -117,7 +118,8 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
       keyboardType: widget.type,
       suffix: widget.isPassword
           ? IconButtonWidget(
-              icon: const Icon(CupertinoIcons.eye),
+              icon: Icon(
+                  !obscure ? CupertinoIcons.eye : CupertinoIcons.eye_slash),
               onPressed: () {
                 setState(() {
                   obscure = !obscure;

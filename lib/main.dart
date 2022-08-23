@@ -6,6 +6,7 @@ import 'package:app_word/screens/signin/email_verification_page.dart';
 import 'package:app_word/screens/signin/login_page.dart';
 import 'package:app_word/screens/signin/register_page.dart';
 import 'package:app_word/screens/signin/signin_page.dart';
+import 'package:app_word/service/navigation_service.dart';
 import 'package:app_word/theme/theme_preference.dart';
 import 'package:app_word/theme/theme_provider.dart';
 import 'package:app_word/screens/main/home.dart';
@@ -93,10 +94,11 @@ class _AppWordState extends State<AppWord> with WidgetsBindingObserver {
         ? FirebaseGlobal.auth.currentUser!.emailVerified
             ? const MainPage()
             : const OnBoardingPage()
-        : const LoginPage();
+        : const OnBoardingPage();
 
     //iOS
     CupertinoApp cupertinoApp() => CupertinoApp(
+          navigatorKey: NavigationService.navigatorKey,
           title: title,
           theme: themeProvider.isDarkTheme
               ? CupertinoThemes.darkThemeCupertino
@@ -108,6 +110,7 @@ class _AppWordState extends State<AppWord> with WidgetsBindingObserver {
           ],
           home: home(),
           routes: <String, WidgetBuilder>{
+            NavigatorUtil.MAIN: (BuildContext context) => const MainPage(),
             NavigatorUtil.HOME: (BuildContext context) => const Home(),
             NavigatorUtil.BOOK: (BuildContext context) => const Book(),
             NavigatorUtil.SETTINGS: (BuildContext context) => const Settings(),
@@ -122,6 +125,7 @@ class _AppWordState extends State<AppWord> with WidgetsBindingObserver {
 
     //ANDROID
     MaterialApp materialApp() => MaterialApp(
+          navigatorKey: NavigationService.navigatorKey,
           title: title,
           theme: MaterialTheme.lightTheme,
           darkTheme: MaterialTheme.darkTheme,

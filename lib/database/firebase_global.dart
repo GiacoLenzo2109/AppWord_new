@@ -5,11 +5,11 @@ class FirebaseGlobal {
   static final FirebaseAuth auth = FirebaseAuth.instance;
   static final FirebaseFirestore firestore = FirebaseFirestore.instance;
   static final CollectionReference users =
-      FirebaseFirestore.instance.collection('utenti');
+      FirebaseFirestore.instance.collection('users');
   static final CollectionReference wordBooks =
-      FirebaseFirestore.instance.collection('rubriche');
+      FirebaseFirestore.instance.collection('books');
   static final CollectionReference dailyWords =
-      FirebaseFirestore.instance.collection('parola_del_giorno');
-  static const String wordBook = 'rubrica';
-  static const String words = 'parole';
+      FirebaseFirestore.instance.collection('word_of_the_day');
+  static const String wordBook = 'book';
+  static const String words = 'word';
 }

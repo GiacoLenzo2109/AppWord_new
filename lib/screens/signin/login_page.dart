@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:app_word/database/firebase_global.dart';
 import 'package:app_word/screens/main/main_page.dart';
 import 'package:app_word/screens/signin/register_page.dart';
-import 'package:app_word/util/authentication.dart';
+import 'package:app_word/database/repository/authentication_repository.dart';
 import 'package:app_word/util/constants.dart';
 import 'package:app_word/util/dialog_util.dart';
 import 'package:app_word/util/global_func.dart';
@@ -40,43 +40,19 @@ class _LoginPageState extends State<LoginPage> {
 
   var passwordController = TextEditingController();
 
-  bool areValidFields() {
-    return GlobalFunc.isEmail(emailController.text) &&
-        passwordController.text.isNotEmpty;
-  }
-
   @override
   Widget build(BuildContext context) {
     var error = "";
 
-    void logIn({required String email, required String password}) async {
-      try {
-        await FirebaseGlobal.auth
-            .signInWithEmailAndPassword(email: email, password: password);
-        if (FirebaseGlobal.auth.currentUser != null) {
-          DialogUtil.openDialog(
-            context: context,
-            builder: (context) => const LoadingWidget(),
-          );
-          () => NavigatorUtil.navigateAndReplace(
-                context: context,
-                route: NavigatorUtil.HOME,
-              );
-        }
-      } on FirebaseAuthException catch (e) {
-        log(e.code);
-        if (e.code == 'user-not-found') {
-          error = 'Email o password sbagliata!';
-        } else if (e.code == 'wrong-password') {
-          error = 'Password sbagliata, riprova!';
-        }
-        DialogUtil.openDialog(
-          context: context,
-          builder: (context) => ErrorDialogWidget(error),
-        );
-      } catch (e) {
-        log(e.toString());
+    bool areValidFields() {
+      if (!GlobalFunc.isEmail(emailController.text)) {
+        error = "Email non valida";
       }
+      if (passwordController.text.isEmpty) {
+        error = "Password non valida";
+      }
+      return GlobalFunc.isEmail(emailController.text) &&
+          passwordController.text.isNotEmpty;
     }
 
     var child = Padding(
@@ -125,16 +101,15 @@ class _LoginPageState extends State<LoginPage> {
                   text: "Login",
                   onPressed: () {
                     areValidFields()
-                        ? logIn(
+                        ? AuthenticationRepository.signInWithEmailAndPassword(
+                            context: context,
                             email: emailController.text,
                             password: passwordController.text,
                           )
                         : DialogUtil.openDialog(
                             context: context,
-                            builder: (context) => DialogWidget(
-                              title: "Errore!",
-                              msg: "Mail non valida!",
-                              dType: DialogType.ERROR,
+                            builder: (context) => const ErrorDialogWidget(
+                              "Mail o password errati!",
                             ),
                           );
                   },
@@ -151,17 +126,8 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   backgroundColor: CupertinoColors.activeOrange,
                   onPressed: () async {
-                    Authentication.signInWithGoogle(context: context);
-                    // .then(
-                    //   (value) => DialogUtil.openDialog(
-                    //     context: context,
-                    //     builder: (context) => const LoadingWidget(),
-                    //   ),
-                    // )
-                    // .whenComplete(
-                    //   () => NavigatorUtil.navigateAndReplace(
-                    //       context: context, route: NavigatorUtil.HOME),
-                    // );
+                    await AuthenticationRepository.signInWithGoogle(
+                        context: context);
                   },
                 ),
               ],
@@ -178,7 +144,7 @@ class _LoginPageState extends State<LoginPage> {
                   backgroundColor: Colors.transparent,
                   textColor: CupertinoColors.activeBlue,
                   onPressed: () => Navigator.canPop(context)
-                      ? NavigatorUtil.navigateAndReplace(
+                      ? NavigatorUtil.navigatePopAndGo(
                           context: context, route: NavigatorUtil.REGISTER)
                       : NavigatorUtil.navigateTo(
                           context: context,
