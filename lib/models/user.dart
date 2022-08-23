@@ -8,7 +8,6 @@ class UserDb {
 
   Map<String, dynamic> toMap() {
     return {
-      'uid': FirebaseGlobal.auth.currentUser!.uid,
       'email': email,
       'username': username,
     };

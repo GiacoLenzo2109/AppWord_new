@@ -21,4 +21,13 @@ class UserRepository {
   }) async {
     return FirebaseGlobal.users.doc(uid).get();
   }
+
+  static Future<void> updateUser({
+    required BuildContext context,
+    required User user,
+  }) async {
+    FirebaseGlobal.users
+        .doc(FirebaseGlobal.auth.currentUser!.uid)
+        .update(UserDb(user.email!, user.displayName!).toMap());
+  }
 }

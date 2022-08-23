@@ -22,7 +22,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 
-import '../../widgets/global/scaffold_widget.dart';
+import '../../../widgets/global/scaffold_widget.dart';
 
 class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
@@ -64,21 +64,31 @@ class _SettingsState extends State<Settings> {
                 SettingsSection(
                   title: const Text('Account'),
                   tiles: <SettingsTile>[
-                    if (AuthenticationRepository.isGoogleLogged())
+                    //if (!AuthenticationRepository.isGoogleLogged())
+                    SettingsTile.navigation(
+                      leading: const Icon(CupertinoIcons.person),
+                      title: const Text('Username'),
+                      onPressed: (context) => NavigatorUtil.navigateToNamed(
+                        context: NavigationService.navigatorKey.currentContext!,
+                        route: NavigatorUtil.CHANGE_USERNAME,
+                      ),
+                    ),
+                    if (!AuthenticationRepository.isGoogleLogged())
                       SettingsTile.navigation(
                         leading: const Icon(CupertinoIcons.mail),
                         title: const Text('Email'),
-                        onPressed: (context) => DialogUtil.openDialog(
-                          context: context,
-                          builder: (context) => DialogWidget.email(),
+                        onPressed: (context) => NavigatorUtil.navigateToNamed(
+                          context:
+                              NavigationService.navigatorKey.currentContext!,
+                          route: NavigatorUtil.CHANGE_EMAIL,
                         ),
                       ),
                     SettingsTile.navigation(
                       leading: const Icon(CupertinoIcons.lock),
                       title: const Text('Cambia password'),
-                      onPressed: (context) => DialogUtil.openDialog(
-                        context: context,
-                        builder: (context) => DialogWidget.password(),
+                      onPressed: (context) => NavigatorUtil.navigateToNamed(
+                        context: NavigationService.navigatorKey.currentContext!,
+                        route: NavigatorUtil.CHANGE_PASSWORD,
                       ),
                     ),
                   ],

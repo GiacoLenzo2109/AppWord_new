@@ -3,10 +3,17 @@
 import 'dart:developer';
 
 import 'package:app_word/database/firebase_global.dart';
+import 'package:app_word/database/repository/user_repository.dart';
+import 'package:app_word/service/navigation_service.dart';
 import 'package:app_word/util/constants.dart';
+import 'package:app_word/util/dialog_util.dart';
+import 'package:app_word/util/global_func.dart';
+import 'package:app_word/util/navigator_util.dart';
 import 'package:app_word/util/screen_util.dart';
 import 'package:app_word/util/themes.dart';
+import 'package:app_word/widgets/dialogs/error_dialog_widget.dart';
 import 'package:app_word/widgets/global/button_widget.dart';
+import 'package:app_word/widgets/global/loading_widget.dart';
 import 'package:app_word/widgets/global/text_field.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,6 +25,7 @@ import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
 
 // ignore: must_be_immutable
 class DialogWidget extends StatefulWidget {
+  static const USERNAME = "USERNAME";
   static const EMAIL = "EMAIL";
   static const PASSWORD = "PASSWORD";
 
@@ -42,6 +50,14 @@ class DialogWidget extends StatefulWidget {
     this.doneColorText,
   }) : super(key: key);
 
+  DialogWidget.username({
+    this.type,
+    Key? key,
+  }) : super(key: key) {
+    type = USERNAME;
+    dType = DialogType.WARNING;
+  }
+
   DialogWidget.email({
     this.type,
     Key? key,
@@ -65,12 +81,62 @@ class DialogWidget extends StatefulWidget {
 class _DialogWidgetState extends State<DialogWidget> {
   bool onPressed = false;
 
-  String email = "";
-  String password = "";
+  String text = "";
   String confirmPassword = "";
 
   @override
   Widget build(BuildContext context) {
+    var title = Text(
+      widget.title ??
+          (widget.type == DialogWidget.EMAIL
+              ? "Cambia email"
+              : widget.type == DialogWidget.PASSWORD
+                  ? "Cambia password"
+                  : "Cambia username"),
+    );
+
+    Future<void> onPressedDone() async {
+      switch (widget.type) {
+        case (DialogWidget.EMAIL):
+          if (GlobalFunc.isEmail(text)) {
+            LoadingWidget.show(context);
+            await FirebaseGlobal.auth.currentUser!.updateEmail(text);
+          } else {
+            DialogUtil.openDialog(
+                context: context,
+                builder: (context) =>
+                    const ErrorDialogWidget("Email non valida"));
+          }
+          break;
+        case (DialogWidget.PASSWORD):
+          if (text.isNotEmpty && text == confirmPassword) {
+            LoadingWidget.show(context);
+            await FirebaseGlobal.auth.currentUser!.updatePassword(text);
+          } else {
+            DialogUtil.openDialog(
+                context: context,
+                builder: (context) =>
+                    const ErrorDialogWidget("Le password non combaciano!"));
+          }
+          break;
+        case (DialogWidget.USERNAME):
+          if (text.isNotEmpty) {
+            LoadingWidget.show(context);
+            await FirebaseGlobal.auth.currentUser!.updateDisplayName(text);
+          } else {
+            DialogUtil.openDialog(
+                context: context,
+                builder: (context) =>
+                    const ErrorDialogWidget("Username non valido"));
+          }
+          break;
+      }
+      await UserRepository.updateUser(
+          context: context, user: FirebaseGlobal.auth.currentUser!);
+
+      Navigator.of(context).pop();
+    }
+
     //Material Dialog
     var dialog = AwesomeDialog(
       context: context,
@@ -82,12 +148,7 @@ class _DialogWidgetState extends State<DialogWidget> {
       buttonsBorderRadius: BorderRadius.circular(10),
       //btnCancelOnPress: () => Navigator.of(context).pop(),
       btnCancelIcon: Icons.cancel_outlined,
-      btnOkOnPress: widget.onPressed ??
-          () {
-            widget.type == DialogWidget.EMAIL
-                ? () {/*UPDATE EMAIL*/}
-                : () {/*UPDATE PASSWORD*/};
-          },
+      btnOkOnPress: widget.onPressed ?? onPressedDone,
       btnOkIcon: Icons.done,
       onDissmissCallback: (type) => Navigator.of(context).pop(),
       body: StaggeredGrid.count(
@@ -104,29 +165,29 @@ class _DialogWidgetState extends State<DialogWidget> {
                 crossAxisCount: 1,
                 mainAxisSpacing: 10,
                 children: [
-                  Text(
-                    widget.title ??
-                        (widget.type == DialogWidget.EMAIL
-                            ? "Cambia email"
-                            : "Cambia password"),
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 21),
-                  ),
+                  title,
                   Text(widget.msg ?? ''),
                   if (widget.type != null)
                     TextFieldWidget(
-                      onChanged: (t) => widget.type == DialogWidget.EMAIL
-                          ? email = t
-                          : password = t,
+                      onChanged: (t) {
+                        setState(() {
+                          text = t;
+                        });
+                      },
                       placeholder: widget.type == DialogWidget.EMAIL
                           ? FirebaseGlobal.auth.currentUser != null
                               ? FirebaseGlobal.auth.currentUser!.email
                               : "esempio@gmail.com"
-                          : "Nuova password",
+                          : widget.type == DialogWidget.USERNAME
+                              ? FirebaseGlobal.auth.currentUser != null
+                                  ? FirebaseGlobal.auth.currentUser!.displayName
+                                  : "Username"
+                              : "Nuova password",
                       icon: widget.type == DialogWidget.EMAIL
                           ? CupertinoIcons.mail
-                          : CupertinoIcons.lock,
+                          : widget.type == DialogWidget.USERNAME
+                              ? CupertinoIcons.person
+                              : CupertinoIcons.lock,
                       isPassword: widget.type == DialogWidget.PASSWORD,
                       type: widget.type == DialogWidget.EMAIL
                           ? TextInputType.emailAddress
@@ -134,7 +195,11 @@ class _DialogWidgetState extends State<DialogWidget> {
                     ),
                   if (widget.type == DialogWidget.PASSWORD)
                     TextFieldWidget(
-                      onChanged: (t) => confirmPassword = t,
+                      onChanged: (t) {
+                        setState(() {
+                          confirmPassword = t;
+                        });
+                      },
                       placeholder: "Conferma password",
                       icon: CupertinoIcons.lock,
                       isPassword: true,
@@ -147,14 +212,7 @@ class _DialogWidgetState extends State<DialogWidget> {
 
     //CupertinoDialog
     CupertinoAlertDialog iDialog = CupertinoAlertDialog(
-      title: Text(
-        widget.title ??
-            (widget.type == DialogWidget.EMAIL
-                ? "Cambia email"
-                : widget.type == DialogWidget.PASSWORD
-                    ? "Cambia password"
-                    : ""),
-      ),
+      title: title,
       content: widget.body ??
           SizedBox(
             child: widget.type != null
@@ -163,14 +221,26 @@ class _DialogWidgetState extends State<DialogWidget> {
                     children: [
                       const SizedBox(height: 15),
                       TextFieldWidget(
+                        onChanged: (t) {
+                          setState(() {
+                            text = t;
+                          });
+                        },
                         placeholder: widget.type == DialogWidget.EMAIL
                             ? FirebaseGlobal.auth.currentUser != null
                                 ? FirebaseGlobal.auth.currentUser!.email
                                 : "esempio@gmail.com"
-                            : "Nuova password",
+                            : widget.type == DialogWidget.USERNAME
+                                ? FirebaseGlobal.auth.currentUser != null
+                                    ? FirebaseGlobal
+                                        .auth.currentUser!.displayName
+                                    : "Username"
+                                : "Nuova password",
                         icon: widget.type == DialogWidget.EMAIL
                             ? CupertinoIcons.mail
-                            : CupertinoIcons.lock,
+                            : widget.type == DialogWidget.USERNAME
+                                ? CupertinoIcons.person
+                                : CupertinoIcons.lock,
                         isPassword: widget.type == DialogWidget.PASSWORD,
                         type: widget.type == DialogWidget.EMAIL
                             ? TextInputType.emailAddress
@@ -179,6 +249,11 @@ class _DialogWidgetState extends State<DialogWidget> {
                       const SizedBox(height: 15),
                       if (widget.type == DialogWidget.PASSWORD)
                         TextFieldWidget(
+                          onChanged: (t) {
+                            setState(() {
+                              confirmPassword = t;
+                            });
+                          },
                           placeholder: "Conferma password",
                           icon: CupertinoIcons.lock,
                           isPassword: true,
@@ -193,14 +268,12 @@ class _DialogWidgetState extends State<DialogWidget> {
           child: const Text('Cancella'),
         ),
         CupertinoButton(
-          onPressed: () {
+          onPressed: () async {
             if (widget.onPressed != null) {
               widget.onPressed!();
             }
             if (widget.type != null) {
-              widget.type == DialogWidget.EMAIL
-                  ? () {/*UPDATE EMAIL*/}
-                  : () {/*UPDATE PASSWORD*/};
+              await onPressedDone();
             }
             Navigator.of(context).pop();
           },

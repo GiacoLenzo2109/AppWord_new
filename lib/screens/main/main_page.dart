@@ -4,7 +4,7 @@ import 'package:app_word/screens/main/book/book.dart';
 import 'package:app_word/screens/main/book/book_list.dart';
 import 'package:app_word/theme/theme_provider.dart';
 import 'package:app_word/screens/main/home.dart';
-import 'package:app_word/screens/main/settings.dart';
+import 'package:app_word/screens/main/settings/settings.dart';
 import 'package:app_word/util/constants.dart';
 import 'package:app_word/util/themes.dart';
 import 'package:flutter/cupertino.dart';

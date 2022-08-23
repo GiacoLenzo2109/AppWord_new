@@ -19,8 +19,11 @@ class AuthenticationRepository {
 
   /// Check if is google user
   static bool isGoogleLogged() {
-    return FirebaseGlobal.auth.currentUser?.providerData[0].providerId !=
-        'google.com';
+    return FirebaseGlobal.auth.currentUser?.providerData[0].providerId ==
+            'google.com' ||
+        (FirebaseGlobal.auth.currentUser?.providerData[1] != null &&
+            FirebaseGlobal.auth.currentUser?.providerData[1].providerId ==
+                'google.com');
   }
 
   /// Check if is email verified
@@ -46,13 +49,13 @@ class AuthenticationRepository {
     required String password,
   }) async {
     try {
+      DialogUtil.openDialog(
+        context: context,
+        builder: (context) => const LoadingWidget(),
+      );
       await FirebaseGlobal.auth
           .createUserWithEmailAndPassword(email: email, password: password);
       if (FirebaseGlobal.auth.currentUser != null) {
-        DialogUtil.openDialog(
-          context: context,
-          builder: (context) => const LoadingWidget(),
-        );
         await FirebaseGlobal.auth.currentUser!.updateDisplayName(username);
         await UserRepository.createUser(
             context: context, user: FirebaseGlobal.auth.currentUser!);
@@ -199,10 +202,8 @@ class AuthenticationRepository {
   }
 
   static Future<void> signOut({required BuildContext context}) async {
-    DialogUtil.openDialog(
-      context: context,
-      builder: (context) => const LoadingWidget(),
-    );
+    LoadingWidget.show(context);
+
     final GoogleSignIn googleSignIn = GoogleSignIn();
 
     try {

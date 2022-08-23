@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:app_word/util/dialog_util.dart';
 import 'package:app_word/util/screen_util.dart';
 import 'package:app_word/util/themes.dart';
 import 'package:flutter/cupertino.dart';
@@ -25,6 +26,13 @@ class LoadingWidget extends StatelessWidget {
                 radius: 14.0,
               ),
       ),
+    );
+  }
+
+  static void show(BuildContext context) {
+    DialogUtil.openDialog(
+      context: context,
+      builder: (context) => const LoadingWidget(),
     );
   }
 }

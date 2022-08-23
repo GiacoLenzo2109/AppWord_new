@@ -11,6 +11,9 @@ class NavigatorUtil {
   static const LOGIN = '/login';
   static const SIGNIN = '/singin';
   static const EMAIL_VERIFICATION = '/email_verification';
+  static const CHANGE_EMAIL = '/change_email';
+  static const CHANGE_USERNAME = '/change_username';
+  static const CHANGE_PASSWORD = '/change_password';
 
   static makeRoute({required BuildContext context, required Widget page}) =>
       Theme.of(context).platform == TargetPlatform.android

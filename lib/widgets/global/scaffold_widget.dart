@@ -160,9 +160,13 @@ class _ScaffoldWidgetState extends State<PageScaffold> {
 
 class SimplePageScaffold extends StatefulWidget {
   final Widget body;
+  final String? title;
+  final double? padding;
   const SimplePageScaffold({
     Key? key,
     required this.body,
+    this.title,
+    this.padding,
   }) : super(key: key);
 
   @override
@@ -174,6 +178,7 @@ class _SimpleScaffoldWidgetState extends State<SimplePageScaffold> {
   Widget build(BuildContext context) {
     Scaffold scaffold = Scaffold(
       appBar: AppBar(
+        title: Text(widget.title ?? ""),
         backgroundColor: Colors.transparent,
       ),
       body: widget.body,
@@ -181,10 +186,14 @@ class _SimpleScaffoldWidgetState extends State<SimplePageScaffold> {
 
     CupertinoPageScaffold cupertinoScaffold = CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
+        middle: Text(widget.title ?? ""),
         border: null,
         backgroundColor: ThemesUtil.getBackgroundColor(context),
       ),
-      child: widget.body,
+      child: Padding(
+        padding: EdgeInsets.all(widget.padding ?? 0),
+        child: widget.body,
+      ),
     );
 
     return Theme.of(context).platform == TargetPlatform.android
