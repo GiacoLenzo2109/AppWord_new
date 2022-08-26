@@ -4,7 +4,7 @@ import 'dart:developer';
 
 import 'package:app_word/providers/book_model.dart';
 import 'package:app_word/providers/navbar_model.dart';
-import 'package:app_word/screens/others/new_word_page.dart';
+import 'package:app_word/screens/main/book/word/new_word_page.dart';
 import 'package:app_word/util/constants.dart';
 import 'package:app_word/util/dialog_util.dart';
 import 'package:app_word/util/screen_util.dart';
@@ -20,34 +20,22 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
-class Book extends StatefulWidget {
-  const Book({Key? key}) : super(key: key);
+class BookPage extends StatefulWidget {
+  const BookPage({Key? key}) : super(key: key);
 
   @override
-  State<Book> createState() => _BookState();
+  State<BookPage> createState() => _BookPageState();
 }
 
-class _BookState extends State<Book> with SingleTickerProviderStateMixin {
-  var personalBook = const AlphabetScrollList(Constants.personalBook);
-  var classBook = const AlphabetScrollList(Constants.classBook);
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
+class _BookPageState extends State<BookPage> {
   @override
   Widget build(BuildContext context) {
     final navbarProvider = Provider.of<NavbarModel>(context);
     final bookProvider = Provider.of<BookModel>(context);
 
     return PageScaffold(
-      title:
-          ThemesUtil.isAndroid(context) ? "Rubrica" : bookProvider.selectedBook,
+      title: ThemesUtil.isAndroid(context) ? "Rubrica" : bookProvider.name,
       padding: 0,
-      onRefresh: () async {
-        //TO-DO: Refresh delle parole nella rubrica (da decidere ancora se farlo o no)
-      },
       rounded: false,
       scrollable: true,
       leading: Theme.of(context).platform == TargetPlatform.android
@@ -82,40 +70,30 @@ class _BookState extends State<Book> with SingleTickerProviderStateMixin {
             size: 25,
           ),
           onTap: () {
-            if (navbarProvider.leading) {
-              for (var word
-                  in bookProvider.selectedWords[bookProvider.selectedBook]!) {
-                bookProvider.remove(bookProvider.selectedBook, word);
-              }
-              log(bookProvider.words.toString());
-              navbarProvider.tapLeading();
-            } else {
-              DialogUtil.showModalBottomSheet(
-                  context: context, builder: (context) => const AddWordPage());
-            }
+            // if (navbarProvider.leading) {
+            //   for (var word
+            //       in bookProvider.selectedWords[bookProvider.selectedBook]!) {
+            //     bookProvider.removeWord(word);
+            //   }
+            //   log(bookProvider.words.toString());
+            //   navbarProvider.tapLeading();
+            // } else {
+            DialogUtil.showModalBottomSheet(
+              context: context,
+              builder: (_) => ChangeNotifierProvider.value(
+                value: bookProvider,
+                child: const AddWordPage(),
+              ),
+            );
+            //}
           },
         ),
       ),
-      childSliver: AlphabetScrollListView(book: bookProvider.selectedBook),
-      child: StaggeredGrid.count(
-        crossAxisCount: 1,
-        children: [
-          if (Theme.of(context).platform == TargetPlatform.iOS)
-            const SizedBox(height: 25),
-          TabBarWidget(
-            onValueChanged: (value) {
-              bookProvider.setSelectedBook(
-                value == 0 ? Constants.personalBook : Constants.classBook,
-              );
-            },
-            tabs: const [Constants.personalBook, Constants.classBook],
-            tabsView: const [
-              AlphabetScrollList(Constants.personalBook),
-              AlphabetScrollList(Constants.classBook),
-            ],
-          ),
-        ],
+      childSliver: ChangeNotifierProvider.value(
+        value: bookProvider,
+        child: AlphabetScrollListView(book: bookProvider.id),
       ),
+      child: AlphabetScrollList(bookProvider.id),
     );
   }
 }

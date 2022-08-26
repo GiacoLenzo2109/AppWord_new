@@ -19,6 +19,7 @@ import 'package:app_word/widgets/global/loading_widget.dart';
 import 'package:app_word/widgets/global/scaffold_widget.dart';
 import 'package:app_word/widgets/global/text_field.dart';
 import 'package:app_word/widgets/global/text_field_tags.dart';
+import 'package:app_word/widgets/singin/google_login_button.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -69,6 +70,7 @@ class _RegisterPageState extends State<RegisterPage> {
     }
 
     return SimplePageScaffold(
+      scrollable: false,
       body: Padding(
         padding: const EdgeInsets.all(25),
         child: Center(
@@ -141,44 +143,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   const Divider(
                     color: CupertinoColors.systemGrey,
                   ),
-                  ButtonWidget(
-                    text: "Registrati con Google",
-                    icon: Image.asset(
-                      "assets/Google_Logo.png",
-                      width: 25,
-                      fit: BoxFit.fill,
-                    ),
-                    backgroundColor: CupertinoColors.activeOrange,
-                    onPressed: () {
-                      AuthenticationRepository.signInWithGoogle(
-                              context: context)
-                          .then(
-                            (value) => {
-                              DialogUtil.openDialog(
-                                context: context,
-                                builder: (context) => const LoadingWidget(),
-                              ),
-                            },
-                          )
-                          .whenComplete(
-                            () => NavigatorUtil.navigateAndReplace(
-                              context: context,
-                              route: NavigatorUtil.MAIN,
-                            ),
-                          );
-                      // : DialogUtil.openDialog(
-                      //     context: context,
-                      //     builder: (context) => DialogWidget(
-                      //       title: "Errore!",
-                      //       msg: passwordController.text !=
-                      //               confirmPasswordController.text
-                      //           ? "Le password non combaciano!"
-                      //           : "Mail non valida!",
-                      //       dType: DialogType.ERROR,
-                      //     ),
-                      //   );
-                    },
-                  ),
                 ],
               ),
               StaggeredGrid.count(
@@ -200,6 +164,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             builder: (context) => const LoginPage(),
                           ),
                   ),
+                  const GoogleLogInButton(title: "Registrati con Google"),
                 ],
               )
             ],

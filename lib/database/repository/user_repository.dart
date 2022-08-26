@@ -9,25 +9,31 @@ class UserRepository {
     required BuildContext context,
     required User user,
   }) async {
+    var _user = await getUser(context: context, uid: user.uid);
+    var userDb = UserDb(email: user.email!, username: user.displayName!);
+    if (_user != null) {
+      userDb.isAdmin = _user.isAdmin;
+    }
     await FirebaseGlobal.users.doc(user.uid).set(
-          UserDb(user.email!, user.displayName!).toMap(),
+          userDb.toMap(),
         );
     return;
   }
 
-  static Future<DocumentSnapshot<Object?>> getUser({
+  static Future<UserDb?> getUser({
     required BuildContext context,
     required String uid,
   }) async {
-    return FirebaseGlobal.users.doc(uid).get();
+    var user = await FirebaseGlobal.users.doc(uid).get();
+    if (!user.exists) return null;
+    return UserDb.fromJson(user.data() as Map<String, dynamic>);
   }
 
   static Future<void> updateUser({
     required BuildContext context,
     required User user,
   }) async {
-    FirebaseGlobal.users
-        .doc(FirebaseGlobal.auth.currentUser!.uid)
-        .update(UserDb(user.email!, user.displayName!).toMap());
+    FirebaseGlobal.users.doc(FirebaseGlobal.auth.currentUser!.uid).update(
+        UserDb(email: user.email!, username: user.displayName!).toMap());
   }
 }

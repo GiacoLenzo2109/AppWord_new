@@ -14,7 +14,7 @@ class SpinnerRefreshUtil {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 50.0),
+        padding: const EdgeInsets.only(bottom: 10.0),
         child: Opacity(
           opacity: opacityCurve
               .transform(min(pulledExtent / refreshIndicatorExtent, 1.0)),

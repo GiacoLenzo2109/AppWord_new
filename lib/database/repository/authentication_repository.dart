@@ -67,12 +67,12 @@ class AuthenticationRepository {
       }
     } on FirebaseAuthException catch (e) {
       var error = "";
-      if (e.code == 'user-not-found') {
-        error = 'Email o password sbagliata!';
-      } else if (e.code == 'wrong-password') {
-        error = 'Password sbagliata, riprova!';
+      if (e.code == 'weak-password') {
+        error = "Password debole!";
+        log('The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {
-        error = 'Email già in uso!';
+        error = "Email già in uso!";
+        log('The account already exists for that email.');
       }
       DialogUtil.openDialog(
         context: context,
@@ -169,7 +169,7 @@ class AuthenticationRepository {
             uid: googleSignInAccount.id,
           );
 
-          if (!user.exists) {
+          if (user == null) {
             await UserRepository.createUser(
                 context: context, user: FirebaseGlobal.auth.currentUser!);
           }

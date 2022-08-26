@@ -34,6 +34,7 @@ class _UpdateUserPageState extends State<UpdateUserPage> {
   @override
   Widget build(BuildContext context) {
     return SimplePageScaffold(
+      scrollable: false,
       padding: 25,
       title: "Aggiorna ${widget.type}",
       body: StaggeredGrid.count(
@@ -84,7 +85,7 @@ class _UpdateUserPageState extends State<UpdateUserPage> {
                 {
                   LoadingWidget.show(context),
                   await FirebaseGlobal.auth.currentUser!
-                      .updateEmail(emailController.text),
+                      .updateEmail(emailController.text.trim()),
                 }
               else
                 {
@@ -100,8 +101,8 @@ class _UpdateUserPageState extends State<UpdateUserPage> {
               if (usernameController.text.isNotEmpty)
                 {
                   LoadingWidget.show(context),
-                  await FirebaseGlobal.auth.currentUser!
-                      .updateDisplayName(usernameController.text),
+                  await FirebaseGlobal.auth.currentUser!.updateDisplayName(
+                      usernameController.text.toLowerCase().trim()),
                 }
               else
                 {

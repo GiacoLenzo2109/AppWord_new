@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:app_word/database/firebase_global.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -14,56 +16,60 @@ class Word {
   static const male = "Maschile";
   static const female = "Femminile";
 
-  static const ID = "ID";
+  static const AUTHOR = "Author";
+  String author;
+
+  static const ID = "Id";
   String id;
 
-  static const TYPE = "TYPE";
+  static const TYPE = "Type";
   String type;
 
-  static const WORD = "WORD";
+  static const WORD = "Word";
   String word;
 
-  static const TIMESTAMP = "TIMESTAMP";
+  static const TIMESTAMP = "Timestamp";
   Timestamp timestamp;
 
-  static const DEFINITION = "DEFINITIONS";
+  static const DEFINITION = "Definitions";
   List<String> definitions;
 
-  static const SEMANTIC_FIELD = "SEMANTIC_FIELD";
+  static const SEMANTIC_FIELD = "Semantic_field";
   List<String> semanticFields;
 
-  static const EXAMPLE_PHRASES = "EXAMPLE_PHRASES";
+  static const EXAMPLE_PHRASES = "Example_phrases";
   List<String> examplePhrases;
 
-  static const SYNONYMS = "SYNONYMS";
+  static const SYNONYMS = "Synonims";
   List<String> synonyms;
 
-  static const ANTONYMS = "ANTONYMS";
+  static const ANTONYMS = "Antonyms";
   List<String> antonyms;
 
-  static const GENDER = "GENDER";
+  static const GENDER = "Gender";
   String gender;
 
-  static const MULTEPLICITY = "MULTEPLICITY";
+  static const MULTEPLICITY = "Multeplicity";
   String multeplicity;
 
-  static const TIPOLOGY = "TIPOLOGY";
+  static const TIPOLOGY = "Tipology";
   String tipology;
 
-  static const ITALIAN_TYPE = "ITALIAN_TYPE";
+  static const ITALIAN_TYPE = "Italian_type";
   String italianType;
 
-  static const ITALIAN_CORRESPONDENCE = "ITALIAN_CORRESPONDENCE";
+  static const ITALIAN_CORRESPONDENCE = "Italian_correspondence";
   String italianCorrespondence;
 
   Word(
-      {String? id,
+      {String? author,
+      String? id,
       String? type,
       String? word,
       List<String>? definitions,
       List<String>? semanticFields,
       List<String>? examplePhrases,
-      String? timestamp,
+      Timestamp? timestamp,
       String? italianType,
       String? italianCorrespondence,
       List<String>? synonyms,
@@ -71,10 +77,11 @@ class Word {
       String? tipology,
       String? gender,
       String? multeplicity})
-      : id = id ?? "",
+      : author = author ?? "",
+        id = id ?? "",
         type = type ?? "Verbo",
         word = word ?? "",
-        timestamp = Timestamp.now(),
+        timestamp = timestamp ?? Timestamp.now(),
         definitions = definitions ?? [],
         semanticFields = semanticFields ?? [],
         examplePhrases = examplePhrases ?? [],
@@ -120,8 +127,7 @@ class Word {
       }
     }
     return {
-      'AUTHOR': FirebaseGlobal.auth.currentUser!.uid,
-      ID: id,
+      AUTHOR: FirebaseGlobal.auth.currentUser!.displayName,
       TYPE: type,
       WORD: word,
       TIMESTAMP: timestamp,
@@ -136,6 +142,26 @@ class Word {
       ITALIAN_TYPE: italianType,
       ITALIAN_CORRESPONDENCE: italianCorrespondence,
     };
+  }
+
+  factory Word.fromJson(Map<String, dynamic> json, String id) {
+    return Word(
+      author: json[AUTHOR],
+      id: id,
+      type: json[TYPE],
+      word: json[WORD],
+      timestamp: json[TIMESTAMP] as Timestamp,
+      definitions: List<String>.from(json[DEFINITION]),
+      semanticFields: List<String>.from(json[SEMANTIC_FIELD]),
+      examplePhrases: List<String>.from(json[EXAMPLE_PHRASES]),
+      synonyms: List<String>.from(json[SYNONYMS]),
+      antonyms: List<String>.from(json[ANTONYMS]),
+      gender: json[GENDER],
+      multeplicity: json[MULTEPLICITY],
+      tipology: json[TIPOLOGY],
+      italianType: json[ITALIAN_TYPE],
+      italianCorrespondence: json[ITALIAN_CORRESPONDENCE],
+    );
   }
 
   @override

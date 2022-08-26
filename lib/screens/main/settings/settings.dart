@@ -83,14 +83,16 @@ class _SettingsState extends State<Settings> {
                           route: NavigatorUtil.CHANGE_EMAIL,
                         ),
                       ),
-                    SettingsTile.navigation(
-                      leading: const Icon(CupertinoIcons.lock),
-                      title: const Text('Cambia password'),
-                      onPressed: (context) => NavigatorUtil.navigateToNamed(
-                        context: NavigationService.navigatorKey.currentContext!,
-                        route: NavigatorUtil.CHANGE_PASSWORD,
+                    if (!AuthenticationRepository.isGoogleLogged())
+                      SettingsTile.navigation(
+                        leading: const Icon(CupertinoIcons.lock),
+                        title: const Text('Cambia password'),
+                        onPressed: (context) => NavigatorUtil.navigateToNamed(
+                          context:
+                              NavigationService.navigatorKey.currentContext!,
+                          route: NavigatorUtil.CHANGE_PASSWORD,
+                        ),
                       ),
-                    ),
                   ],
                 ),
                 SettingsSection(
@@ -155,6 +157,18 @@ class _SettingsState extends State<Settings> {
                         "Tema: ${themeProvider.isDarkTheme ? "Scuro" : "Chiaro"}",
                       ),
                     ),
+                  ],
+                ),
+                SettingsSection(
+                  tiles: <SettingsTile>[
+                    SettingsTile.navigation(
+                      title: const Text("About"),
+                      leading: const Icon(CupertinoIcons.info),
+                      onPressed: (context) => NavigatorUtil.navigateToNamed(
+                        context: NavigationService.navigatorKey.currentContext!,
+                        route: NavigatorUtil.ABOUT,
+                      ),
+                    )
                   ],
                 ),
               ],

@@ -106,15 +106,23 @@ class _AlphabetScrollListState extends State<AlphabetScrollList> {
   Widget build(BuildContext context) {
     final bookProvider = Provider.of<BookModel>(context);
 
-    List<String> words() => bookProvider.words[widget.book]!;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (words().isEmpty) {
-        for (var word in _words) {
-          bookProvider.add(widget.book, word);
-        }
-        words().sort();
+    List<Word> words() => bookProvider.words;
+    List<String> wordsString(List<Word> words) {
+      List<String> list = [];
+      for (var word in words) {
+        list.add(word.word);
       }
-    });
+      return list;
+    }
+
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   if (words().isEmpty) {
+    //     for (var word in _words) {
+    //       bookProvider.add(widget.book, word);
+    //     }
+    //     words().sort();
+    //   }
+    // });
 
     /// This variable holds the positions in the ListView. We need that to implement
     /// the functionality of the direct jump to the given letter in the list
@@ -130,7 +138,7 @@ class _AlphabetScrollListState extends State<AlphabetScrollList> {
 
       /// For simplicity, use set to keep unique letter
       Set<String> outSet = {};
-      for (String pc in words()) {
+      for (String pc in wordsString(words())) {
         outSet.add(pc[0]);
       }
 
@@ -192,7 +200,7 @@ class _AlphabetScrollListState extends State<AlphabetScrollList> {
       List<Widget> out = [];
       SplayTreeMap<String, Set<String>> wordsMap = SplayTreeMap();
 
-      for (String word in words()) {
+      for (String word in wordsString(words())) {
         if (!wordsMap.containsKey(word[0])) {
           /// If a key is missing, add it
           wordsMap[word[0]] = <String>{};
@@ -255,7 +263,7 @@ class _AlphabetScrollListState extends State<AlphabetScrollList> {
       /// any contacts
       List<Widget> out = [];
 
-      for (String word in words()) {
+      for (String word in wordsString(words())) {
         if (!word.toLowerCase().contains(searchValue)) {
           continue;
         }

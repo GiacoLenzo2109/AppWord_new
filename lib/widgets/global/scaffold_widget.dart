@@ -86,6 +86,8 @@ class _ScaffoldWidgetState extends State<PageScaffold> {
 
     CupertinoPageScaffold cupertinoScaffold = CupertinoPageScaffold(
       child: CustomScrollView(
+        physics:
+            !widget.scrollable ? const NeverScrollableScrollPhysics() : null,
         controller: widget.controller,
         slivers: [
           CupertinoSliverNavigationBar(
@@ -101,7 +103,7 @@ class _ScaffoldWidgetState extends State<PageScaffold> {
           ),
           if (widget.onRefresh != null && widget.childSliver == null)
             CupertinoSliverRefreshControl(
-              onRefresh: widget.onRefresh,
+              onRefresh: widget.onRefresh!,
               builder: SpinnerRefreshUtil.buildSpinnerOnlyRefreshIndicator,
             ),
           if (widget.header != null)
@@ -162,11 +164,13 @@ class SimplePageScaffold extends StatefulWidget {
   final Widget body;
   final String? title;
   final double? padding;
+  final bool scrollable;
   const SimplePageScaffold({
     Key? key,
     required this.body,
     this.title,
     this.padding,
+    required this.scrollable,
   }) : super(key: key);
 
   @override
@@ -190,9 +194,32 @@ class _SimpleScaffoldWidgetState extends State<SimplePageScaffold> {
         border: null,
         backgroundColor: ThemesUtil.getBackgroundColor(context),
       ),
-      child: Padding(
-        padding: EdgeInsets.all(widget.padding ?? 0),
-        child: widget.body,
+      child: SafeArea(
+        child: CustomScrollView(
+          physics:
+              widget.scrollable ? null : const NeverScrollableScrollPhysics(),
+          slivers: [
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) => Padding(
+                  padding: EdgeInsets.all(widget.padding ?? 0),
+                  child: StaggeredGrid.count(
+                    crossAxisCount: 1,
+                    children: [
+                      SizedBox(
+                        height: !widget.scrollable
+                            ? ScreenUtil.getSize(context).height - 150
+                            : null,
+                        child: widget.body,
+                      ),
+                    ],
+                  ),
+                ),
+                childCount: 1,
+              ),
+            ),
+          ],
+        ),
       ),
     );
 

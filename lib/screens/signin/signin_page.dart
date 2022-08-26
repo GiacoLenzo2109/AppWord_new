@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:material_dialogs/material_dialogs.dart';
 import 'package:provider/provider.dart';
 
 class SignInPage extends StatelessWidget {
@@ -17,45 +18,45 @@ class SignInPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SimplePageScaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(25),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  "assets/Google_Logo.png",
-                  width: ScreenUtil.getSize(context).width / 2,
+      scrollable: false,
+      padding: 25,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              LottieBuilder.asset(
+                "assets/animations/signin_animation.json",
+                height: ScreenUtil.getSize(context).height / 2.5,
+                repeat: true,
+              ),
+            ],
+          ),
+          StaggeredGrid.count(
+            crossAxisCount: 1,
+            mainAxisSpacing: 25,
+            children: [
+              ButtonWidget(
+                text: "Login",
+                padding: 20,
+                onPressed: () => NavigatorUtil.navigateTo(
+                  context: context,
+                  builder: (context) => const LoginPage(),
                 ),
-              ],
-            ),
-            StaggeredGrid.count(
-              crossAxisCount: 1,
-              mainAxisSpacing: 25,
-              children: [
-                ButtonWidget(
-                  text: "Login",
-                  padding: 20,
-                  onPressed: () => NavigatorUtil.navigateTo(
-                    context: context,
-                    builder: (context) => const LoginPage(),
-                  ),
+              ),
+              ButtonWidget(
+                text: "Registrati",
+                padding: 20,
+                onPressed: () => NavigatorUtil.navigateTo(
+                  context: context,
+                  builder: (context) => const RegisterPage(),
                 ),
-                ButtonWidget(
-                  text: "Registrati",
-                  padding: 20,
-                  onPressed: () => NavigatorUtil.navigateTo(
-                    context: context,
-                    builder: (context) => const RegisterPage(),
-                  ),
-                  backgroundColor: CupertinoColors.systemRed,
-                ),
-              ],
-            ),
-          ],
-        ),
+                backgroundColor: CupertinoColors.systemRed,
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

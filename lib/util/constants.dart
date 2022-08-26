@@ -16,4 +16,19 @@ class Constants {
 
   static const personalBook = "Personale";
   static const classBook = "Classe";
+
+  static const List<String> emojis = [
+    "😀",
+    "🤣",
+    "😎",
+    "🤪",
+    "🤬",
+    "🤯",
+    "💩",
+    "🍆",
+    "🥦",
+    "🚀",
+  ];
+
+  static const shhhEmoji = "🤫";
 }

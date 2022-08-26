@@ -2,13 +2,13 @@ import 'package:app_word/util/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
-class ContaienrWidget extends StatelessWidget {
+class ContainerWidget extends StatelessWidget {
   final Color? backgroundColor;
   final Widget child;
   final double? padding;
   final double? margin;
 
-  const ContaienrWidget(
+  const ContainerWidget(
       {Key? key,
       this.backgroundColor,
       this.padding,

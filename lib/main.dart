@@ -1,6 +1,8 @@
 import 'package:app_word/database/firebase_global.dart';
+import 'package:app_word/providers/book_list_model.dart';
 import 'package:app_word/providers/navbar_model.dart';
 import 'package:app_word/screens/main/book/book.dart';
+import 'package:app_word/screens/main/settings/about.dart';
 import 'package:app_word/screens/main/settings/update_user.dart';
 import 'package:app_word/screens/on_boarding/on_boarding.dart';
 import 'package:app_word/screens/signin/email_verification_page.dart';
@@ -29,6 +31,20 @@ void main() async {
   //   DeviceOrientation.portraitUp,
   // ]).then(
   //   (value) =>
+  // );
+
+  /// Dalay splashscreen
+  // Future.delayed(
+  //   const Duration(seconds: 1),
+  //   () => runApp(
+  //     MultiProvider(
+  //       providers: [
+  //         ChangeNotifierProvider(create: (context) => ThemeProvider()),
+  //         ChangeNotifierProvider(create: (context) => NavbarModel()),
+  //       ],
+  //       builder: (context, _) => const AppWord(),
+  //     ),
+  //   ),
   // );
   runApp(
     MultiProvider(
@@ -113,7 +129,7 @@ class _AppWordState extends State<AppWord> with WidgetsBindingObserver {
           routes: <String, WidgetBuilder>{
             NavigatorUtil.MAIN: (BuildContext context) => const MainPage(),
             NavigatorUtil.HOME: (BuildContext context) => const Home(),
-            NavigatorUtil.BOOK: (BuildContext context) => const Book(),
+            NavigatorUtil.BOOK: (BuildContext context) => const BookPage(),
             NavigatorUtil.SETTINGS: (BuildContext context) => const Settings(),
             NavigatorUtil.REGISTER: (BuildContext context) =>
                 const RegisterPage(),
@@ -122,11 +138,12 @@ class _AppWordState extends State<AppWord> with WidgetsBindingObserver {
             NavigatorUtil.EMAIL_VERIFICATION: (BuildContext context) =>
                 const EmailVerificationPage(),
             NavigatorUtil.CHANGE_USERNAME: (BuildContext context) =>
-                UpdateUserPage(type: UpdateUserPage.USERNAME),
+                const UpdateUserPage(type: UpdateUserPage.USERNAME),
             NavigatorUtil.CHANGE_EMAIL: (BuildContext context) =>
-                UpdateUserPage(type: UpdateUserPage.EMAIL),
+                const UpdateUserPage(type: UpdateUserPage.EMAIL),
             NavigatorUtil.CHANGE_PASSWORD: (BuildContext context) =>
-                UpdateUserPage(type: UpdateUserPage.PASSWORD),
+                const UpdateUserPage(type: UpdateUserPage.PASSWORD),
+            NavigatorUtil.ABOUT: (BuildContext context) => const AboutPage(),
           },
         );
 
@@ -142,8 +159,15 @@ class _AppWordState extends State<AppWord> with WidgetsBindingObserver {
           home: home(),
         );
 
-    return ChangeNotifierProvider(
-      create: (_) => themeProvider,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => themeProvider,
+        ),
+        ChangeNotifierProvider(
+          create: (_) => BookListProvider(),
+        ),
+      ],
       child: Consumer<ThemeProvider>(
         builder: (BuildContext context, value, Widget? child) =>
             Theme.of(context).platform == TargetPlatform.iOS

@@ -37,6 +37,7 @@ class DialogWidget extends StatefulWidget {
   Widget? body;
   String? doneText;
   Color? doneColorText;
+  bool? autoPop;
 
   DialogWidget({
     Key? key,
@@ -48,31 +49,34 @@ class DialogWidget extends StatefulWidget {
     this.body,
     this.doneText,
     this.doneColorText,
-  }) : super(key: key);
-
-  DialogWidget.username({
-    this.type,
-    Key? key,
+    bool? autoPop,
   }) : super(key: key) {
-    type = USERNAME;
-    dType = DialogType.WARNING;
+    this.autoPop = autoPop ?? true;
   }
 
-  DialogWidget.email({
-    this.type,
-    Key? key,
-  }) : super(key: key) {
-    type = EMAIL;
-    dType = DialogType.WARNING;
-  }
+  // DialogWidget.username({
+  //   this.type,
+  //   Key? key,
+  // }) : super(key: key) {
+  //   type = USERNAME;
+  //   dType = DialogType.WARNING;
+  // }
 
-  DialogWidget.password({
-    this.type,
-    Key? key,
-  }) : super(key: key) {
-    type = PASSWORD;
-    dType = DialogType.WARNING;
-  }
+  // DialogWidget.email({
+  //   this.type,
+  //   Key? key,
+  // }) : super(key: key) {
+  //   type = EMAIL;
+  //   dType = DialogType.WARNING;
+  // }
+
+  // DialogWidget.password({
+  //   this.type,
+  //   Key? key,
+  // }) : super(key: key) {
+  //   type = PASSWORD;
+  //   dType = DialogType.WARNING;
+  // }
 
   @override
   State<DialogWidget> createState() => _DialogWidgetState();
@@ -86,13 +90,15 @@ class _DialogWidgetState extends State<DialogWidget> {
 
   @override
   Widget build(BuildContext context) {
-    var title = Text(
-      widget.title ??
-          (widget.type == DialogWidget.EMAIL
-              ? "Cambia email"
-              : widget.type == DialogWidget.PASSWORD
-                  ? "Cambia password"
-                  : "Cambia username"),
+    var title = Padding(
+      padding: Constants.padding,
+      child: Text(widget.title ?? ""
+          //     (widget.type == DialogWidget.EMAIL
+          //         ? "Cambia email"
+          //         : widget.type == DialogWidget.PASSWORD
+          //             ? "Cambia password"
+          //             : "Cambia username"),
+          ),
     );
 
     Future<void> onPressedDone() async {
@@ -148,7 +154,7 @@ class _DialogWidgetState extends State<DialogWidget> {
       buttonsBorderRadius: BorderRadius.circular(10),
       //btnCancelOnPress: () => Navigator.of(context).pop(),
       btnCancelIcon: Icons.cancel_outlined,
-      btnOkOnPress: widget.onPressed ?? onPressedDone,
+      btnOkOnPress: widget.onPressed,
       btnOkIcon: Icons.done,
       onDissmissCallback: (type) => Navigator.of(context).pop(),
       body: StaggeredGrid.count(
@@ -160,52 +166,52 @@ class _DialogWidgetState extends State<DialogWidget> {
               textAlign: TextAlign.center,
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 21),
             ),
-          widget.body ??
-              StaggeredGrid.count(
-                crossAxisCount: 1,
-                mainAxisSpacing: 10,
-                children: [
-                  title,
-                  Text(widget.msg ?? ''),
-                  if (widget.type != null)
-                    TextFieldWidget(
-                      onChanged: (t) {
-                        setState(() {
-                          text = t;
-                        });
-                      },
-                      placeholder: widget.type == DialogWidget.EMAIL
-                          ? FirebaseGlobal.auth.currentUser != null
-                              ? FirebaseGlobal.auth.currentUser!.email
-                              : "esempio@gmail.com"
-                          : widget.type == DialogWidget.USERNAME
-                              ? FirebaseGlobal.auth.currentUser != null
-                                  ? FirebaseGlobal.auth.currentUser!.displayName
-                                  : "Username"
-                              : "Nuova password",
-                      icon: widget.type == DialogWidget.EMAIL
-                          ? CupertinoIcons.mail
-                          : widget.type == DialogWidget.USERNAME
-                              ? CupertinoIcons.person
-                              : CupertinoIcons.lock,
-                      isPassword: widget.type == DialogWidget.PASSWORD,
-                      type: widget.type == DialogWidget.EMAIL
-                          ? TextInputType.emailAddress
-                          : TextInputType.text,
-                    ),
-                  if (widget.type == DialogWidget.PASSWORD)
-                    TextFieldWidget(
-                      onChanged: (t) {
-                        setState(() {
-                          confirmPassword = t;
-                        });
-                      },
-                      placeholder: "Conferma password",
-                      icon: CupertinoIcons.lock,
-                      isPassword: true,
-                    ),
-                ],
-              ),
+          if (widget.body != null && widget.title != null) widget.body!
+          //     StaggeredGrid.count(
+          //       crossAxisCount: 1,
+          //       mainAxisSpacing: 10,
+          //       children: [
+          //         title,
+          //         Text(widget.msg ?? ''),
+          //         if (widget.type != null)
+          //           TextFieldWidget(
+          //             onChanged: (t) {
+          //               setState(() {
+          //                 text = t;
+          //               });
+          //             },
+          //             placeholder: widget.type == DialogWidget.EMAIL
+          //                 ? FirebaseGlobal.auth.currentUser != null
+          //                     ? FirebaseGlobal.auth.currentUser!.email
+          //                     : "esempio@gmail.com"
+          //                 : widget.type == DialogWidget.USERNAME
+          //                     ? FirebaseGlobal.auth.currentUser != null
+          //                         ? FirebaseGlobal.auth.currentUser!.displayName
+          //                         : "Username"
+          //                     : "Nuova password",
+          //             icon: widget.type == DialogWidget.EMAIL
+          //                 ? CupertinoIcons.mail
+          //                 : widget.type == DialogWidget.USERNAME
+          //                     ? CupertinoIcons.person
+          //                     : CupertinoIcons.lock,
+          //             isPassword: widget.type == DialogWidget.PASSWORD,
+          //             type: widget.type == DialogWidget.EMAIL
+          //                 ? TextInputType.emailAddress
+          //                 : TextInputType.text,
+          //           ),
+          //         if (widget.type == DialogWidget.PASSWORD)
+          //           TextFieldWidget(
+          //             onChanged: (t) {
+          //               setState(() {
+          //                 confirmPassword = t;
+          //               });
+          //             },
+          //             placeholder: "Conferma password",
+          //             icon: CupertinoIcons.lock,
+          //             isPassword: true,
+          //           ),
+          //       ],
+          //     ),
         ],
       ),
     );
@@ -213,69 +219,22 @@ class _DialogWidgetState extends State<DialogWidget> {
     //CupertinoDialog
     CupertinoAlertDialog iDialog = CupertinoAlertDialog(
       title: title,
-      content: widget.body ??
-          SizedBox(
-            child: widget.type != null
-                ? StaggeredGrid.count(
-                    crossAxisCount: 1,
-                    children: [
-                      const SizedBox(height: 15),
-                      TextFieldWidget(
-                        onChanged: (t) {
-                          setState(() {
-                            text = t;
-                          });
-                        },
-                        placeholder: widget.type == DialogWidget.EMAIL
-                            ? FirebaseGlobal.auth.currentUser != null
-                                ? FirebaseGlobal.auth.currentUser!.email
-                                : "esempio@gmail.com"
-                            : widget.type == DialogWidget.USERNAME
-                                ? FirebaseGlobal.auth.currentUser != null
-                                    ? FirebaseGlobal
-                                        .auth.currentUser!.displayName
-                                    : "Username"
-                                : "Nuova password",
-                        icon: widget.type == DialogWidget.EMAIL
-                            ? CupertinoIcons.mail
-                            : widget.type == DialogWidget.USERNAME
-                                ? CupertinoIcons.person
-                                : CupertinoIcons.lock,
-                        isPassword: widget.type == DialogWidget.PASSWORD,
-                        type: widget.type == DialogWidget.EMAIL
-                            ? TextInputType.emailAddress
-                            : TextInputType.text,
-                      ),
-                      const SizedBox(height: 15),
-                      if (widget.type == DialogWidget.PASSWORD)
-                        TextFieldWidget(
-                          onChanged: (t) {
-                            setState(() {
-                              confirmPassword = t;
-                            });
-                          },
-                          placeholder: "Conferma password",
-                          icon: CupertinoIcons.lock,
-                          isPassword: true,
-                        ),
-                    ],
-                  )
-                : Text(widget.msg ?? ''),
-          ),
+      content: widget.body ?? Text(widget.msg ?? ''),
       actions: [
         CupertinoButton(
           onPressed: () => Navigator.of(context).pop(),
           child: const Text('Cancella'),
         ),
         CupertinoButton(
-          onPressed: () async {
-            if (widget.onPressed != null) {
-              widget.onPressed!();
-            }
-            if (widget.type != null) {
-              await onPressedDone();
-            }
-            Navigator.of(context).pop();
+          onPressed: () => {
+            if (widget.onPressed != null)
+              {
+                widget.onPressed!(),
+              },
+            if (widget.autoPop!)
+              {
+                Navigator.of(context).pop(),
+              }
           },
           child: Text(
             widget.doneText ?? 'Fatto',

@@ -11,5 +11,5 @@ class FirebaseGlobal {
   static final CollectionReference dailyWords =
       FirebaseFirestore.instance.collection('word_of_the_day');
   static const String wordBook = 'book';
-  static const String words = 'word';
+  static const String words = 'words';
 }

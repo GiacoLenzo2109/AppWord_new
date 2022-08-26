@@ -14,6 +14,7 @@ class NavigatorUtil {
   static const CHANGE_EMAIL = '/change_email';
   static const CHANGE_USERNAME = '/change_username';
   static const CHANGE_PASSWORD = '/change_password';
+  static const ABOUT = '/about';
 
   static makeRoute({required BuildContext context, required Widget page}) =>
       Theme.of(context).platform == TargetPlatform.android
@@ -37,11 +38,19 @@ class NavigatorUtil {
 
   static navigateAndReplace(
       {required BuildContext context, required String route}) {
-    Navigator.of(context).pushNamedAndRemoveUntil(route, (route) => false);
+    Navigator.of(context).pushNamedAndRemoveUntil(route, (route) => true);
   }
 
   static navigatePopAndGo(
       {required BuildContext context, required String route}) {
     Navigator.of(context).popAndPushNamed(route);
+  }
+
+  static navigatePopGo({
+    required BuildContext context,
+    required Widget Function(BuildContext) builder,
+  }) {
+    Navigator.of(context).pop();
+    navigateTo(context: context, builder: builder);
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:app_word/service/navigation_service.dart';
 import 'package:app_word/util/dialog_util.dart';
 import 'package:app_word/util/screen_util.dart';
 import 'package:app_word/util/themes.dart';
@@ -29,9 +30,16 @@ class LoadingWidget extends StatelessWidget {
     );
   }
 
-  static void show(BuildContext context) {
+  static void show(BuildContext? context) {
     DialogUtil.openDialog(
-      context: context,
+      context: context ?? NavigationService.navigatorKey.currentContext!,
+      builder: (context) => const LoadingWidget(),
+    );
+  }
+
+  static void showOnMain() {
+    DialogUtil.openDialog(
+      context: NavigationService.navigatorKey.currentContext!,
       builder: (context) => const LoadingWidget(),
     );
   }

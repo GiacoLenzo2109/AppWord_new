@@ -2,6 +2,7 @@ import 'package:app_word/screens/on_boarding/on_boarding_pages.dart';
 import 'package:app_word/screens/signin/signin_page.dart';
 import 'package:app_word/util/constants.dart';
 import 'package:app_word/util/navigator_util.dart';
+import 'package:app_word/util/screen_util.dart';
 import 'package:app_word/util/themes.dart';
 import 'package:app_word/widgets/global/scaffold_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,6 +17,7 @@ class OnBoardingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SimplePageScaffold(
+      scrollable: false,
       body: IntroductionScreen(
         pages: OnBoardingPages.build(context),
         onDone: () => NavigatorUtil.navigateTo(
@@ -26,7 +28,8 @@ class OnBoardingPage extends StatelessWidget {
         showBackButton: false,
         showSkipButton: true,
         showDoneButton: true,
-        controlsPadding: const EdgeInsets.symmetric(vertical: 25),
+        controlsMargin: const EdgeInsets.all(0),
+        controlsPadding: const EdgeInsets.symmetric(vertical: 0),
         skip: const Text("Salta"),
         skipStyle: ButtonStyle(
           splashFactory: NoSplash.splashFactory,

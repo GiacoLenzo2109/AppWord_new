@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:app_word/util/screen_util.dart';
 import 'package:app_word/widgets/global/text_field.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,7 +10,7 @@ import 'package:textfield_tags/textfield_tags.dart';
 class TextFieldTagsWidget extends StatefulWidget {
   final String? errorPhrase;
   final String? insertPhrase;
-  final String? separator;
+  final List<String>? separator;
   final TextfieldTagsController controller;
   final IconData? icon;
   final List<String>? initialTags;
@@ -33,8 +35,7 @@ class _TextFieldTagsWidgetState extends State<TextFieldTagsWidget> {
     return TextFieldTags(
       initialTags: widget.initialTags ?? [],
       textfieldTagsController: widget.controller,
-      textSeparators:
-          widget.separator != null ? [widget.separator!] : [",", " "],
+      textSeparators: widget.separator != null ? widget.separator! : [",", " "],
       letterCase: LetterCase.normal,
       validator: (String tag) {
         if (widget.controller.getTags!.contains(tag)) {
@@ -52,7 +53,13 @@ class _TextFieldTagsWidgetState extends State<TextFieldTagsWidget> {
                 controller: tec,
                 focusNode: fn,
                 placeholder: widget.insertPhrase,
-                onChanged: onChanged,
+                onChanged: (value) {
+                  if (value.length == 1 && value == " ") {
+                    tec.clear();
+                  } else {
+                    onChanged!(value);
+                  }
+                },
                 onSubmitted: onSubmitted,
                 textInputAction: TextInputAction.done,
                 text: null,

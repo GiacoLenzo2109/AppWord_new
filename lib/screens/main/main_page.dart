@@ -1,3 +1,5 @@
+import 'package:app_word/database/repository/daily_word_repository.dart';
+import 'package:app_word/providers/book_list_model.dart';
 import 'package:app_word/providers/book_model.dart';
 import 'package:app_word/providers/navbar_model.dart';
 import 'package:app_word/screens/main/book/book.dart';
@@ -22,32 +24,37 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int _page = 0;
+  var dailyWordProvider = BookModel();
   List<Widget> _buildScreens() => [
-        ChangeNotifierProvider(
-          create: (context) => NavbarModel(),
-          builder: (context, child) => const Home(),
-        ),
-        ThemesUtil.isAndroid(context)
-            ? MultiProvider(
-                providers: [
-                  ChangeNotifierProvider(
-                    create: (context) => NavbarModel(),
-                  ),
-                  ChangeNotifierProvider(
-                    create: (context) => BookModel(),
-                  ),
-                ],
-                builder: (context, child) => const Book(),
-              )
-            : const BookList(),
         MultiProvider(
           providers: [
             ChangeNotifierProvider(
               create: (context) => NavbarModel(),
             ),
+            ChangeNotifierProvider(
+              create: (context) {
+                dailyWordProvider.setId("DailyWord");
+                return dailyWordProvider;
+              },
+            ),
           ],
-          builder: (context, child) => const Settings(),
+          builder: (context, child) => const Home(),
         ),
+
+        // ThemesUtil.isAndroid(context)
+        //     ? MultiProvider(
+        //         providers: [
+        //           ChangeNotifierProvider(
+        //             create: (context) => NavbarModel(),
+        //           ),
+        //           ChangeNotifierProvider(
+        //             create: (context) => BookModel(),
+        //           ),
+        //         ],
+        //         builder: (context, child) => const BookPage(),
+        //       )
+        const BookList(),
+        const Settings(),
       ];
 
   List<PersistentBottomNavBarItem> _navBarsItems() {

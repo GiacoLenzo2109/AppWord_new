@@ -39,6 +39,7 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
       (timer) => AuthenticationRepository.checkEmailVerified(context: context),
     );
     return SimplePageScaffold(
+      scrollable: false,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

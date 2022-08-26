@@ -59,6 +59,9 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
       controller.text = widget.text!;
     }
     TextField textField = TextField(
+      textAlign: widget.type == TextInputType.number
+          ? TextAlign.center
+          : TextAlign.start,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.all(0),
         border: OutlineInputBorder(
@@ -93,14 +96,19 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
     );
 
     CupertinoTextField iTextField = CupertinoTextField(
+      textAlign: widget.type == TextInputType.number
+          ? TextAlign.center
+          : TextAlign.start,
       placeholder: widget.text ?? widget.placeholder,
-      prefix: Padding(
-        padding: Constants.padding,
-        child: Icon(
-          widget.icon,
-          size: 20,
-        ),
-      ),
+      prefix: widget.icon != null
+          ? Padding(
+              padding: Constants.padding,
+              child: Icon(
+                widget.icon,
+                size: 20,
+              ),
+            )
+          : null,
       decoration: BoxDecoration(
         color: CupertinoThemes.backgroundColor(context),
         borderRadius: BorderRadius.circular(10),
