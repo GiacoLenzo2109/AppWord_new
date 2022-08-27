@@ -35,7 +35,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
         ? ElevatedButton(
             onPressed: widget.onPressed ?? () {},
             style: ButtonStyle(
-              elevation: MaterialStateProperty.all(1.0),
+              elevation: MaterialStateProperty.all(0),
               backgroundColor: MaterialStateProperty.all(
                 widget.backgroundColor ?? ThemesUtil.getPrimaryColor(context),
               ),
@@ -44,23 +44,25 @@ class _ButtonWidgetState extends State<ButtonWidget> {
             ),
             child: widget.icon != null
                 ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       widget.icon ?? const Text(""),
+                      const SizedBox(width: 10),
                       Text(
                         widget.text,
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 18.0,
-                            color: Colors.white),
+                            color: widget.textColor ?? Colors.white),
                       ),
                     ],
                   )
                 : Text(
                     widget.text,
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18.0,
-                        color: Colors.white),
+                        color: widget.textColor ?? Colors.white),
                   ),
           )
         : CupertinoButton(

@@ -94,7 +94,6 @@ class _WordPageState extends State<WordPage> {
                   ? SimplePageScaffold(
                       scrollable: true,
                       title: "Dove vuoi aggiungere il vocabolo?",
-                      padding: 25,
                       body: StaggeredGrid.count(
                         crossAxisCount: 1,
                         mainAxisSpacing: 15,

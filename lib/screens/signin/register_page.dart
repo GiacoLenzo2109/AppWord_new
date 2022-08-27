@@ -71,6 +71,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
     return SimplePageScaffold(
       scrollable: false,
+      padding: 0,
       body: Padding(
         padding: const EdgeInsets.all(25),
         child: Center(
@@ -143,6 +144,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   const Divider(
                     color: CupertinoColors.systemGrey,
                   ),
+                  const GoogleLogInButton(title: "Registrati con Google"),
                 ],
               ),
               StaggeredGrid.count(
@@ -164,7 +166,6 @@ class _RegisterPageState extends State<RegisterPage> {
                             builder: (context) => const LoginPage(),
                           ),
                   ),
-                  const GoogleLogInButton(title: "Registrati con Google"),
                 ],
               )
             ],

@@ -40,6 +40,7 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
     );
     return SimplePageScaffold(
       scrollable: false,
+      padding: 0,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

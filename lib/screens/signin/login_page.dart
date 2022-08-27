@@ -130,7 +130,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 ButtonWidget(
                   text: "Registrati",
-                  backgroundColor: Colors.transparent,
+                  backgroundColor: ThemesUtil.getBackgroundColor(context),
                   textColor: CupertinoColors.activeBlue,
                   onPressed: () => Navigator.canPop(context)
                       ? NavigatorUtil.navigatePopAndGo(
@@ -146,6 +146,6 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
-    return SimplePageScaffold(scrollable: false, body: child);
+    return SimplePageScaffold(scrollable: false, padding: 0, body: child);
   }
 }

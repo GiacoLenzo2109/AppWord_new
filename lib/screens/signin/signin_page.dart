@@ -19,7 +19,6 @@ class SignInPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SimplePageScaffold(
       scrollable: false,
-      padding: 25,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
@@ -28,7 +27,7 @@ class SignInPage extends StatelessWidget {
             children: [
               LottieBuilder.asset(
                 "assets/animations/signin_animation.json",
-                height: ScreenUtil.getSize(context).height / 2.5,
+                height: ScreenUtil.getSize(context).height / 2.8,
                 repeat: true,
               ),
             ],

@@ -1,3 +1,4 @@
+import 'package:app_word/database/firebase_global.dart';
 import 'package:app_word/database/repository/authentication_repository.dart';
 import 'package:app_word/util/dialog_util.dart';
 import 'package:app_word/util/navigator_util.dart';
@@ -17,32 +18,17 @@ class GoogleLogInButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ButtonWidget(
-      text: title,
-      icon: Image.asset(
-        "assets/Google_Logo.png",
-        width: 25,
-        fit: BoxFit.fill,
-      ),
-      backgroundColor: CupertinoColors.activeOrange,
-      onPressed: () {
-        AuthenticationRepository.signInWithGoogle(context: context)
-            .then(
-          (value) => {
-            DialogUtil.openDialog(
-              context: context,
-              builder: (context) => const LoadingWidget(),
-            ),
-          },
-          onError: (error) => Navigator.pop(context),
-        )
-            .whenComplete(
-          () {
-            NavigatorUtil.navigateAndReplace(
-              context: context,
-              route: NavigatorUtil.MAIN,
-            );
-          },
-        );
+        text: title,
+        icon: Image.asset(
+          "assets/Google_Logo.png",
+          width: 25,
+          fit: BoxFit.fill,
+        ),
+        backgroundColor: CupertinoColors.activeOrange,
+        onPressed: () {
+          AuthenticationRepository.signInWithGoogle(context: context);
+        }
+
         // : DialogUtil.openDialog(
         //     context: context,
         //     builder: (context) => DialogWidget(
@@ -54,7 +40,7 @@ class GoogleLogInButton extends StatelessWidget {
         //       dType: DialogType.ERROR,
         //     ),
         //   );
-      },
-    );
+
+        );
   }
 }

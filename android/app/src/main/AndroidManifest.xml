@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.app_word">
+    package="com.starvation.app_word">
    <application
         android:label="app_word"
-        android:name="${applicationName}"
+        android:name="AppWord"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

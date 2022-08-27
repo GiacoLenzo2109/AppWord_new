@@ -131,10 +131,7 @@ class AuthenticationRepository {
 
   /// Log in with google account
   static Future<void> signInWithGoogle({required BuildContext context}) async {
-    DialogUtil.openDialog(
-      context: context,
-      builder: (context) => const LoadingWidget(),
-    );
+    LoadingWidget.show(context);
     try {
       FirebaseAuth auth = FirebaseGlobal.auth;
       //User? user;
@@ -142,7 +139,12 @@ class AuthenticationRepository {
       final GoogleSignIn googleSignIn = GoogleSignIn();
 
       final GoogleSignInAccount? googleSignInAccount =
-          await googleSignIn.signIn();
+          await googleSignIn.signIn().then(
+        (value) {
+          if (value == null) Navigator.pop(context);
+          return value;
+        },
+      );
 
       if (googleSignInAccount != null) {
         final GoogleSignInAuthentication googleSignInAuthentication =

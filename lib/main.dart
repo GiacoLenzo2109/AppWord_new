@@ -113,6 +113,25 @@ class _AppWordState extends State<AppWord> with WidgetsBindingObserver {
             : const OnBoardingPage()
         : const OnBoardingPage();
 
+    var routes = <String, WidgetBuilder>{
+      NavigatorUtil.MAIN: (BuildContext context) => const MainPage(),
+      NavigatorUtil.HOME: (BuildContext context) => const Home(),
+      NavigatorUtil.BOOK: (BuildContext context) => const BookPage(),
+      NavigatorUtil.SETTINGS: (BuildContext context) => const Settings(),
+      NavigatorUtil.REGISTER: (BuildContext context) => const RegisterPage(),
+      NavigatorUtil.LOGIN: (BuildContext context) => const LoginPage(),
+      NavigatorUtil.SIGNIN: (BuildContext context) => const SignInPage(),
+      NavigatorUtil.EMAIL_VERIFICATION: (BuildContext context) =>
+          const EmailVerificationPage(),
+      NavigatorUtil.CHANGE_USERNAME: (BuildContext context) =>
+          const UpdateUserPage(type: UpdateUserPage.USERNAME),
+      NavigatorUtil.CHANGE_EMAIL: (BuildContext context) =>
+          const UpdateUserPage(type: UpdateUserPage.EMAIL),
+      NavigatorUtil.CHANGE_PASSWORD: (BuildContext context) =>
+          const UpdateUserPage(type: UpdateUserPage.PASSWORD),
+      NavigatorUtil.ABOUT: (BuildContext context) => const AboutPage(),
+    };
+
     //iOS
     CupertinoApp cupertinoApp() => CupertinoApp(
           navigatorKey: NavigationService.navigatorKey,
@@ -126,25 +145,7 @@ class _AppWordState extends State<AppWord> with WidgetsBindingObserver {
             DefaultWidgetsLocalizations.delegate,
           ],
           home: home(),
-          routes: <String, WidgetBuilder>{
-            NavigatorUtil.MAIN: (BuildContext context) => const MainPage(),
-            NavigatorUtil.HOME: (BuildContext context) => const Home(),
-            NavigatorUtil.BOOK: (BuildContext context) => const BookPage(),
-            NavigatorUtil.SETTINGS: (BuildContext context) => const Settings(),
-            NavigatorUtil.REGISTER: (BuildContext context) =>
-                const RegisterPage(),
-            NavigatorUtil.LOGIN: (BuildContext context) => const LoginPage(),
-            NavigatorUtil.SIGNIN: (BuildContext context) => const SignInPage(),
-            NavigatorUtil.EMAIL_VERIFICATION: (BuildContext context) =>
-                const EmailVerificationPage(),
-            NavigatorUtil.CHANGE_USERNAME: (BuildContext context) =>
-                const UpdateUserPage(type: UpdateUserPage.USERNAME),
-            NavigatorUtil.CHANGE_EMAIL: (BuildContext context) =>
-                const UpdateUserPage(type: UpdateUserPage.EMAIL),
-            NavigatorUtil.CHANGE_PASSWORD: (BuildContext context) =>
-                const UpdateUserPage(type: UpdateUserPage.PASSWORD),
-            NavigatorUtil.ABOUT: (BuildContext context) => const AboutPage(),
-          },
+          routes: routes,
         );
 
     //ANDROID
@@ -157,6 +158,7 @@ class _AppWordState extends State<AppWord> with WidgetsBindingObserver {
               themeProvider.isDarkTheme ? ThemeMode.dark : ThemeMode.light,
           debugShowCheckedModeBanner: false,
           home: home(),
+          routes: routes,
         );
 
     return MultiProvider(

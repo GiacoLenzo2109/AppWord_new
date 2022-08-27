@@ -35,7 +35,6 @@ class _UpdateUserPageState extends State<UpdateUserPage> {
   Widget build(BuildContext context) {
     return SimplePageScaffold(
       scrollable: false,
-      padding: 25,
       title: "Aggiorna ${widget.type}",
       body: StaggeredGrid.count(
         crossAxisCount: 1,

@@ -32,9 +32,10 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
-  bool isGoogleUser =
-      FirebaseGlobal.auth.currentUser!.providerData[0].providerId ==
-          'google.com';
+  bool isGoogleUser = FirebaseGlobal.auth.currentUser != null
+      ? FirebaseGlobal.auth.currentUser!.providerData[0].providerId ==
+          'google.com'
+      : false;
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context, listen: true);

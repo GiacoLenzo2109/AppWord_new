@@ -53,6 +53,7 @@ class _ScaffoldWidgetState extends State<PageScaffold> {
         physics: const BouncingScrollPhysics(), child: page);
 
     Scaffold scaffold = Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
@@ -85,6 +86,7 @@ class _ScaffoldWidgetState extends State<PageScaffold> {
     );
 
     CupertinoPageScaffold cupertinoScaffold = CupertinoPageScaffold(
+      resizeToAvoidBottomInset: true,
       child: CustomScrollView(
         physics:
             !widget.scrollable ? const NeverScrollableScrollPhysics() : null,
@@ -181,14 +183,20 @@ class _SimpleScaffoldWidgetState extends State<SimplePageScaffold> {
   @override
   Widget build(BuildContext context) {
     Scaffold scaffold = Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: Text(widget.title ?? ""),
-        backgroundColor: Colors.transparent,
+        backgroundColor: ThemesUtil.getBackgroundColor(context),
+        elevation: 0,
       ),
-      body: widget.body,
+      body: Padding(
+        padding: EdgeInsets.all(widget.padding ?? 25),
+        child: widget.body,
+      ),
     );
 
     CupertinoPageScaffold cupertinoScaffold = CupertinoPageScaffold(
+      resizeToAvoidBottomInset: true,
       navigationBar: CupertinoNavigationBar(
         middle: Text(widget.title ?? ""),
         border: null,
@@ -202,7 +210,7 @@ class _SimpleScaffoldWidgetState extends State<SimplePageScaffold> {
             SliverList(
               delegate: SliverChildBuilderDelegate(
                 (context, index) => Padding(
-                  padding: EdgeInsets.all(widget.padding ?? 0),
+                  padding: EdgeInsets.all(widget.padding ?? 25),
                   child: StaggeredGrid.count(
                     crossAxisCount: 1,
                     children: [

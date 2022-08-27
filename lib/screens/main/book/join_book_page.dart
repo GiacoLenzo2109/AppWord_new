@@ -44,7 +44,6 @@ class _JoinBookPageState extends State<JoinBookPage> {
     return SimplePageScaffold(
       scrollable: false,
       title: "Inserisci pin",
-      padding: 25,
       //scrollable: false,
       body: SizedBox(
         height: ScreenUtil.getSize(context).height,

@@ -35,7 +35,7 @@ class ThemesUtil {
 
   static Color getBackgroundColor(BuildContext context) =>
       Theme.of(context).platform == TargetPlatform.android
-          ? Theme.of(context).primaryColorDark
+          ? Theme.of(context).scaffoldBackgroundColor
           : CupertinoTheme.of(context).scaffoldBackgroundColor;
 }
 
@@ -64,7 +64,7 @@ class MaterialTheme {
   );
 
   static ThemeData darkTheme = ThemeData(
-    backgroundColor: CupertinoColors.darkBackgroundGray,
+    backgroundColor: Colors.black,
     scaffoldBackgroundColor: Colors.black,
     colorScheme: const ColorScheme.dark(),
     appBarTheme: AppBarTheme(
@@ -74,9 +74,9 @@ class MaterialTheme {
         fontWeight: FontWeight.bold,
         fontSize: 25.0,
       ),
-      backgroundColor: CupertinoColors.darkBackgroundGray,
+      backgroundColor: Colors.black,
     ),
-    bottomAppBarColor: CupertinoColors.darkBackgroundGray,
+    bottomAppBarColor: Colors.black,
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       elevation: 0,
       backgroundColor: Colors.black,
@@ -85,7 +85,7 @@ class MaterialTheme {
     ),
     primaryColor: const Color.fromARGB(255, 39, 108, 255),
     primaryColorDark: Colors.white,
-    primaryColorLight: CupertinoColors.darkBackgroundGray,
+    primaryColorLight: Colors.black,
   );
 }
 

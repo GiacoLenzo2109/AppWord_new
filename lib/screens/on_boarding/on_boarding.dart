@@ -30,13 +30,25 @@ class OnBoardingPage extends StatelessWidget {
         showDoneButton: true,
         controlsMargin: const EdgeInsets.all(0),
         controlsPadding: const EdgeInsets.symmetric(vertical: 0),
-        skip: const Text("Salta"),
+        skip: Text(
+          "Salta",
+          style: TextStyle(
+            color: Colors.blueAccent,
+            fontWeight: ThemesUtil.isAndroid(context)
+                ? FontWeight.bold
+                : FontWeight.normal,
+          ),
+        ),
         skipStyle: ButtonStyle(
           splashFactory: NoSplash.splashFactory,
           overlayColor: MaterialStateProperty.all(Colors.transparent),
         ),
-        next:
-            const Text("Avanti", style: TextStyle(fontWeight: FontWeight.w600)),
+        next: Text("Avanti",
+            style: TextStyle(
+              fontWeight: ThemesUtil.isAndroid(context)
+                  ? FontWeight.bold
+                  : FontWeight.normal,
+            )),
         nextStyle: ButtonStyle(
           splashFactory: NoSplash.splashFactory,
           overlayColor: MaterialStateProperty.all(Colors.transparent),

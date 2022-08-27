@@ -17,7 +17,6 @@ class AboutPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SimplePageScaffold(
         title: "About",
-        padding: 25,
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

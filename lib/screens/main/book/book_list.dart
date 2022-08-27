@@ -173,7 +173,7 @@ class _BookListState extends State<BookList> {
 
     return PageScaffold(
       scrollable: loaded && bookListProvider.books.isNotEmpty ? true : false,
-      title: "Elenco",
+      title: "Rubriche",
       onRefresh: loaded
           ? () async {
               bookListProvider.setBooks(await fetchBooks());
