@@ -154,8 +154,6 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
           : Container(),
     );
 
-    return Theme.of(context).platform == TargetPlatform.iOS
-        ? iTextField
-        : textField;
+    return !ThemesUtil.isAndroid(context) ? iTextField : textField;
   }
 }

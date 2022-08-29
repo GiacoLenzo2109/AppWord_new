@@ -69,7 +69,11 @@ class _SettingsState extends State<Settings> {
                     //if (!AuthenticationRepository.isGoogleLogged())
                     SettingsTile.navigation(
                       leading: const Icon(CupertinoIcons.person),
-                      title: const Text('Username'),
+                      title: Text(
+                        'Username',
+                        style:
+                            TextStyle(color: ThemesUtil.getTextColor(context)),
+                      ),
                       onPressed: (context) => NavigatorUtil.navigateToNamed(
                         context: NavigationService.navigatorKey.currentContext!,
                         route: NavigatorUtil.CHANGE_USERNAME,
@@ -78,7 +82,12 @@ class _SettingsState extends State<Settings> {
                     if (!AuthenticationRepository.isGoogleLogged())
                       SettingsTile.navigation(
                         leading: const Icon(CupertinoIcons.mail),
-                        title: const Text('Email'),
+                        title: Text(
+                          'Email',
+                          style: TextStyle(
+                            color: ThemesUtil.getTextColor(context),
+                          ),
+                        ),
                         onPressed: (context) => NavigatorUtil.navigateToNamed(
                           context:
                               NavigationService.navigatorKey.currentContext!,
@@ -88,7 +97,12 @@ class _SettingsState extends State<Settings> {
                     if (!AuthenticationRepository.isGoogleLogged())
                       SettingsTile.navigation(
                         leading: const Icon(CupertinoIcons.lock),
-                        title: const Text('Cambia password'),
+                        title: Text(
+                          'Cambia password',
+                          style: TextStyle(
+                            color: ThemesUtil.getTextColor(context),
+                          ),
+                        ),
                         onPressed: (context) => NavigatorUtil.navigateToNamed(
                           context:
                               NavigationService.navigatorKey.currentContext!,
@@ -158,6 +172,8 @@ class _SettingsState extends State<Settings> {
                       leading: const Icon(CupertinoIcons.paintbrush),
                       title: Text(
                         "Tema: ${themeProvider.isDarkTheme ? "Scuro" : "Chiaro"}",
+                        style:
+                            TextStyle(color: ThemesUtil.getTextColor(context)),
                       ),
                     ),
                   ],
@@ -165,7 +181,11 @@ class _SettingsState extends State<Settings> {
                 SettingsSection(
                   tiles: <SettingsTile>[
                     SettingsTile.navigation(
-                      title: const Text("About"),
+                      title: Text(
+                        "About",
+                        style:
+                            TextStyle(color: ThemesUtil.getTextColor(context)),
+                      ),
                       leading: const Icon(CupertinoIcons.info),
                       onPressed: (context) => NavigatorUtil.navigateToNamed(
                         context: NavigationService.navigatorKey.currentContext!,

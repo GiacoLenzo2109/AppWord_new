@@ -169,7 +169,7 @@ class _MainPageState extends State<MainPage> {
       ),
     );
 
-    return Theme.of(context).platform == TargetPlatform.iOS
+    return !ThemesUtil.isAndroid(context)
         ? cupertinoPageScaffold
         : materialScaffold;
   }

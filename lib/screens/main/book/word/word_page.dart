@@ -78,7 +78,7 @@ class _WordPageState extends State<WordPage> {
                     !widget.isAdmin!
                 ? CupertinoIcons.add
                 : CupertinoIcons.pencil,
-            color: Theme.of(context).platform == TargetPlatform.iOS
+            color: !ThemesUtil.isAndroid(context)
                 ? CupertinoColors.activeBlue
                 : Theme.of(context).appBarTheme.titleTextStyle!.color,
             size: 25,

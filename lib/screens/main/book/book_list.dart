@@ -76,7 +76,7 @@ class _BookListState extends State<BookList> {
         child: GestureDetector(
           child: Icon(
             CupertinoIcons.add,
-            color: Theme.of(context).platform == TargetPlatform.iOS
+            color: !ThemesUtil.isAndroid(context)
                 ? CupertinoColors.activeBlue
                 : Theme.of(context).appBarTheme.titleTextStyle!.color,
             size: 25,

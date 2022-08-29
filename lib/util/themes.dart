@@ -67,7 +67,7 @@ class MaterialTheme {
     backgroundColor: CupertinoColors.darkBackgroundGray,
     scaffoldBackgroundColor: Colors.black,
     colorScheme: const ColorScheme.dark(),
-    appBarTheme: AppBarTheme(
+    appBarTheme: const AppBarTheme(
       centerTitle: true,
       titleTextStyle: TextStyle(
         color: Colors.white,

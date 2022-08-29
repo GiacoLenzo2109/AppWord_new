@@ -1,4 +1,5 @@
 import 'package:app_word/database/firebase_global.dart';
+import 'package:app_word/firebase_options.dart';
 import 'package:app_word/providers/book_list_model.dart';
 import 'package:app_word/providers/navbar_model.dart';
 import 'package:app_word/screens/main/book/book.dart';
@@ -24,7 +25,9 @@ import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   //options: DefaultFirebaseOptions.currentPlatform,
   //);
   // SystemChrome.setPreferredOrientations([
@@ -172,7 +175,8 @@ class _AppWordState extends State<AppWord> with WidgetsBindingObserver {
       ],
       child: Consumer<ThemeProvider>(
         builder: (BuildContext context, value, Widget? child) =>
-            Theme.of(context).platform == TargetPlatform.iOS
+            Theme.of(context).platform == TargetPlatform.iOS ||
+                    Theme.of(context).platform == TargetPlatform.macOS
                 ? cupertinoApp()
                 : materialApp(),
       ),

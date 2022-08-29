@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -28,10 +25,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -49,6 +43,16 @@ class DefaultFirebaseOptions {
     }
   }
 
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyCRnW8Mr9tnw3hJIW72XLwRstjt7Jc-s6Q',
+    appId: '1:684137879377:web:8d3effcbac752a4b6e2570',
+    messagingSenderId: '684137879377',
+    projectId: 'starvation-appword',
+    authDomain: 'starvation-appword.firebaseapp.com',
+    storageBucket: 'starvation-appword.appspot.com',
+    measurementId: 'G-B4XB5LCNES',
+  );
+
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBy4ddlty8VyRRT48Dgj4WLmBrjtqKLXv8',
     appId: '1:684137879377:android:1dd2f54b1e4a8e796e2570',
@@ -63,7 +67,19 @@ class DefaultFirebaseOptions {
     messagingSenderId: '684137879377',
     projectId: 'starvation-appword',
     storageBucket: 'starvation-appword.appspot.com',
+    androidClientId: '684137879377-2b7pfj4k3vg2grpcmn6g6v1ojdnc3h0a.apps.googleusercontent.com',
     iosClientId: '684137879377-s1al0p1ko3eg7m7k5sjdb0nt21q31fo2.apps.googleusercontent.com',
     iosBundleId: 'com.starvation.appword.app',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyCliNa_AHapcbKbBzZsydtiOjt6-bYMLJo',
+    appId: '1:684137879377:ios:74b8fde6bb67d2c16e2570',
+    messagingSenderId: '684137879377',
+    projectId: 'starvation-appword',
+    storageBucket: 'starvation-appword.appspot.com',
+    androidClientId: '684137879377-2b7pfj4k3vg2grpcmn6g6v1ojdnc3h0a.apps.googleusercontent.com',
+    iosClientId: '684137879377-aaqo898dqrrnumsv499tdsn535qfk1vi.apps.googleusercontent.com',
+    iosBundleId: 'com.example.appword',
   );
 }

@@ -46,7 +46,7 @@ class _BookPageState extends State<BookPage> {
             !navbarProvider.leading ? CupertinoIcons.add : CupertinoIcons.trash,
             color: navbarProvider.leading
                 ? Colors.redAccent
-                : Theme.of(context).platform == TargetPlatform.iOS
+                : !ThemesUtil.isAndroid(context)
                     ? CupertinoColors.activeBlue
                     : Theme.of(context).appBarTheme.titleTextStyle!.color,
             size: 25,

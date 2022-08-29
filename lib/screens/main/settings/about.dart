@@ -105,8 +105,11 @@ class AboutPage extends StatelessWidget {
                   mode: LaunchMode.platformDefault,
                 ),
               ),
+              const SizedBox(
+                height: 50,
+              ),
             ],
-          )
+          ),
         ],
       ),
       scrollable: false,
