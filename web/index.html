@@ -54,5 +54,28 @@
       });
     });
   </script>
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.9.3/firebase-analytics.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyCRnW8Mr9tnw3hJIW72XLwRstjt7Jc-s6Q",
+      authDomain: "starvation-appword.firebaseapp.com",
+      projectId: "starvation-appword",
+      storageBucket: "starvation-appword.appspot.com",
+      messagingSenderId: "684137879377",
+      appId: "1:684137879377:web:8d3effcbac752a4b6e2570",
+      measurementId: "G-B4XB5LCNES"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+  </script>
 </body>
 </html>
