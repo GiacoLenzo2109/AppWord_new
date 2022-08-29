@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:app_word/util/screen_util.dart';
+import 'package:app_word/util/themes.dart';
 import 'package:app_word/widgets/global/text_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -50,22 +51,29 @@ class _TextFieldTagsWidgetState extends State<TextFieldTagsWidget> {
           return StaggeredGrid.count(
             crossAxisCount: 1,
             children: [
-              TextFieldWidget(
-                icon: widget.icon,
-                controller: tec,
-                focusNode: fn,
-                placeholder: widget.insertPhrase,
-                onChanged: (value) {
-                  if (value.length == 1 && value == " ") {
-                    tec.clear();
-                  } else {
-                    onChanged!(value);
-                  }
-                },
-                expands: widget.expands,
-                onSubmitted: onSubmitted,
-                textInputAction: TextInputAction.done,
-                text: null,
+              SizedBox(
+                height: ThemesUtil.isAndroid(context) &&
+                        widget.expands != null &&
+                        widget.expands!
+                    ? 100
+                    : null,
+                child: TextFieldWidget(
+                  icon: widget.icon,
+                  controller: tec,
+                  focusNode: fn,
+                  placeholder: widget.insertPhrase,
+                  onChanged: (value) {
+                    if (value.length == 1 && value == " ") {
+                      tec.clear();
+                    } else {
+                      onChanged!(value);
+                    }
+                  },
+                  expands: widget.expands,
+                  onSubmitted: onSubmitted,
+                  textInputAction: TextInputAction.done,
+                  text: null,
+                ),
               ),
               SizedBox(
                 width: ScreenUtil.getSize(context).width,

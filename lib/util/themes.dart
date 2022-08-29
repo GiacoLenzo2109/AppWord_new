@@ -70,11 +70,11 @@ class MaterialTheme {
     appBarTheme: AppBarTheme(
       centerTitle: true,
       titleTextStyle: TextStyle(
-        color: Colors.grey[350],
+        color: Colors.white,
         fontWeight: FontWeight.bold,
         fontSize: 25.0,
       ),
-      backgroundColor: Colors.black,
+      backgroundColor: Color.fromARGB(255, 39, 108, 255),
     ),
     bottomAppBarColor: Colors.black,
     bottomNavigationBarTheme: BottomNavigationBarThemeData(

@@ -29,8 +29,8 @@ class AboutPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    "assets/Logo.png",
-                    width: ScreenUtil.getSize(context).width / 3,
+                    "assets/App_Logo.png",
+                    width: ScreenUtil.getSize(context).width / 2,
                   ),
                 ],
               ),

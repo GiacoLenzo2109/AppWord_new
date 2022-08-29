@@ -45,17 +45,36 @@ class PageScaffold extends StatefulWidget {
 class _ScaffoldWidgetState extends State<PageScaffold> {
   @override
   Widget build(BuildContext context) {
+    var slivers = SliverPadding(
+      padding: EdgeInsets.all(widget.padding ?? 25),
+      sliver: widget.childSliver ??
+          (widget.scrollable
+              ? SliverSafeArea(
+                  top:
+                      false, // Top safe area is consumed by the navigation bar.
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                        return widget.child;
+                      },
+                      childCount: 1,
+                    ),
+                  ),
+                )
+              : SliverFillRemaining(
+                  child: Container(
+                    margin: EdgeInsets.only(
+                      bottom: ThemesUtil.isAndroid(context) ? 25 : 100,
+                    ),
+                    child: widget.child,
+                  ),
+                )),
+    );
     var page = CustomScrollView(
       physics: !widget.scrollable ? const NeverScrollableScrollPhysics() : null,
       controller: widget.controller,
       slivers: [
-        SliverPadding(
-          padding: EdgeInsets.all(widget.padding ?? 25),
-          sliver: widget.childSliver ??
-              SliverFillRemaining(
-                child: widget.child,
-              ),
-        ),
+        slivers,
       ],
     );
 
@@ -139,29 +158,7 @@ class _ScaffoldWidgetState extends State<PageScaffold> {
           //           ),
           //         ),
           //       ),
-          SliverPadding(
-            padding: EdgeInsets.all(widget.padding ?? 25),
-            sliver: widget.childSliver ??
-                (widget.scrollable
-                    ? SliverSafeArea(
-                        top:
-                            false, // Top safe area is consumed by the navigation bar.
-                        sliver: SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                            (BuildContext context, int index) {
-                              return widget.child;
-                            },
-                            childCount: 1,
-                          ),
-                        ),
-                      )
-                    : SliverFillRemaining(
-                        child: Container(
-                          margin: const EdgeInsets.only(bottom: 100),
-                          child: widget.child,
-                        ),
-                      )),
-          ),
+          slivers,
         ],
       ),
     );
@@ -246,7 +243,7 @@ class _SimpleScaffoldWidgetState extends State<SimplePageScaffold> {
           ),
         ),
         backgroundColor:
-            widget.backgroundColor ?? ThemesUtil.getBackgroundColor(context),
+            widget.backgroundColor ?? ThemesUtil.getPrimaryColor(context),
         elevation: 0,
         foregroundColor:
             widget.titleColor ?? Theme.of(context).primaryColorDark,

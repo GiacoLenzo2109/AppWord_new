@@ -167,9 +167,9 @@ class _AddWordPageState extends State<AddWordPage> {
               : "Aggiungi vocabolo",
       padding: 0,
       scrollable: true,
-      backgroundColor: themeProvider.isDarkTheme
-          ? null
-          : ThemesUtil.getPrimaryColor(context),
+      // backgroundColor: themeProvider.isDarkTheme
+      //     ? null
+      //     : ThemesUtil.getPrimaryColor(context),
       titleColor: Colors.white,
       isFullScreen: true,
       body: Padding(

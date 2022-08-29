@@ -105,7 +105,7 @@ class _MainPageState extends State<MainPage> {
       body: PersistentTabView(
         context,
         controller: controller,
-        navBarHeight: 75,
+        navBarHeight: Constants.navBarHeight,
         screens: _buildScreens(),
         items: _navBarsItems(),
         confineInSafeArea: true,
@@ -130,7 +130,7 @@ class _MainPageState extends State<MainPage> {
           curve: Curves.ease,
         ),
         navBarStyle:
-            NavBarStyle.style1, // Choose the nav bar style with this property.
+            NavBarStyle.style4, // Choose the nav bar style with this property.
       ),
     );
 
