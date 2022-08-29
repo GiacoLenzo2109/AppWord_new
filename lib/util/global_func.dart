@@ -8,7 +8,8 @@ class GlobalFunc {
   }
 
   static String capitalize(String value) {
-    if (value.length < 2) return value;
+    if (value.isEmpty) return value;
+    if (value.length == 1) return value[0].toUpperCase();
     return value[0].toUpperCase() + value.substring(1);
   }
 }

@@ -18,7 +18,7 @@ class LoadingWidget extends StatelessWidget {
         padding: const EdgeInsets.all(25),
         child: ThemesUtil.isAndroid(context)
             ? Lottie.asset(
-                "assets/animations/loading.json",
+                "assets/animations/loading_red.json",
                 height: ScreenUtil.getSize(context).height / 2.5,
                 repeat: true,
               )

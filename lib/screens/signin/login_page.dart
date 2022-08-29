@@ -4,6 +4,7 @@ import 'package:app_word/database/firebase_global.dart';
 import 'package:app_word/screens/main/main_page.dart';
 import 'package:app_word/screens/signin/register_page.dart';
 import 'package:app_word/database/repository/authentication_repository.dart';
+import 'package:app_word/service/navigation_service.dart';
 import 'package:app_word/util/constants.dart';
 import 'package:app_word/util/dialog_util.dart';
 import 'package:app_word/util/global_func.dart';
@@ -146,6 +147,10 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
-    return SimplePageScaffold(scrollable: false, padding: 0, body: child);
+    return SimplePageScaffold(
+      scrollable: false,
+      padding: 0,
+      body: child,
+    );
   }
 }

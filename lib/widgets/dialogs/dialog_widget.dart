@@ -13,6 +13,7 @@ import 'package:app_word/util/screen_util.dart';
 import 'package:app_word/util/themes.dart';
 import 'package:app_word/widgets/dialogs/error_dialog_widget.dart';
 import 'package:app_word/widgets/global/button_widget.dart';
+import 'package:app_word/widgets/global/container_widget.dart';
 import 'package:app_word/widgets/global/loading_widget.dart';
 import 'package:app_word/widgets/global/text_field.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
@@ -38,6 +39,7 @@ class DialogWidget extends StatefulWidget {
   String? doneText;
   Color? doneColorText;
   bool? autoPop;
+  IconData? doneIcon;
 
   DialogWidget({
     Key? key,
@@ -49,6 +51,7 @@ class DialogWidget extends StatefulWidget {
     this.body,
     this.doneText,
     this.doneColorText,
+    this.doneIcon,
     bool? autoPop,
   }) : super(key: key) {
     this.autoPop = autoPop ?? true;
@@ -101,48 +104,6 @@ class _DialogWidgetState extends State<DialogWidget> {
           ),
     );
 
-    Future<void> onPressedDone() async {
-      switch (widget.type) {
-        case (DialogWidget.EMAIL):
-          if (GlobalFunc.isEmail(text)) {
-            LoadingWidget.show(context);
-            await FirebaseGlobal.auth.currentUser!.updateEmail(text);
-          } else {
-            DialogUtil.openDialog(
-                context: context,
-                builder: (context) =>
-                    const ErrorDialogWidget("Email non valida"));
-          }
-          break;
-        case (DialogWidget.PASSWORD):
-          if (text.isNotEmpty && text == confirmPassword) {
-            LoadingWidget.show(context);
-            await FirebaseGlobal.auth.currentUser!.updatePassword(text);
-          } else {
-            DialogUtil.openDialog(
-                context: context,
-                builder: (context) =>
-                    const ErrorDialogWidget("Le password non combaciano!"));
-          }
-          break;
-        case (DialogWidget.USERNAME):
-          if (text.isNotEmpty) {
-            LoadingWidget.show(context);
-            await FirebaseGlobal.auth.currentUser!.updateDisplayName(text);
-          } else {
-            DialogUtil.openDialog(
-                context: context,
-                builder: (context) =>
-                    const ErrorDialogWidget("Username non valido"));
-          }
-          break;
-      }
-      await UserRepository.updateUser(
-          context: context, user: FirebaseGlobal.auth.currentUser!);
-
-      Navigator.of(context).pop();
-    }
-
     //Material Dialog
     var dialog = AwesomeDialog(
       context: context,
@@ -154,66 +115,28 @@ class _DialogWidgetState extends State<DialogWidget> {
       buttonsBorderRadius: BorderRadius.circular(10),
       //btnCancelOnPress: () => Navigator.of(context).pop(),
       btnCancelIcon: Icons.cancel_outlined,
+      btnOkText: widget.doneText,
+      btnOkColor: widget.doneColorText,
       btnOkOnPress: widget.onPressed,
-      btnOkIcon: Icons.done,
+      btnOkIcon: widget.doneIcon ?? Icons.done,
       onDissmissCallback: (type) => Navigator.of(context).pop(),
-      body: StaggeredGrid.count(
-        crossAxisCount: 1,
-        children: [
-          if (widget.body != null && widget.title != null)
-            Text(
-              widget.title!,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 21),
-            ),
-          if (widget.body != null && widget.title != null) widget.body!
-          //     StaggeredGrid.count(
-          //       crossAxisCount: 1,
-          //       mainAxisSpacing: 10,
-          //       children: [
-          //         title,
-          //         Text(widget.msg ?? ''),
-          //         if (widget.type != null)
-          //           TextFieldWidget(
-          //             onChanged: (t) {
-          //               setState(() {
-          //                 text = t;
-          //               });
-          //             },
-          //             placeholder: widget.type == DialogWidget.EMAIL
-          //                 ? FirebaseGlobal.auth.currentUser != null
-          //                     ? FirebaseGlobal.auth.currentUser!.email
-          //                     : "esempio@gmail.com"
-          //                 : widget.type == DialogWidget.USERNAME
-          //                     ? FirebaseGlobal.auth.currentUser != null
-          //                         ? FirebaseGlobal.auth.currentUser!.displayName
-          //                         : "Username"
-          //                     : "Nuova password",
-          //             icon: widget.type == DialogWidget.EMAIL
-          //                 ? CupertinoIcons.mail
-          //                 : widget.type == DialogWidget.USERNAME
-          //                     ? CupertinoIcons.person
-          //                     : CupertinoIcons.lock,
-          //             isPassword: widget.type == DialogWidget.PASSWORD,
-          //             type: widget.type == DialogWidget.EMAIL
-          //                 ? TextInputType.emailAddress
-          //                 : TextInputType.text,
-          //           ),
-          //         if (widget.type == DialogWidget.PASSWORD)
-          //           TextFieldWidget(
-          //             onChanged: (t) {
-          //               setState(() {
-          //                 confirmPassword = t;
-          //               });
-          //             },
-          //             placeholder: "Conferma password",
-          //             icon: CupertinoIcons.lock,
-          //             isPassword: true,
-          //           ),
-          //       ],
-          //     ),
-        ],
-      ),
+      title: widget.title,
+      desc: widget.msg,
+      body: widget.body != null
+          ? StaggeredGrid.count(
+              crossAxisCount: 1,
+              children: [
+                if (widget.body != null && widget.title != null)
+                  Text(
+                    widget.title!,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 21),
+                  ),
+                widget.body!,
+              ],
+            )
+          : null,
     );
 
     //CupertinoDialog
@@ -244,10 +167,10 @@ class _DialogWidgetState extends State<DialogWidget> {
       ],
     );
 
-    if (widget.onPressed == null &&
-        Theme.of(context).platform == TargetPlatform.android &&
-        !onPressed) {
-      Future.delayed(const Duration(seconds: 0)).then((value) {
+    if (Theme.of(context).platform == TargetPlatform.android &&
+        !onPressed &&
+        widget.body == null) {
+      Future.delayed(const Duration(seconds: 0), () {
         setState(() {
           onPressed = true;
         });
@@ -255,8 +178,42 @@ class _DialogWidgetState extends State<DialogWidget> {
       });
     }
 
+    // Future.delayed(const Duration(seconds: 0), () {
+    //   if (ThemesUtil.isAndroid(context)) dialog.show();
+    // });
+
+    Widget dialogWithBody = SizedBox(
+      height: ScreenUtil.getSize(context).height,
+      width: ScreenUtil.getSize(context).width,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        // crossAxisCount: 1,
+        children: [
+          if (widget.body != null && widget.title != null)
+            ContainerWidget(
+              margin: 25,
+              child: StaggeredGrid.count(
+                crossAxisCount: 1,
+                children: [
+                  Text(
+                    widget.title!,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 21,
+                      color: ThemesUtil.getTextColor(context),
+                    ),
+                  ),
+                  widget.body!,
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+
     return Theme.of(context).platform == TargetPlatform.iOS
         ? iDialog
-        : Container();
+        : dialogWithBody;
   }
 }

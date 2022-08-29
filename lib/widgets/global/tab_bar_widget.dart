@@ -91,7 +91,7 @@ class _TabBarWidgetState extends State<TabBarWidget>
         indicator: MaterialDesignIndicator(
           indicatorHeight: 7.5,
           indicatorColor: ThemesUtil.isAndroid(context)
-              ? Theme.of(context).appBarTheme.titleTextStyle!.color!
+              ? ThemesUtil.getBackgroundColor(context)
               : Colors.transparent,
         ),
         tabs: tabs,

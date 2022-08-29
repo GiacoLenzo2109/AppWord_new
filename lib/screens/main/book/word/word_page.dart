@@ -153,39 +153,43 @@ class _WordPageState extends State<WordPage> {
             child: StaggeredGrid.count(
               crossAxisCount: 1,
               children: [
-                Text(
-                  "Definizione:",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 25,
-                    color: ThemesUtil.getContrastingColor(context),
+                SizedBox(
+                  width: ScreenUtil.getSize(context).width - 107.5,
+                  child: Text(
+                    "Definizione:",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25,
+                      color: ThemesUtil.getContrastingColor(context),
+                    ),
                   ),
                 ),
-                SizedBox(
-                  width: ScreenUtil.getSize(context).width,
-                  height: (widget.word.definitions.length * 23).toDouble(),
-                  child: ListView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    padding: const EdgeInsets.all(0),
-                    itemExtent: 23,
-                    itemCount: widget.word.definitions.length,
-                    itemBuilder: (context, index) => Row(
-                      children: [
-                        Text(
-                          "${index + 1}. ",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: ThemesUtil.getTextColor(context),
-                          ),
+                ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding: const EdgeInsets.all(0),
+                  shrinkWrap: true,
+                  //itemExtent: 23,
+                  itemCount: widget.word.definitions.length,
+                  itemBuilder: (context, index) => Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "${index + 1}. ",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: ThemesUtil.getTextColor(context),
                         ),
-                        Text(
+                      ),
+                      SizedBox(
+                        width: ScreenUtil.getSize(context).width - 125,
+                        child: Text(
                           widget.word.definitions.elementAt(index),
                           style: TextStyle(
                             color: ThemesUtil.getTextColor(context),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -203,31 +207,31 @@ class _WordPageState extends State<WordPage> {
                     color: ThemesUtil.getTextColor(context),
                   ),
                 ),
-                SizedBox(
-                  width: ScreenUtil.getSize(context).width,
-                  height: (widget.word.semanticFields.length * 23).toDouble(),
-                  child: ListView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    padding: const EdgeInsets.all(0),
-                    itemExtent: 23,
-                    itemCount: widget.word.semanticFields.length,
-                    itemBuilder: (context, index) => Row(
-                      children: [
-                        Text(
-                          "${index + 1}. ",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: ThemesUtil.getTextColor(context),
-                          ),
+                ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding: const EdgeInsets.all(0),
+                  shrinkWrap: true,
+                  itemCount: widget.word.semanticFields.length,
+                  itemBuilder: (context, index) => Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "${index + 1}. ",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: ThemesUtil.getTextColor(context),
                         ),
-                        Text(
+                      ),
+                      SizedBox(
+                        width: ScreenUtil.getSize(context).width - 125,
+                        child: Text(
                           widget.word.semanticFields.elementAt(index),
                           style: TextStyle(
                             color: ThemesUtil.getTextColor(context),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -247,31 +251,31 @@ class _WordPageState extends State<WordPage> {
                       color: ThemesUtil.getTextColor(context),
                     ),
                   ),
-                  SizedBox(
-                    width: ScreenUtil.getSize(context).width,
-                    height: (widget.word.examplePhrases.length * 23).toDouble(),
-                    child: ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      padding: const EdgeInsets.all(0),
-                      itemExtent: 23,
-                      itemCount: widget.word.examplePhrases.length,
-                      itemBuilder: (context, index) => Row(
-                        children: [
-                          Text(
-                            "${index + 1}. ",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: ThemesUtil.getTextColor(context),
-                            ),
+                  ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    padding: const EdgeInsets.all(0),
+                    shrinkWrap: true,
+                    itemCount: widget.word.examplePhrases.length,
+                    itemBuilder: (context, index) => Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "${index + 1}. ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: ThemesUtil.getTextColor(context),
                           ),
-                          Text(
+                        ),
+                        SizedBox(
+                          width: ScreenUtil.getSize(context).width - 125,
+                          child: Text(
                             '"${widget.word.examplePhrases.elementAt(index)}"',
                             style: TextStyle(
                               color: ThemesUtil.getTextColor(context),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -298,16 +302,32 @@ class _WordPageState extends State<WordPage> {
                       ),
                       Visibility(
                         visible: widget.word.synonyms.isNotEmpty,
-                        child: SizedBox(
-                          width: ScreenUtil.getSize(context).width,
-                          height: (widget.word.synonyms.length * 23).toDouble(),
-                          child: ListView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            padding: const EdgeInsets.all(0),
-                            itemExtent: 23,
-                            itemCount: widget.word.synonyms.length,
-                            itemBuilder: (context, index) => Text(
-                                "${index + 1}. ${widget.word.synonyms.elementAt(index)}"),
+                        child: ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          padding: const EdgeInsets.all(0),
+                          shrinkWrap: true,
+                          itemCount: widget.word.synonyms.length,
+                          itemBuilder: (context, index) => Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "${index + 1}. ",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: ThemesUtil.getTextColor(context),
+                                ),
+                              ),
+                              SizedBox(
+                                width:
+                                    ScreenUtil.getSize(context).width / 2 - 75,
+                                child: Text(
+                                  '"${widget.word.synonyms.elementAt(index)}"',
+                                  style: TextStyle(
+                                    color: ThemesUtil.getTextColor(context),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -326,17 +346,32 @@ class _WordPageState extends State<WordPage> {
                       ),
                       Visibility(
                         visible: widget.word.antonyms.isNotEmpty,
-                        child: SizedBox(
-                          width: ScreenUtil.getSize(context).width,
-                          height: (widget.word.antonyms.length * 23).toDouble(),
-                          child: ListView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            padding: const EdgeInsets.all(0),
-                            itemExtent: 23,
-                            itemCount: widget.word.antonyms.length,
-                            itemBuilder: (context, index) => Text(
-                              "${index + 1}. ${widget.word.antonyms.elementAt(index)}",
-                            ),
+                        child: ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          padding: const EdgeInsets.all(0),
+                          shrinkWrap: true,
+                          itemCount: widget.word.antonyms.length,
+                          itemBuilder: (context, index) => Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "${index + 1}. ",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: ThemesUtil.getTextColor(context),
+                                ),
+                              ),
+                              SizedBox(
+                                width:
+                                    ScreenUtil.getSize(context).width / 2 - 75,
+                                child: Text(
+                                  '"${widget.word.antonyms.elementAt(index)}"',
+                                  style: TextStyle(
+                                    color: ThemesUtil.getTextColor(context),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -360,7 +395,10 @@ class _WordPageState extends State<WordPage> {
                       color: ThemesUtil.getTextColor(context),
                     ),
                   ),
-                  Text(widget.word.italianCorrespondence),
+                  SizedBox(
+                    width: ScreenUtil.getSize(context).width - 125,
+                    child: Text(widget.word.italianCorrespondence),
+                  ),
                 ],
               ),
             ),

@@ -18,6 +18,7 @@ class OnBoardingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SimplePageScaffold(
       scrollable: false,
+      padding: 0,
       body: IntroductionScreen(
         pages: OnBoardingPages.build(context),
         onDone: () => NavigatorUtil.navigateTo(
@@ -28,8 +29,8 @@ class OnBoardingPage extends StatelessWidget {
         showBackButton: false,
         showSkipButton: true,
         showDoneButton: true,
-        controlsMargin: const EdgeInsets.all(0),
-        controlsPadding: const EdgeInsets.symmetric(vertical: 0),
+        //controlsMargin: const EdgeInsets.all(0),
+        //controlsPadding: const EdgeInsets.symmetric(vertical: 100),
         skip: Text(
           "Salta",
           style: TextStyle(
@@ -62,13 +63,15 @@ class OnBoardingPage extends StatelessWidget {
           foregroundColor: MaterialStateProperty.all(Colors.blueAccent),
         ),
         dotsDecorator: DotsDecorator(
-            size: const Size.square(10.0),
-            activeSize: const Size(20.0, 10.0),
-            activeColor: ThemesUtil.getPrimaryColor(context),
-            color: CupertinoColors.systemGrey,
-            spacing: const EdgeInsets.symmetric(horizontal: 3.0),
-            activeShape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(25.0))),
+          size: const Size.square(10.0),
+          activeSize: const Size(20.0, 10.0),
+          activeColor: ThemesUtil.getPrimaryColor(context),
+          color: CupertinoColors.systemGrey,
+          spacing: const EdgeInsets.symmetric(horizontal: 3.0),
+          activeShape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(25.0),
+          ),
+        ),
       ),
     );
   }

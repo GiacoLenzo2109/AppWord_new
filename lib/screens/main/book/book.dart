@@ -34,27 +34,9 @@ class _BookPageState extends State<BookPage> {
     final bookProvider = Provider.of<BookModel>(context);
 
     return PageScaffold(
-      title: ThemesUtil.isAndroid(context) ? "Rubrica" : bookProvider.name,
+      title: bookProvider.name,
       padding: 0,
-      rounded: false,
-      scrollable: true,
-      leading: Theme.of(context).platform == TargetPlatform.android
-          ? GestureDetector(
-              onTap: () => navbarProvider.tapLeading(),
-              child: Icon(
-                !navbarProvider.leading ? Icons.edit : Icons.done,
-                color: Theme.of(context).appBarTheme.titleTextStyle!.color,
-              ),
-            )
-          : null,
-      // : CupertinoButton(
-      //     padding: const EdgeInsets.all(0),
-      //     onPressed: () => navbarProvider.tapLeading(),
-      //     child: Text(
-      //       !navbarProvider.leading ? "Modifica" : "Fatto",
-      //       style: const TextStyle(fontSize: 17),
-      //     ),
-      //   ),
+      scrollable: bookProvider.words.isEmpty ? false : true,
       trailing: Padding(
         padding: EdgeInsets.only(
           right: Theme.of(context).platform == TargetPlatform.android ? 10 : 0,
@@ -93,7 +75,7 @@ class _BookPageState extends State<BookPage> {
         value: bookProvider,
         child: AlphabetScrollListView(book: bookProvider.id),
       ),
-      child: AlphabetScrollList(bookProvider.id),
+      //child: AlphabetScrollList(bookProvider.id),
     );
   }
 }

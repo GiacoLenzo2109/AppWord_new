@@ -64,7 +64,7 @@ class MaterialTheme {
   );
 
   static ThemeData darkTheme = ThemeData(
-    backgroundColor: Colors.black,
+    backgroundColor: CupertinoColors.darkBackgroundGray,
     scaffoldBackgroundColor: Colors.black,
     colorScheme: const ColorScheme.dark(),
     appBarTheme: AppBarTheme(

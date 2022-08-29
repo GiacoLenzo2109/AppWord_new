@@ -8,6 +8,7 @@ import 'package:app_word/providers/book_model.dart';
 import 'package:app_word/providers/navbar_model.dart';
 import 'package:app_word/screens/main/book/word/word_page.dart';
 import 'package:app_word/service/navigation_service.dart';
+import 'package:app_word/theme/theme_provider.dart';
 import 'package:app_word/util/constants.dart';
 import 'package:app_word/util/dialog_util.dart';
 import 'package:app_word/util/global_func.dart';
@@ -156,6 +157,8 @@ class _AddWordPageState extends State<AddWordPage> {
         widget.isDailyWord != null && widget.isDailyWord! ? true : false;
     final bookProvider = Provider.of<BookModel>(context);
 
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return SimplePageScaffold(
       title: widget.word != null
           ? "Modifica vocabolo"
@@ -164,6 +167,11 @@ class _AddWordPageState extends State<AddWordPage> {
               : "Aggiungi vocabolo",
       padding: 0,
       scrollable: true,
+      backgroundColor: themeProvider.isDarkTheme
+          ? null
+          : ThemesUtil.getPrimaryColor(context),
+      titleColor: Colors.white,
+      isFullScreen: true,
       body: Padding(
         padding: const EdgeInsets.only(bottom: 0),
         child: StaggeredGrid.count(
@@ -309,6 +317,7 @@ class _AddWordPageState extends State<AddWordPage> {
                     icon: CupertinoIcons.text_justify,
                     initialTags:
                         widget.word != null ? widget.word!.definitions : null,
+                    expands: true,
                   ),
                   TextFieldTagsWidget(
                     errorPhrase: "Campo semantico già inserito",
@@ -324,6 +333,7 @@ class _AddWordPageState extends State<AddWordPage> {
                     errorPhrase: "Frase già inserita!",
                     insertPhrase: "Inserire una frase",
                     separator: const [""],
+                    expands: true,
                     controller: phraseController,
                     icon: CupertinoIcons.text_quote,
                     initialTags: widget.word != null
@@ -366,7 +376,7 @@ class _AddWordPageState extends State<AddWordPage> {
                       onValueChanged: (value) {
                         setState(() {
                           itaValue = value as String;
-                          word.italianType = GlobalFunc.capitalize(value);
+                          word.italianType = value;
 
                           if (word.italianType == Word.literature) {
                             word.italianCorrespondence = GlobalFunc.capitalize(
@@ -380,9 +390,12 @@ class _AddWordPageState extends State<AddWordPage> {
                         placeholder: "Corrispondenza italiano moderno",
                         maxLines: 1,
                         icon: CupertinoIcons.text_cursor,
-                        onChanged: (value) => word.italianCorrespondence =
-                            GlobalFunc.capitalize(value),
-                        text: widget.word != null
+                        onChanged: (value) {
+                          word.italianCorrespondence =
+                              GlobalFunc.capitalize(value);
+                        },
+                        text: widget.word != null &&
+                                word.italianCorrespondence.isNotEmpty
                             ? word.italianCorrespondence
                             : null),
                   ),

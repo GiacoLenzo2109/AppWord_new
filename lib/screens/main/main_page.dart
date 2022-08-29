@@ -130,7 +130,7 @@ class _MainPageState extends State<MainPage> {
           curve: Curves.ease,
         ),
         navBarStyle:
-            NavBarStyle.style9, // Choose the nav bar style with this property.
+            NavBarStyle.style1, // Choose the nav bar style with this property.
       ),
     );
 
@@ -141,6 +141,7 @@ class _MainPageState extends State<MainPage> {
             .scaffoldBackgroundColor
             .withOpacity(0.75),
         border: null,
+        height: Constants.navBarHeight,
         activeColor: CupertinoColors.activeBlue,
         currentIndex: _page,
         onTap: (index) {

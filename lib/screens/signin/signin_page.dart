@@ -19,8 +19,9 @@ class SignInPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SimplePageScaffold(
       scrollable: false,
+      isFullScreen: true,
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,

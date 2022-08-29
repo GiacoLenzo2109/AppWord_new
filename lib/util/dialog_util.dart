@@ -19,11 +19,12 @@ class DialogUtil {
       {required BuildContext context,
       required Widget Function(BuildContext) builder}) {
     Theme.of(context).platform == TargetPlatform.android
-        ? showDialog(
-            context: context,
+        ? showMaterialModalBottomSheet(
+            context: NavigationService.navigatorKey.currentContext!,
             builder: builder,
           )
         : CupertinoScaffold.showCupertinoModalBottomSheet(
+            useRootNavigator: true,
             context: context,
             builder: builder,
           );
@@ -38,6 +39,7 @@ class DialogUtil {
             builder: builder,
           )
         : showCupertinoModalPopup(
+            useRootNavigator: true,
             context: context,
             builder: builder,
           );

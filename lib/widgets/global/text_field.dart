@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:app_word/util/constants.dart';
 import 'package:app_word/util/themes.dart';
 import 'package:app_word/widgets/global/icon_button_widget.dart';
@@ -6,20 +8,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class TextFieldWidget extends StatefulWidget {
-  String? placeholder;
-  int? maxLines;
-  IconData? icon;
-  Function(String)? onChanged;
-  Function(String)? onSubmitted;
-  String? text;
-  FocusNode? focusNode;
-  double? padding;
-  TextEditingController? controller;
-  TextInputAction? textInputAction;
-  bool isPassword = false;
-  TextInputType? type;
+  final String? placeholder;
+  final int? maxLines;
+  final IconData? icon;
+  final Function(String)? onChanged;
+  final Function(String)? onSubmitted;
+  final String? text;
+  final FocusNode? focusNode;
+  final double? padding;
+  final TextEditingController? controller;
+  final TextInputAction? textInputAction;
+  final bool? isPassword;
+  final TextInputType? type;
+  final bool? expands;
 
-  TextFieldWidget({
+  const TextFieldWidget({
     Key? key,
     this.placeholder,
     this.icon,
@@ -31,12 +34,10 @@ class TextFieldWidget extends StatefulWidget {
     this.onSubmitted,
     this.textInputAction,
     this.text,
-    bool? isPassword,
-    TextInputType? type,
-  }) : super(key: key) {
-    this.isPassword = isPassword ?? false;
-    this.type = type;
-  }
+    this.isPassword,
+    this.type,
+    this.expands,
+  }) : super(key: key);
 
   @override
   State<TextFieldWidget> createState() => _TextFieldWidgetState();
@@ -44,12 +45,15 @@ class TextFieldWidget extends StatefulWidget {
 
 class _TextFieldWidgetState extends State<TextFieldWidget> {
   late bool obscure;
+  late bool isPassword;
 
   TextEditingController controller = TextEditingController();
 
   @override
   void initState() {
-    obscure = widget.isPassword;
+    isPassword = widget.isPassword ?? false;
+    obscure = widget.isPassword ?? false;
+
     super.initState();
   }
 
@@ -63,6 +67,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
           ? TextAlign.center
           : TextAlign.start,
       decoration: InputDecoration(
+        filled: true,
         contentPadding: const EdgeInsets.all(0),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
@@ -72,10 +77,11 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
           ),
         ),
         prefixIcon: Icon(widget.icon),
-        suffixIcon: widget.isPassword
+        suffixIcon: isPassword
             ? IconButton(
                 icon: Icon(
-                    !obscure ? CupertinoIcons.eye : CupertinoIcons.eye_slash),
+                  !obscure ? CupertinoIcons.eye : CupertinoIcons.eye_slash,
+                ),
                 splashRadius: 20,
                 onPressed: () => setState(() {
                   obscure = !obscure;
@@ -89,8 +95,13 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
       controller: widget.controller,
       onSubmitted: widget.onSubmitted,
       textInputAction: widget.textInputAction,
-      maxLines: obscure ? 1 : widget.maxLines ?? 1,
-      expands: widget.maxLines != null && widget.maxLines! > 1,
+      maxLines: widget.expands != null && widget.expands!
+          ? null
+          : obscure
+              ? 1
+              : widget.maxLines ?? 1,
+      expands:
+          widget.expands ?? widget.maxLines != null && widget.maxLines! > 1,
       obscureText: obscure,
       keyboardType: widget.type,
     );
@@ -114,9 +125,14 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: Colors.grey, width: .25),
       ),
-      padding: EdgeInsets.all(widget.padding ?? 0),
-      maxLines: obscure ? 1 : widget.maxLines ?? 1,
-      expands: widget.maxLines != null && widget.maxLines! > 1,
+      padding: EdgeInsets.all(widget.padding ?? 10),
+      maxLines: widget.expands != null && widget.expands!
+          ? null
+          : obscure
+              ? 1
+              : widget.maxLines ?? 1,
+      expands:
+          widget.expands ?? widget.maxLines != null && widget.maxLines! > 1,
       onChanged: widget.onChanged,
       controller: widget.controller ?? controller,
       focusNode: widget.focusNode,
@@ -124,10 +140,12 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
       textInputAction: widget.textInputAction,
       obscureText: obscure,
       keyboardType: widget.type,
-      suffix: widget.isPassword
+      suffix: isPassword
           ? IconButtonWidget(
               icon: Icon(
-                  !obscure ? CupertinoIcons.eye : CupertinoIcons.eye_slash),
+                !obscure ? CupertinoIcons.eye : CupertinoIcons.eye_slash,
+                color: CupertinoColors.systemGrey,
+              ),
               onPressed: () {
                 setState(() {
                   obscure = !obscure;

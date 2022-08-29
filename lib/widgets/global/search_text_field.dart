@@ -39,7 +39,9 @@ class _SearchTextFieldState extends State<SearchTextField> {
                   controller.clear();
                 },
                 child: const Padding(
-                    padding: EdgeInsets.all(15), child: Text("Annulla")),
+                  padding: EdgeInsets.all(10),
+                  child: Text("Annulla"),
+                ),
               )
             : const SizedBox(),
         border: const OutlineInputBorder(

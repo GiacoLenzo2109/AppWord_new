@@ -140,7 +140,6 @@ class _BookListState extends State<BookList> {
         ),
         child: Container(
           decoration: const BoxDecoration(color: Colors.transparent),
-          height: ScreenUtil.getSize(context).height - 275,
           child: Center(
             child: StaggeredGrid.count(
               crossAxisCount: 1,

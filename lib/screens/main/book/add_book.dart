@@ -38,35 +38,34 @@ class _AddBookPageState extends State<AddBookPage> {
       title: "Crea rubrica",
       child: StaggeredGrid.count(
         crossAxisCount: 1,
-        mainAxisSpacing: 25,
+        mainAxisSpacing: 50,
         children: [
-          ContainerWidget(
-            child: StaggeredGrid.count(
-              crossAxisCount: 1,
-              mainAxisSpacing: 10,
-              children: [
-                Text(
-                  "Nome:",
-                  style: ThemesUtil.titleContainerStyle(context),
-                ),
-                TextFieldWidget(
-                  placeholder: "Nome",
-                  icon: CupertinoIcons.doc,
-                  controller: nameController,
-                ),
-              ],
-            ),
+          StaggeredGrid.count(
+            crossAxisCount: 1,
+            mainAxisSpacing: 10,
+            children: [
+              Text(
+                "Nome:",
+                style: ThemesUtil.titleContainerStyle(context),
+              ),
+              TextFieldWidget(
+                placeholder: "Nome",
+                icon: CupertinoIcons.doc,
+                controller: nameController,
+              ),
+            ],
           ),
-          ContainerWidget(
-            child: StaggeredGrid.count(
-              crossAxisCount: 1,
-              mainAxisSpacing: 10,
-              children: [
-                Text(
-                  "Pin:",
-                  style: ThemesUtil.titleContainerStyle(context),
-                ),
-                PinCodeTextField(
+          StaggeredGrid.count(
+            crossAxisCount: 1,
+            mainAxisSpacing: 10,
+            children: [
+              Text(
+                "Pin:",
+                style: ThemesUtil.titleContainerStyle(context),
+              ),
+              Container(
+                alignment: Alignment.center,
+                child: PinCodeTextField(
                   autofocus: false,
                   controller: pinController,
                   hideCharacter: false,
@@ -111,8 +110,8 @@ class _AddBookPageState extends State<AddBookPage> {
                   highlightAnimationBeginColor: CupertinoColors.systemGrey3,
                   highlightAnimationEndColor: Colors.transparent,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
           ButtonWidget(
             text: "Crea",

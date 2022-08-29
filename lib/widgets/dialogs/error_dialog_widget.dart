@@ -54,9 +54,10 @@ class _ErrorDialogWidgetState extends State<ErrorDialogWidget> {
                       widget.text,
                       textAlign: TextAlign.center,
                       style: const TextStyle(
-                        color: Colors.redAccent,
-                        fontWeight: FontWeight.bold,
-                      ),
+                          color: Colors.redAccent,
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.none,
+                          fontSize: 18),
                     ),
                   ],
                 ),

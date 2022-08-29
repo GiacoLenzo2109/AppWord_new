@@ -1,4 +1,4 @@
-package com.example.app_word
+package com.starvation.app_word
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -13,17 +13,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../util/dialog_util.dart';
 
 class AuthenticationRepository {
-  static String GOOGLE_USER = "GOOGLE";
-  static String NORMAL_USER = "NORMAL";
-  static String USER_TYPE = "USER_TYPE";
+  static const GOOGLE_USER = "GOOGLE";
+  static const NORMAL_USER = "NORMAL";
+  static const USER_TYPE = "USER_TYPE";
 
   /// Check if is google user
   static bool isGoogleLogged() {
-    return FirebaseGlobal.auth.currentUser?.providerData[0].providerId ==
-            'google.com' ||
-        (FirebaseGlobal.auth.currentUser?.providerData[1] != null &&
-            FirebaseGlobal.auth.currentUser?.providerData[1].providerId ==
-                'google.com');
+    for (var value in FirebaseGlobal.auth.currentUser!.providerData) {
+      if (value.providerId == 'google.com') return true;
+    }
+    return false;
   }
 
   /// Check if is email verified
@@ -35,7 +34,9 @@ class AuthenticationRepository {
       await user.reload();
       if (user.emailVerified) {
         NavigatorUtil.navigateAndReplace(
-            context: context, route: NavigatorUtil.MAIN);
+          context: context,
+          route: NavigatorUtil.MAIN,
+        );
       }
     }
     return;
@@ -74,6 +75,7 @@ class AuthenticationRepository {
         error = "Email già in uso!";
         log('The account already exists for that email.');
       }
+      Navigator.pop(context);
       DialogUtil.openDialog(
         context: context,
         builder: (context) => ErrorDialogWidget(error),
@@ -94,12 +96,8 @@ class AuthenticationRepository {
           .signInWithEmailAndPassword(email: email, password: password);
 
       if (FirebaseGlobal.auth.currentUser != null) {
-        DialogUtil.openDialog(
-          context: context,
-          builder: (context) => const LoadingWidget(),
-        );
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString(USER_TYPE, NORMAL_USER);
+        // SharedPreferences prefs = await SharedPreferences.getInstance();
+        // await prefs.setString(USER_TYPE, NORMAL_USER);
         if (!FirebaseGlobal.auth.currentUser!.emailVerified) {
           NavigatorUtil.navigatePopAndGo(
             context: context,
@@ -121,7 +119,9 @@ class AuthenticationRepository {
       }
       DialogUtil.openDialog(
         context: context,
-        builder: (context) => ErrorDialogWidget(error),
+        builder: (context) => ErrorDialogWidget(
+          error.isEmpty ? e.toString() : error,
+        ),
       );
     } catch (e) {
       log(e.toString());
@@ -131,7 +131,6 @@ class AuthenticationRepository {
 
   /// Log in with google account
   static Future<void> signInWithGoogle({required BuildContext context}) async {
-    LoadingWidget.show(context);
     try {
       FirebaseAuth auth = FirebaseGlobal.auth;
       //User? user;
@@ -141,7 +140,7 @@ class AuthenticationRepository {
       final GoogleSignInAccount? googleSignInAccount =
           await googleSignIn.signIn().then(
         (value) {
-          if (value == null) Navigator.pop(context);
+          if (value != null) LoadingWidget.show(context);
           return value;
         },
       );

@@ -23,10 +23,20 @@ class _IconButtonWidgetState extends State<IconButtonWidget> {
   @override
   Widget build(BuildContext context) {
     return ThemesUtil.isAndroid(context)
-        ? IconButton(
+        ? ElevatedButton(
             onPressed: widget.onPressed,
-            icon: widget.icon,
-            color: widget.backgroundColor ?? Colors.transparent,
+            style: ButtonStyle(
+              padding: MaterialStateProperty.all(
+                const EdgeInsets.all(0),
+              ),
+              splashFactory: NoSplash.splashFactory,
+              elevation: MaterialStateProperty.all(0),
+              backgroundColor: MaterialStateProperty.all(
+                widget.backgroundColor ?? Colors.transparent,
+              ),
+            ),
+            child: widget.icon,
+            //label: const Text(""),
           )
         : CupertinoButton(
             onPressed: widget.onPressed,

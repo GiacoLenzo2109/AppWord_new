@@ -4,6 +4,7 @@ import 'package:app_word/providers/book_list_model.dart';
 import 'package:app_word/providers/book_model.dart';
 import 'package:app_word/providers/navbar_model.dart';
 import 'package:app_word/screens/main/book/book.dart';
+import 'package:app_word/service/navigation_service.dart';
 import 'package:app_word/util/constants.dart';
 import 'package:app_word/util/dialog_util.dart';
 import 'package:app_word/util/navigator_util.dart';
@@ -59,6 +60,7 @@ class _BookItemState extends State<BookItem> {
                 },
                 doneText: "Lascia",
                 doneColorText: CupertinoColors.systemRed,
+                doneIcon: Icons.logout,
               ),
             ),
             backgroundColor: CupertinoColors.systemRed,
@@ -80,10 +82,11 @@ class _BookItemState extends State<BookItem> {
           widget.book.name == Constants.personalBook
               ? CupertinoIcons.person
               : CupertinoIcons.person_3,
+          color: ThemesUtil.getContrastingColor(context),
         ),
         suffixIcon: const Icon(CupertinoIcons.arrow_right),
         onPressed: () => NavigatorUtil.navigateTo(
-          context: context,
+          context: NavigationService.navigatorKey.currentContext!,
           builder: (context) => MultiProvider(
             providers: [
               ChangeNotifierProvider(

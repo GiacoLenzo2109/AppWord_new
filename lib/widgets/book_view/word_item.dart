@@ -5,6 +5,7 @@ import 'package:app_word/models/word.dart';
 import 'package:app_word/providers/book_model.dart';
 import 'package:app_word/providers/navbar_model.dart';
 import 'package:app_word/screens/main/book/word/word_page.dart';
+import 'package:app_word/service/navigation_service.dart';
 import 'package:app_word/util/dialog_util.dart';
 import 'package:app_word/util/navigator_util.dart';
 import 'package:app_word/util/screen_util.dart';
@@ -94,6 +95,7 @@ class _WordItemState extends State<WordItem> {
                     },
                     doneText: "Elimina",
                     doneColorText: CupertinoColors.systemRed,
+                    doneIcon: Icons.delete,
                   ),
                 ),
                 backgroundColor: CupertinoColors.systemRed,
@@ -146,7 +148,7 @@ class _WordItemState extends State<WordItem> {
               //   builder: (context) => WordPage(word: widget.word),
               // ),
               NavigatorUtil.navigateTo(
-                context: context,
+                context: NavigationService.navigatorKey.currentContext!,
                 builder: (context) => ChangeNotifierProvider.value(
                   value: bookProvider,
                   child: Theme.of(context).platform == TargetPlatform.android
@@ -173,7 +175,7 @@ class _WordItemState extends State<WordItem> {
         backgroundColor:
             Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(.75),
         onPressed: () => NavigatorUtil.navigateTo(
-          context: context,
+          context: NavigationService.navigatorKey.currentContext!,
           builder: (context) => ChangeNotifierProvider.value(
             value: bookProvider,
             child: Theme.of(context).platform == TargetPlatform.android

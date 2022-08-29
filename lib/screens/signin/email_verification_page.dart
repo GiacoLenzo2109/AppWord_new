@@ -59,6 +59,7 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: ThemesUtil.getTextColor(context),
+                  fontSize: 18,
                 ),
               ),
               Text(
@@ -67,11 +68,13 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
                     : "esempio@gmail.com",
                 textAlign: TextAlign.center,
                 style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: CupertinoColors.activeBlue),
+                  fontWeight: FontWeight.bold,
+                  color: CupertinoColors.activeBlue,
+                  fontSize: 18,
+                ),
               ),
               const SizedBox(height: 50),
-              Row(
+              Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text("Non hai ricevuto la mail?"),

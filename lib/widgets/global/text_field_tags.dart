@@ -14,6 +14,7 @@ class TextFieldTagsWidget extends StatefulWidget {
   final TextfieldTagsController controller;
   final IconData? icon;
   final List<String>? initialTags;
+  final bool? expands;
 
   const TextFieldTagsWidget({
     Key? key,
@@ -23,6 +24,7 @@ class TextFieldTagsWidget extends StatefulWidget {
     required this.controller,
     this.icon,
     this.initialTags,
+    this.expands,
   }) : super(key: key);
 
   @override
@@ -60,6 +62,7 @@ class _TextFieldTagsWidgetState extends State<TextFieldTagsWidget> {
                     onChanged!(value);
                   }
                 },
+                expands: widget.expands,
                 onSubmitted: onSubmitted,
                 textInputAction: TextInputAction.done,
                 text: null,
@@ -72,8 +75,8 @@ class _TextFieldTagsWidgetState extends State<TextFieldTagsWidget> {
                         children: [
                           ConstrainedBox(
                             constraints: BoxConstraints(
-                                maxHeight:
-                                    ScreenUtil.getSize(context).height / 5),
+                              maxHeight: ScreenUtil.getSize(context).height / 5,
+                            ),
                             child: SingleChildScrollView(
                               child: Wrap(
                                 alignment: WrapAlignment.start,
@@ -88,16 +91,25 @@ class _TextFieldTagsWidgetState extends State<TextFieldTagsWidget> {
                                       children: [
                                         ElevatedButton(
                                           style: ButtonStyle(
-                                              backgroundColor:
-                                                  MaterialStateProperty.all(
-                                                      CupertinoColors
-                                                          .activeBlue)),
+                                            backgroundColor:
+                                                MaterialStateProperty.all(
+                                                    CupertinoColors.activeBlue),
+                                          ),
                                           child: Row(
                                             children: [
-                                              Text(
-                                                tag,
-                                                style: const TextStyle(
-                                                    color: Colors.white),
+                                              SizedBox(
+                                                width: widget.expands != null &&
+                                                        widget.expands!
+                                                    ? ScreenUtil.getSize(
+                                                                context)
+                                                            .width -
+                                                        107.5
+                                                    : null,
+                                                child: Text(
+                                                  tag,
+                                                  style: const TextStyle(
+                                                      color: Colors.white),
+                                                ),
                                               ),
                                               const SizedBox(width: 10),
                                               const Icon(

@@ -38,17 +38,18 @@ class _SettingsState extends State<Settings> {
       : false;
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context, listen: true);
+    final themeProvider = Provider.of<ThemeProvider>(context);
 
     return PageScaffold(
       title: "Impostazioni",
       scrollable: false,
       padding: 0,
-      child: StaggeredGrid.count(
-        crossAxisCount: 1,
+      child: Column(
+        // crossAxisCount: 1,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           SizedBox(
-            height: ScreenUtil.getSize(context).height - 325,
+            height: 300,
             child: SettingsList(
               physics: const NeverScrollableScrollPhysics(),
               lightTheme: const SettingsThemeData(
@@ -99,60 +100,61 @@ class _SettingsState extends State<Settings> {
                 SettingsSection(
                   tiles: <SettingsTile>[
                     SettingsTile.navigation(
-                      onPressed: (_) => DialogUtil.openDialog(
-                        context: context,
-                        builder: (context) => DialogWidget(
-                          body: StaggeredGrid.count(
-                            crossAxisCount: 3,
-                            children: [
-                              IconButtonWidget(
-                                onPressed: () {
-                                  themeProvider.theme =
-                                      ThemePreference.LIGHT_THEME;
-                                  //Navigator.pop(context);
-                                },
-                                icon: Icon(
-                                  CupertinoIcons.brightness_solid,
-                                  color: themeProvider.theme ==
-                                          ThemePreference.LIGHT_THEME
-                                      ? Colors.amber
-                                      : null,
+                      onPressed: (context) {
+                        return DialogUtil.openDialog(
+                          context: context,
+                          builder: (context) => DialogWidget(
+                            body: StaggeredGrid.count(
+                              crossAxisCount: 3,
+                              children: [
+                                IconButtonWidget(
+                                  onPressed: () {
+                                    themeProvider.theme =
+                                        ThemePreference.LIGHT_THEME;
+                                  },
+                                  icon: Icon(
+                                    CupertinoIcons.brightness_solid,
+                                    color: themeProvider.theme ==
+                                            ThemePreference.LIGHT_THEME
+                                        ? Colors.amber
+                                        : Colors.grey,
+                                  ),
                                 ),
-                              ),
-                              IconButtonWidget(
-                                onPressed: () {
-                                  themeProvider.theme =
-                                      ThemePreference.DARK_THEME;
-                                  //Navigator.pop(context);
-                                },
-                                icon: Icon(
-                                  CupertinoIcons.moon_fill,
-                                  color: themeProvider.theme ==
-                                          ThemePreference.DARK_THEME
-                                      ? Colors.grey
-                                      : null,
+                                IconButtonWidget(
+                                  onPressed: () {
+                                    themeProvider.theme =
+                                        ThemePreference.DARK_THEME;
+                                    //Navigator.pop(context);
+                                  },
+                                  icon: Icon(
+                                    CupertinoIcons.moon_fill,
+                                    color: themeProvider.theme ==
+                                            ThemePreference.DARK_THEME
+                                        ? Colors.blueAccent
+                                        : Colors.grey,
+                                  ),
                                 ),
-                              ),
-                              IconButtonWidget(
-                                onPressed: () {
-                                  themeProvider.theme =
-                                      ThemePreference.SYSTEM_THEME;
-                                  //Navigator.pop(context);
-                                },
-                                icon: Icon(
-                                  CupertinoIcons.device_phone_portrait,
-                                  color: themeProvider.theme ==
-                                          ThemePreference.SYSTEM_THEME
-                                      ? Colors.orange
-                                      : null,
+                                IconButtonWidget(
+                                  onPressed: () {
+                                    themeProvider.theme =
+                                        ThemePreference.SYSTEM_THEME;
+                                    //Navigator.pop(context);
+                                  },
+                                  icon: Icon(
+                                    CupertinoIcons.device_phone_portrait,
+                                    color: themeProvider.theme ==
+                                            ThemePreference.SYSTEM_THEME
+                                        ? Colors.orange
+                                        : Colors.grey,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
+                            title:
+                                "Tema: ${themeProvider.isDarkTheme ? "Scuro" : "Chiaro"}",
                           ),
-                          title:
-                              "Tema: ${themeProvider.isDarkTheme ? "Scuro" : "Chiaro"}",
-                        ),
-                      ),
+                        );
+                      },
                       leading: const Icon(CupertinoIcons.paintbrush),
                       title: Text(
                         "Tema: ${themeProvider.isDarkTheme ? "Scuro" : "Chiaro"}",
@@ -175,21 +177,27 @@ class _SettingsState extends State<Settings> {
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(15),
-            child: ButtonWidget(
-              text: "Logout",
-              backgroundColor: CupertinoColors.systemRed,
-              onPressed: () async {
-                await AuthenticationRepository.signOut(
-                    context: NavigationService.navigatorKey.currentContext!);
-                NavigatorUtil.navigateAndReplace(
-                  context: NavigationService.navigatorKey.currentContext!,
-                  route: NavigatorUtil.SIGNIN,
-                );
-              },
-            ),
-          ),
+          StaggeredGrid.count(
+            crossAxisCount: 1,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: ButtonWidget(
+                  text: "Logout",
+                  backgroundColor: CupertinoColors.systemRed,
+                  onPressed: () async {
+                    await AuthenticationRepository.signOut(
+                        context:
+                            NavigationService.navigatorKey.currentContext!);
+                    NavigatorUtil.navigateAndReplace(
+                      context: NavigationService.navigatorKey.currentContext!,
+                      route: NavigatorUtil.SIGNIN,
+                    );
+                  },
+                ),
+              ),
+            ],
+          )
         ],
       ),
     );

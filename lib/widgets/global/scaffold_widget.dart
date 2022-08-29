@@ -12,8 +12,8 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 
 class PageScaffold extends StatefulWidget {
-  final Widget? child;
   final Widget? childSliver;
+  final Widget? child;
   final String title;
   final double? padding;
   final Widget? leading;
@@ -23,20 +23,20 @@ class PageScaffold extends StatefulWidget {
   final Widget? header;
   final ScrollController? controller;
   final Future<void> Function()? onRefresh;
-  const PageScaffold(
-      {Key? key,
-      this.leading,
-      this.trailing,
-      this.onRefresh,
-      this.padding,
-      this.rounded,
-      this.header,
-      this.controller,
-      this.childSliver,
-      required this.scrollable,
-      required this.title,
-      this.child})
-      : super(key: key);
+  const PageScaffold({
+    Key? key,
+    this.leading,
+    this.trailing,
+    this.onRefresh,
+    this.padding,
+    this.rounded,
+    this.header,
+    this.controller,
+    this.child,
+    this.childSliver,
+    required this.scrollable,
+    required this.title,
+  }) : super(key: key);
 
   @override
   State<PageScaffold> createState() => _ScaffoldWidgetState();
@@ -45,12 +45,19 @@ class PageScaffold extends StatefulWidget {
 class _ScaffoldWidgetState extends State<PageScaffold> {
   @override
   Widget build(BuildContext context) {
-    var page = Padding(
-      padding: EdgeInsets.all(widget.padding ?? 25),
-      child: widget.child,
+    var page = CustomScrollView(
+      physics: !widget.scrollable ? const NeverScrollableScrollPhysics() : null,
+      controller: widget.controller,
+      slivers: [
+        SliverPadding(
+          padding: EdgeInsets.all(widget.padding ?? 25),
+          sliver: widget.childSliver ??
+              SliverFillRemaining(
+                child: widget.child,
+              ),
+        ),
+      ],
     );
-    var scrollView = SingleChildScrollView(
-        physics: const BouncingScrollPhysics(), child: page);
 
     Scaffold scaffold = Scaffold(
       resizeToAvoidBottomInset: true,
@@ -72,6 +79,7 @@ class _ScaffoldWidgetState extends State<PageScaffold> {
                 : null,
           ),
         ),
+        foregroundColor: Colors.white,
         leading: widget.leading,
         actions: [widget.trailing != null ? widget.trailing! : const Text("")],
       ),
@@ -79,10 +87,9 @@ class _ScaffoldWidgetState extends State<PageScaffold> {
           ? RefreshIndicator(
               onRefresh: widget.onRefresh!,
               color: Colors.greenAccent,
-              child: widget.scrollable ? scrollView : page)
-          : widget.scrollable
-              ? scrollView
-              : page,
+              child: page,
+            )
+          : page,
     );
 
     CupertinoPageScaffold cupertinoScaffold = CupertinoPageScaffold(
@@ -132,26 +139,29 @@ class _ScaffoldWidgetState extends State<PageScaffold> {
           //           ),
           //         ),
           //       ),
-          widget.childSliver != null
-              ? SliverPadding(
-                  padding: EdgeInsets.all(widget.padding ?? 25),
-                  sliver: widget.childSliver,
-                )
-              : SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) => Padding(
-                      padding: EdgeInsets.all(widget.padding ?? 15),
-                      child: StaggeredGrid.count(
-                        crossAxisCount: 1,
-                        children: [
-                          widget.child ?? const SizedBox(),
-                          if (widget.child != null) const SizedBox(height: 100),
-                        ],
-                      ),
-                    ),
-                    childCount: 1,
-                  ),
-                ),
+          SliverPadding(
+            padding: EdgeInsets.all(widget.padding ?? 25),
+            sliver: widget.childSliver ??
+                (widget.scrollable
+                    ? SliverSafeArea(
+                        top:
+                            false, // Top safe area is consumed by the navigation bar.
+                        sliver: SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            (BuildContext context, int index) {
+                              return widget.child;
+                            },
+                            childCount: 1,
+                          ),
+                        ),
+                      )
+                    : SliverFillRemaining(
+                        child: Container(
+                          margin: const EdgeInsets.only(bottom: 100),
+                          child: widget.child,
+                        ),
+                      )),
+          ),
         ],
       ),
     );
@@ -167,11 +177,18 @@ class SimplePageScaffold extends StatefulWidget {
   final String? title;
   final double? padding;
   final bool scrollable;
+  final Color? backgroundColor;
+  final Color? titleColor;
+  final bool? isFullScreen;
+
   const SimplePageScaffold({
     Key? key,
     required this.body,
     this.title,
     this.padding,
+    this.backgroundColor,
+    this.titleColor,
+    this.isFullScreen,
     required this.scrollable,
   }) : super(key: key);
 
@@ -182,16 +199,64 @@ class SimplePageScaffold extends StatefulWidget {
 class _SimpleScaffoldWidgetState extends State<SimplePageScaffold> {
   @override
   Widget build(BuildContext context) {
+    bool isFullScreen = widget.isFullScreen ?? !widget.scrollable;
+
+    var slivers = [
+      isFullScreen
+          ? SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) => Padding(
+                  padding: EdgeInsets.all(widget.padding ?? 25),
+                  child: StaggeredGrid.count(
+                    crossAxisCount: 1,
+                    children: [
+                      !widget.scrollable
+                          ? SizedBox(
+                              height: ScreenUtil.getSize(context).height -
+                                  (ScreenUtil.getSize(context).height / 8),
+                              child: widget.body,
+                            )
+                          : widget.body,
+                    ],
+                  ),
+                ),
+                childCount: 1,
+              ),
+            )
+          : SliverFillRemaining(
+              child: Container(
+                padding: EdgeInsets.all(widget.padding ?? 25),
+                child: StaggeredGrid.count(
+                  crossAxisCount: 1,
+                  children: [
+                    widget.body,
+                  ],
+                ),
+              ),
+            ),
+    ];
+
     Scaffold scaffold = Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        title: Text(widget.title ?? ""),
-        backgroundColor: ThemesUtil.getBackgroundColor(context),
+        title: Text(
+          widget.title ?? "",
+          style: TextStyle(
+            color: widget.titleColor ?? Theme.of(context).primaryColorDark,
+          ),
+        ),
+        backgroundColor:
+            widget.backgroundColor ?? ThemesUtil.getBackgroundColor(context),
         elevation: 0,
+        foregroundColor:
+            widget.titleColor ?? Theme.of(context).primaryColorDark,
       ),
-      body: Padding(
-        padding: EdgeInsets.all(widget.padding ?? 25),
-        child: widget.body,
+      body: SafeArea(
+        child: CustomScrollView(
+          physics:
+              widget.scrollable ? null : const NeverScrollableScrollPhysics(),
+          slivers: slivers,
+        ),
       ),
     );
 
@@ -206,27 +271,7 @@ class _SimpleScaffoldWidgetState extends State<SimplePageScaffold> {
         child: CustomScrollView(
           physics:
               widget.scrollable ? null : const NeverScrollableScrollPhysics(),
-          slivers: [
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) => Padding(
-                  padding: EdgeInsets.all(widget.padding ?? 25),
-                  child: StaggeredGrid.count(
-                    crossAxisCount: 1,
-                    children: [
-                      SizedBox(
-                        height: !widget.scrollable
-                            ? ScreenUtil.getSize(context).height - 150
-                            : null,
-                        child: widget.body,
-                      ),
-                    ],
-                  ),
-                ),
-                childCount: 1,
-              ),
-            ),
-          ],
+          slivers: slivers,
         ),
       ),
     );

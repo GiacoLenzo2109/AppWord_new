@@ -13,11 +13,13 @@ import 'package:app_word/screens/main/book/add_book.dart';
 import 'package:app_word/screens/main/book/book.dart';
 import 'package:app_word/screens/main/book/word/new_word_page.dart';
 import 'package:app_word/screens/main/book/word/word_page.dart';
+import 'package:app_word/service/navigation_service.dart';
 import 'package:app_word/util/constants.dart';
 import 'package:app_word/util/dialog_util.dart';
 import 'package:app_word/util/navigator_util.dart';
 import 'package:app_word/util/screen_util.dart';
 import 'package:app_word/util/themes.dart';
+import 'package:app_word/widgets/book_view/book_item.dart';
 import 'package:app_word/widgets/book_view/word_item.dart';
 import 'package:app_word/widgets/dialogs/dialog_widget.dart';
 import 'package:app_word/widgets/global/button_widget.dart';
@@ -70,7 +72,9 @@ class _HomeState extends State<Home> {
       var user = await UserRepository.getUser(
           context: context, uid: FirebaseGlobal.auth.currentUser!.uid);
 
-      isAdmin = user!.isAdmin;
+      setState(() {
+        isAdmin = user!.isAdmin;
+      });
     }
 
     Future<bool> fetchData() async {
@@ -79,23 +83,30 @@ class _HomeState extends State<Home> {
         bookListProvider.setBooks(books);
 
         var word = await fetchDailyWord();
-        if (word != null) {
-          dailyWord = word;
-        } else {
-          dailyWord = Word();
-        }
+        setState(() {
+          if (word != null) {
+            dailyWord = word;
+          } else {
+            dailyWord = Word();
+          }
+        });
 
         dailyWordProvider.addWord(dailyWord);
 
         await fetchUserData();
-        loaded = true;
+
+        setState(() {
+          loaded = true;
+        });
         return true;
       }
       return false;
     }
 
     if (!loaded) {
-      _loaded = fetchData();
+      setState(() {
+        _loaded = fetchData();
+      });
     }
 
     List<Widget> newWords = [];
@@ -109,32 +120,27 @@ class _HomeState extends State<Home> {
     }
 
     Widget buildEmptyHome() {
-      return Center(
-        child: SizedBox(
-          height: ScreenUtil.getSize(context).height - 300,
-          child: Align(
-            alignment: Alignment.bottomCenter,
-            child: StaggeredGrid.count(
-              crossAxisCount: 1,
-              mainAxisSpacing: 10,
-              children: const [
-                Text(
-                  "Vai qui!",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: CupertinoColors.systemGrey,
-                  ),
-                ),
-                Icon(
-                  CupertinoIcons.arrow_down,
-                  color: CupertinoColors.systemGrey,
-                  size: 35,
-                ),
-              ],
+      return Align(
+        alignment: Alignment.bottomCenter,
+        child: StaggeredGrid.count(
+          crossAxisCount: 1,
+          mainAxisSpacing: 10,
+          children: const [
+            Text(
+              "Vai qui!",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: CupertinoColors.systemGrey,
+              ),
             ),
-          ),
+            Icon(
+              CupertinoIcons.arrow_down,
+              color: CupertinoColors.systemGrey,
+              size: 35,
+            ),
+          ],
         ),
       );
     }
@@ -153,7 +159,7 @@ class _HomeState extends State<Home> {
                   style: const TextStyle(fontSize: 65),
                 ),
                 Text(
-                  "@ ${FirebaseGlobal.auth.currentUser!.displayName!}",
+                  "@ ${FirebaseGlobal.auth.currentUser?.displayName!}",
                   style: ThemesUtil.titleContainerStyle(context),
                 )
               ],
@@ -164,6 +170,7 @@ class _HomeState extends State<Home> {
             ContainerWidget(
               child: GestureDetector(
                 onTap: () => NavigatorUtil.navigateTo(
+                  isOnRoot: true,
                   context: context,
                   builder: (context) => ChangeNotifierProvider.value(
                     value: dailyWordProvider,
@@ -254,14 +261,18 @@ class _HomeState extends State<Home> {
                       ButtonWidget(
                         text: book.name,
                         backgroundColor: ThemesUtil.getBackgroundColor(context),
+                        textColor: ThemesUtil.getTextColor(context),
                         onPressed: () => NavigatorUtil.navigateTo(
-                          context: context,
+                          context:
+                              NavigationService.navigatorKey.currentContext!,
                           builder: (context) => ChangeNotifierProvider.value(
                             value: book,
-                            child: const BookPage(),
+                            child: const CupertinoScaffold(
+                              body: BookPage(),
+                            ),
                           ),
                         ),
-                      )
+                      ),
                   ],
                 ),
               ],

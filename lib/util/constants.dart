@@ -17,6 +17,8 @@ class Constants {
   static const personalBook = "Personale";
   static const classBook = "Classe";
 
+  static const navBarHeight = 55.0;
+
   static const List<String> emojis = [
     "😀",
     "🤣",

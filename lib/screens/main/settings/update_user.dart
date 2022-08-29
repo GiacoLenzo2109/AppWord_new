@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:app_word/database/firebase_global.dart';
 import 'package:app_word/database/repository/user_repository.dart';
 import 'package:app_word/service/navigation_service.dart';
@@ -31,6 +33,9 @@ class _UpdateUserPageState extends State<UpdateUserPage> {
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
   var confirmPassController = TextEditingController();
+
+  var error = "";
+
   @override
   Widget build(BuildContext context) {
     return SimplePageScaffold(
@@ -77,66 +82,101 @@ class _UpdateUserPageState extends State<UpdateUserPage> {
           ),
           ButtonWidget(
             text: "Aggiorna",
-            onPressed: () async => {
-              //Navigator.pop(context)
-              if (emailController.text.isNotEmpty &&
-                  GlobalFunc.isEmail(emailController.text))
-                {
-                  LoadingWidget.show(context),
-                  await FirebaseGlobal.auth.currentUser!
-                      .updateEmail(emailController.text.trim()),
-                }
-              else
-                {
-                  if (widget.type == UpdateUserPage.EMAIL)
-                    {
-                      DialogUtil.openDialog(
-                        context: context,
-                        builder: (context) =>
-                            const ErrorDialogWidget("Email non valida!"),
-                      ),
-                    }
-                },
-              if (usernameController.text.isNotEmpty)
-                {
-                  LoadingWidget.show(context),
-                  await FirebaseGlobal.auth.currentUser!.updateDisplayName(
-                      usernameController.text.toLowerCase().trim()),
-                }
-              else
-                {
-                  if (widget.type == UpdateUserPage.USERNAME)
-                    {
-                      DialogUtil.openDialog(
-                        context: context,
-                        builder: (context) =>
-                            const ErrorDialogWidget("Username non valido!"),
-                      ),
-                    }
-                },
-              if (passwordController.text.isNotEmpty &&
-                  passwordController.text == confirmPassController.text)
-                {
-                  LoadingWidget.show(context),
-                  await FirebaseGlobal.auth.currentUser!
-                      .updatePassword(passwordController.text),
-                }
-              else
-                {
-                  if (widget.type == UpdateUserPage.PASSWORD)
-                    {
-                      DialogUtil.openDialog(
-                        context: context,
-                        builder: (context) =>
-                            const ErrorDialogWidget("Password non valide!"),
-                      ),
-                    }
-                },
+            onPressed: () async {
+              setState(() {
+                error = "";
+              });
+              switch (widget.type) {
+                case UpdateUserPage.USERNAME:
+                  log("1. Aggiornamento username");
+                  if (usernameController.text.isNotEmpty) {
+                    LoadingWidget.show(context);
+                    await FirebaseGlobal.auth.currentUser!.updateDisplayName(
+                      usernameController.text.trim(),
+                    );
+                    log("2. Username aggiornato");
+                  } else {
+                    setState(() {
+                      error = "Username non valido!";
+                    });
+                    log("2. $error");
+                  }
+                  break;
+                case UpdateUserPage.EMAIL:
+                  if (emailController.text.isNotEmpty &&
+                      GlobalFunc.isEmail(emailController.text)) {
+                    log("1. Change email");
+                    var freeEmail = await UserRepository.isEmailFree(
+                        context: context, email: emailController.text);
 
-              await UserRepository.updateUser(
-                  context: context, user: FirebaseGlobal.auth.currentUser!),
-              Navigator.pop(context),
-              Navigator.pop(context),
+                    if (!freeEmail) {
+                      setState(() {
+                        error = "Email già in uso!";
+                        log("3. $error");
+                      });
+                    } else {
+                      log("2. Start email");
+                      LoadingWidget.show(context);
+                      try {
+                        await FirebaseGlobal.auth.currentUser!
+                            .updateEmail(emailController.text.trim())
+                            .whenComplete(
+                              () => FirebaseGlobal.auth.currentUser!
+                                  .sendEmailVerification(),
+                            );
+                        log("3. Email changed");
+                      } on Exception catch (e) {
+                        setState(() {
+                          error = "Email non valida!";
+                        });
+                        log("3. $error");
+                      }
+                    }
+                  } else {
+                    setState(() {
+                      error = "Email non valida!";
+                    });
+                    DialogUtil.openDialog(
+                      context: context,
+                      builder: (context) => ErrorDialogWidget(error),
+                    );
+                  }
+                  break;
+                case UpdateUserPage.PASSWORD:
+                  if (passwordController.text.isNotEmpty &&
+                      passwordController.text == confirmPassController.text) {
+                    log("1. Aggiornamento password");
+                    LoadingWidget.show(context);
+                    await FirebaseGlobal.auth.currentUser!
+                        .updatePassword(passwordController.text);
+                    log("2. Password aggiornata");
+                  } else {
+                    setState(() {
+                      error = passwordController.text.isEmpty
+                          ? "Inserisci una password!"
+                          : "Le password non combaciano!";
+                    });
+                    log("2. $error");
+                  }
+                  break;
+              }
+
+              if (error.isEmpty) {
+                await UserRepository.updateUser(
+                        context: context,
+                        user: FirebaseGlobal.auth.currentUser!)
+                    .whenComplete(
+                  () {
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  },
+                );
+              } else {
+                DialogUtil.openDialog(
+                  context: context,
+                  builder: (context) => ErrorDialogWidget(error),
+                );
+              }
             },
           ),
         ],

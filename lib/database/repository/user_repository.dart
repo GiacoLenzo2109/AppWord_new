@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:app_word/database/firebase_global.dart';
 import 'package:app_word/models/user.dart';
+import 'package:app_word/util/dialog_util.dart';
+import 'package:app_word/widgets/dialogs/error_dialog_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +31,17 @@ class UserRepository {
     var user = await FirebaseGlobal.users.doc(uid).get();
     if (!user.exists) return null;
     return UserDb.fromJson(user.data() as Map<String, dynamic>);
+  }
+
+  static Future<bool> isEmailFree({
+    required BuildContext context,
+    required String email,
+  }) async {
+    var user = await FirebaseGlobal.users
+        .where(UserDb.EMAIL, isEqualTo: email.toLowerCase())
+        .get();
+    if (user.docs.isEmpty) return true;
+    return false;
   }
 
   static Future<void> updateUser({

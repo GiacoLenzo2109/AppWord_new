@@ -1,3 +1,4 @@
+import 'package:app_word/service/navigation_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -23,8 +24,13 @@ class NavigatorUtil {
 
   static navigateTo(
       {required BuildContext context,
-      required Widget Function(BuildContext) builder}) {
-    Navigator.of(context).push(
+      required Widget Function(BuildContext) builder,
+      bool? isOnRoot}) {
+    var _context = isOnRoot != null && isOnRoot
+        ? NavigationService.navigatorKey.currentContext!
+        : context;
+
+    Navigator.of(_context).push(
       Theme.of(context).platform == TargetPlatform.android
           ? MaterialPageRoute(builder: builder)
           : CupertinoPageRoute(builder: builder),
@@ -38,7 +44,7 @@ class NavigatorUtil {
 
   static navigateAndReplace(
       {required BuildContext context, required String route}) {
-    Navigator.of(context).pushNamedAndRemoveUntil(route, (route) => true);
+    Navigator.of(context).pushNamedAndRemoveUntil(route, (route) => false);
   }
 
   static navigatePopAndGo(

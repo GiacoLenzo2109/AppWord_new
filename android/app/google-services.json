@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "684137879377-2b7pfj4k3vg2grpcmn6g6v1ojdnc3h0a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.starvation.app_word",
+            "certificate_hash": "9ee96461b2300c8de6df585d88e66e0455b746c6"
+          }
+        },
+        {
           "client_id": "684137879377-uha2knmtm6vm77m3cl75kkv0d415cgvc.apps.googleusercontent.com",
           "client_type": 3
         }

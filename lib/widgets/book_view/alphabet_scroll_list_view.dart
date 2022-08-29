@@ -75,6 +75,48 @@ class _AlphabetScrollListViewState extends State<AlphabetScrollListView> {
       }
     }
 
+    List<Widget> buildEmptyView() {
+      return [
+        SliverFillRemaining(
+          child: GestureDetector(
+            onTap: () => DialogUtil.showModalBottomSheet(
+              context: context,
+              builder: (context) => ChangeNotifierProvider<BookModel>.value(
+                value: bookProvider,
+                child: const AddWordPage(),
+              ),
+            ),
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 100),
+              decoration: const BoxDecoration(color: Colors.transparent),
+              child: Center(
+                child: StaggeredGrid.count(
+                  crossAxisCount: 1,
+                  mainAxisSpacing: 15,
+                  children: [
+                    Icon(
+                      CupertinoIcons.pencil_ellipsis_rectangle,
+                      size: ScreenUtil.getSize(context).width / 4,
+                      color: CupertinoColors.systemGrey,
+                    ),
+                    const Text(
+                      "Aggiungi un vocabolo!",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: CupertinoColors.systemGrey,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Icon(CupertinoIcons.add_circled_solid),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        )
+      ];
+    }
+
     // void initWords(Map<String, List<Word>> wordsMap,
     //     Map<String, Word> wordsMapMain, List<String> words) {
     //   if (wordsMap.isEmpty) {
@@ -154,10 +196,13 @@ class _AlphabetScrollListViewState extends State<AlphabetScrollListView> {
             builder: (context, state) => ClipRect(
               clipBehavior: Clip.hardEdge,
               child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 9.5),
+                filter: ImageFilter.blur(
+                  sigmaX: ThemesUtil.isAndroid(context) ? 0 : 10.0,
+                  sigmaY: ThemesUtil.isAndroid(context) ? 0 : 9.5,
+                ),
                 child: Container(
                   color: ThemesUtil.isAndroid(context)
-                      ? Theme.of(context).scaffoldBackgroundColor.withOpacity(
+                      ? ThemesUtil.getPrimaryColor(context).withOpacity(
                           !state.isPinned ? state.scrollPercentage : 0.5)
                       : CupertinoTheme.of(context)
                           .barBackgroundColor
@@ -172,7 +217,17 @@ class _AlphabetScrollListViewState extends State<AlphabetScrollListView> {
                   alignment: Alignment.centerLeft,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                  child: Text(letter),
+                  child: Text(
+                    letter,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: ThemesUtil.isAndroid(context)
+                          ? state.isPinned
+                              ? ThemesUtil.getTextColor(context)
+                              : ThemesUtil.getPrimaryColor(context)
+                          : ThemesUtil.getTextColor(context),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -214,45 +269,7 @@ class _AlphabetScrollListViewState extends State<AlphabetScrollListView> {
           ),
         );
       }
-      return words.isEmpty
-          ? [
-              GestureDetector(
-                onTap: () => DialogUtil.showModalBottomSheet(
-                  context: context,
-                  builder: (context) => ChangeNotifierProvider<BookModel>.value(
-                    value: bookProvider,
-                    child: const AddWordPage(),
-                  ),
-                ),
-                child: Container(
-                  decoration: const BoxDecoration(color: Colors.transparent),
-                  height: ScreenUtil.getSize(context).height - 350,
-                  child: Center(
-                    child: StaggeredGrid.count(
-                      crossAxisCount: 1,
-                      mainAxisSpacing: 15,
-                      children: [
-                        Icon(
-                          CupertinoIcons.pencil_ellipsis_rectangle,
-                          size: ScreenUtil.getSize(context).width / 4,
-                          color: CupertinoColors.systemGrey,
-                        ),
-                        const Text(
-                          "Aggiungi un vocabolo!",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: CupertinoColors.systemGrey,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const Icon(CupertinoIcons.add_circled_solid),
-                      ],
-                    ),
-                  ),
-                ),
-              )
-            ]
-          : slivers;
+      return words.isEmpty && !searching ? buildEmptyView() : slivers;
     }
 
     List<Widget> getSearchResult() {
