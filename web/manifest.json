@@ -1,6 +1,6 @@
 {
-    "name": "appword",
-    "short_name": "appword",
+    "name": "AppWord",
+    "short_name": "AppWord",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
