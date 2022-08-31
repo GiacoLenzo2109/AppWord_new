@@ -31,6 +31,10 @@ class SignInPage extends StatelessWidget {
                 height: ScreenUtil.getSize(context).height / 2.8,
                 repeat: true,
               ),
+              // Image.asset(
+              //   "assets/App_Logo.png",
+              //   width: ScreenUtil.getSize(context).width / 2,
+              // ),
             ],
           ),
           StaggeredGrid.count(
