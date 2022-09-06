@@ -139,9 +139,12 @@ class _AddBookPageState extends State<AddBookPage> {
 
                 if (bookCheck == null) {
                   await BookRepository.addBook(context: context, book: book)
-                      .then((book) => {
-                            bookListProvider.addBook(book),
-                          });
+                      .then(
+                    (book) => {
+                      bookListProvider.addBook(book),
+                      log("Book added: ${book.id}")
+                    },
+                  );
                 } else {
                   setState(() {
                     hasError = true;

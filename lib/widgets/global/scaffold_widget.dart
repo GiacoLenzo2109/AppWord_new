@@ -70,12 +70,21 @@ class _ScaffoldWidgetState extends State<PageScaffold> {
                   ),
                 )),
     );
-    var page = CustomScrollView(
-      physics: !widget.scrollable ? const NeverScrollableScrollPhysics() : null,
-      controller: widget.controller,
-      slivers: [
-        slivers,
-      ],
+    var page = GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: CustomScrollView(
+        physics: !widget.scrollable
+            ? const NeverScrollableScrollPhysics()
+            : widget.controller != null &&
+                    widget.controller!.hasClients &&
+                    widget.controller!.offset > 0
+                ? const ClampingScrollPhysics()
+                : const AlwaysScrollableScrollPhysics(),
+        controller: widget.controller,
+        slivers: [
+          slivers,
+        ],
+      ),
     );
 
     Scaffold scaffold = Scaffold(
@@ -113,53 +122,61 @@ class _ScaffoldWidgetState extends State<PageScaffold> {
 
     CupertinoPageScaffold cupertinoScaffold = CupertinoPageScaffold(
       resizeToAvoidBottomInset: true,
-      child: CustomScrollView(
-        physics:
-            !widget.scrollable ? const NeverScrollableScrollPhysics() : null,
-        controller: widget.controller,
-        slivers: [
-          CupertinoSliverNavigationBar(
-            //previousPageTitle: widget.previousPageTitle,
-            border: null,
-            stretch: false,
-            backgroundColor: CupertinoTheme.of(context).barBackgroundColor,
-            leading: widget.leading,
-            largeTitle: Text(widget.title),
-            trailing: widget.trailing,
-            brightness: CupertinoTheme.brightnessOf(context),
-            transitionBetweenRoutes: false,
-          ),
-          if (widget.onRefresh != null && widget.childSliver == null)
-            CupertinoSliverRefreshControl(
-              onRefresh: widget.onRefresh!,
-              builder: SpinnerRefreshUtil.buildSpinnerOnlyRefreshIndicator,
+      child: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: CustomScrollView(
+          physics: !widget.scrollable
+              ? const NeverScrollableScrollPhysics()
+              : widget.controller != null &&
+                      widget.controller!.hasClients &&
+                      widget.controller!.offset > 0
+                  ? const ClampingScrollPhysics()
+                  : const AlwaysScrollableScrollPhysics(),
+          controller: widget.controller,
+          slivers: [
+            CupertinoSliverNavigationBar(
+              //previousPageTitle: widget.previousPageTitle,
+              border: null,
+              stretch: false,
+              backgroundColor: CupertinoTheme.of(context).barBackgroundColor,
+              leading: widget.leading,
+              largeTitle: Text(widget.title),
+              trailing: widget.trailing,
+              brightness: CupertinoTheme.brightnessOf(context),
+              transitionBetweenRoutes: false,
             ),
-          if (widget.header != null)
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: SliverAppBarDelegate(
-                minHeight: 0,
-                maxHeight: 75,
-                child: widget.header!,
+            if (widget.onRefresh != null && widget.childSliver == null)
+              CupertinoSliverRefreshControl(
+                onRefresh: widget.onRefresh!,
+                builder: SpinnerRefreshUtil.buildSpinnerOnlyRefreshIndicator,
               ),
-            ),
-          //     : SliverSafeArea(
-          //         top:
-          //             false, // Top safe area is consumed by the navigation bar.
-          //         sliver: SliverList(
-          //           delegate: SliverChildBuilderDelegate(
-          //             (BuildContext context, int index) {
-          //               return Padding(
-          //                 padding: EdgeInsets.all(widget.padding ?? 25),
-          //                 child: widget.child,
-          //               );
-          //             },
-          //             childCount: 1,
-          //           ),
-          //         ),
-          //       ),
-          slivers,
-        ],
+            if (widget.header != null)
+              SliverPersistentHeader(
+                pinned: true,
+                delegate: SliverAppBarDelegate(
+                  minHeight: 0,
+                  maxHeight: 75,
+                  child: widget.header!,
+                ),
+              ),
+            //     : SliverSafeArea(
+            //         top:
+            //             false, // Top safe area is consumed by the navigation bar.
+            //         sliver: SliverList(
+            //           delegate: SliverChildBuilderDelegate(
+            //             (BuildContext context, int index) {
+            //               return Padding(
+            //                 padding: EdgeInsets.all(widget.padding ?? 25),
+            //                 child: widget.child,
+            //               );
+            //             },
+            //             childCount: 1,
+            //           ),
+            //         ),
+            //       ),
+            slivers,
+          ],
+        ),
       ),
     );
 
@@ -249,10 +266,13 @@ class _SimpleScaffoldWidgetState extends State<SimplePageScaffold> {
             widget.titleColor ?? Theme.of(context).primaryColorDark,
       ),
       body: SafeArea(
-        child: CustomScrollView(
-          physics:
-              widget.scrollable ? null : const NeverScrollableScrollPhysics(),
-          slivers: slivers,
+        child: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: CustomScrollView(
+            physics:
+                widget.scrollable ? null : const NeverScrollableScrollPhysics(),
+            slivers: slivers,
+          ),
         ),
       ),
     );
@@ -265,10 +285,13 @@ class _SimpleScaffoldWidgetState extends State<SimplePageScaffold> {
         backgroundColor: ThemesUtil.getBackgroundColor(context),
       ),
       child: SafeArea(
-        child: CustomScrollView(
-          physics:
-              widget.scrollable ? null : const NeverScrollableScrollPhysics(),
-          slivers: slivers,
+        child: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: CustomScrollView(
+            physics:
+                widget.scrollable ? null : const NeverScrollableScrollPhysics(),
+            slivers: slivers,
+          ),
         ),
       ),
     );

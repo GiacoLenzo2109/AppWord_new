@@ -76,7 +76,22 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
             width: 3,
           ),
         ),
-        prefixIcon: Icon(widget.icon),
+        enabledBorder: const OutlineInputBorder(
+          borderSide: BorderSide(
+            color: CupertinoColors.placeholderText,
+          ),
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: ThemesUtil.getPrimaryColor(context),
+          ),
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
+        ),
+        prefixIcon: Icon(
+          widget.icon,
+          color: CupertinoColors.systemGrey,
+        ),
         suffixIcon: isPassword
             ? IconButton(
                 icon: Icon(

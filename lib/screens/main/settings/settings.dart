@@ -32,13 +32,20 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
-  bool isGoogleUser = FirebaseGlobal.auth.currentUser != null
-      ? FirebaseGlobal.auth.currentUser!.providerData[0].providerId ==
-          'google.com'
-      : false;
+  bool isGoogleUser = false;
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
+
+    if (FirebaseGlobal.auth.currentUser != null) {
+      for (var prov in FirebaseGlobal.auth.currentUser!.providerData) {
+        log(prov.providerId);
+        if (prov.providerId == 'google.com') {
+          isGoogleUser = true;
+          break;
+        }
+      }
+    }
 
     return PageScaffold(
       title: "Impostazioni",
@@ -203,7 +210,7 @@ class _SettingsState extends State<Settings> {
               Padding(
                 padding: const EdgeInsets.all(20),
                 child: ButtonWidget(
-                  text: "Logout",
+                  text: "Esci",
                   backgroundColor: CupertinoColors.systemRed,
                   onPressed: () async {
                     await AuthenticationRepository.signOut(

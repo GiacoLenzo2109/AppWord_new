@@ -57,11 +57,16 @@ class _WordPageState extends State<WordPage> {
         widget.isDailyWord != null && widget.isDailyWord!
             ? bookProvider.updateWord(
                 await DailyWordRepository.getWord(
-                    context: context, wordId: word.id),
+                  context: context,
+                  wordId: word.id,
+                ),
               )
             : bookProvider.updateWord(
                 await BookRepository.getWord(
-                    context: context, bookId: bookProvider.id, wordId: word.id),
+                  context: context,
+                  bookId: bookProvider.id,
+                  wordId: word.id,
+                ),
               );
       },
       scrollable: true,
@@ -147,6 +152,31 @@ class _WordPageState extends State<WordPage> {
               color: CupertinoColors.systemGrey,
               fontStyle: FontStyle.italic,
               fontSize: 18,
+            ),
+          ),
+          ContainerWidget(
+            child: StaggeredGrid.count(
+              crossAxisCount: 1,
+              mainAxisSpacing: 3,
+              children: [
+                SizedBox(
+                  width: ScreenUtil.getSize(context).width - 107.5,
+                  child: Text(
+                    "Autore:",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25,
+                      color: ThemesUtil.getContrastingColor(context),
+                    ),
+                  ),
+                ),
+                Text(
+                  "@${word.author}",
+                  style: TextStyle(
+                    color: ThemesUtil.getContrastingColor(context),
+                  ),
+                ),
+              ],
             ),
           ),
           ContainerWidget(

@@ -28,14 +28,25 @@ class BookPage extends StatefulWidget {
 }
 
 class _BookPageState extends State<BookPage> {
+  ScrollController scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     final navbarProvider = Provider.of<NavbarModel>(context);
     final bookProvider = Provider.of<BookModel>(context);
+    bool isSetted = false;
+
+    if (!isSetted) {
+      scrollController.addListener(() {
+        bookProvider.isStickyAlphabeth = !scrollController.offset.isNegative;
+      });
+      isSetted = true;
+    }
 
     return PageScaffold(
       title: bookProvider.name,
       padding: 0,
+      controller: scrollController,
       scrollable: bookProvider.words.isEmpty ? false : true,
       trailing: Padding(
         padding: EdgeInsets.only(
@@ -73,7 +84,10 @@ class _BookPageState extends State<BookPage> {
       ),
       childSliver: ChangeNotifierProvider.value(
         value: bookProvider,
-        child: AlphabetScrollListView(book: bookProvider.id),
+        child: AlphabetScrollListView(
+          book: bookProvider.id,
+          scrollController: scrollController,
+        ),
       ),
       //child: AlphabetScrollList(bookProvider.id),
     );

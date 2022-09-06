@@ -7,6 +7,15 @@ import 'package:app_word/widgets/book_view/word_item.dart';
 import 'package:flutter/widgets.dart';
 
 class BookModel extends ChangeNotifier {
+  bool _isStickyAlphabeth = true;
+
+  bool get isStickyAlphabeth => _isStickyAlphabeth;
+
+  set isStickyAlphabeth(bool isSticky) {
+    _isStickyAlphabeth = isSticky;
+    notifyListeners();
+  }
+
   String _name = "";
   String get name => _name;
 

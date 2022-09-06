@@ -258,6 +258,7 @@ class _AddWordPageState extends State<AddWordPage> {
                                           .elementAt(selectedTipology!);
                                     });
                                   },
+                                  title: 'Scegli la tipologia',
                                   items: tipologies,
                                   initialItem: selectedTipology ?? 1,
                                 ),

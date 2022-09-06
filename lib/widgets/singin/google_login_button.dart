@@ -20,7 +20,7 @@ class GoogleLogInButton extends StatelessWidget {
     return ButtonWidget(
         text: title,
         icon: Image.asset(
-          "assets/Google_Logo.png",
+          "assets/images/Google_Logo.png",
           width: 25,
           fit: BoxFit.fill,
         ),

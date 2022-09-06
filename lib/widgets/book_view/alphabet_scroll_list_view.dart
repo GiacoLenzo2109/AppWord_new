@@ -1,5 +1,4 @@
 import 'dart:developer' as dev;
-import 'dart:math';
 import 'dart:ui';
 
 import 'package:app_word/database/repository/book_repository.dart';
@@ -13,6 +12,7 @@ import 'package:app_word/util/screen_util.dart';
 import 'package:app_word/util/spinner_refresh_util.dart';
 import 'package:app_word/util/themes.dart';
 import 'package:app_word/widgets/book_view/word_item.dart';
+import 'package:app_word/widgets/global/bottom_picker.dart';
 import 'package:app_word/widgets/global/button_widget.dart';
 import 'package:app_word/widgets/global/divider_widget.dart';
 import 'package:app_word/widgets/global/search_text_field.dart';
@@ -28,24 +28,48 @@ import '../../providers/book_model.dart';
 
 class AlphabetScrollListView extends StatefulWidget {
   final String book;
+  final ScrollController scrollController;
 
-  const AlphabetScrollListView({Key? key, required this.book})
-      : super(key: key);
+  const AlphabetScrollListView({
+    Key? key,
+    required this.book,
+    required this.scrollController,
+  }) : super(key: key);
 
   @override
   State<AlphabetScrollListView> createState() => _AlphabetScrollListViewState();
 }
 
 class _AlphabetScrollListViewState extends State<AlphabetScrollListView> {
-  final double jumpShiftLetter = 25;
+  final double jumpShiftLetter = 35;
   final double jumpShiftWord = 50;
+
+  final List<Word> _words = [];
 
   var selectedLetter = "A";
 
   bool searching = false;
   var searchValue = "";
 
+  /// Alphabet list letters
+
+  List<String> _alphabet = [];
+  var alphabetLetterPositions = {};
+
+  double _delta = 0;
+
   StickyHeaderController controller = StickyHeaderController();
+
+  /// This variable holds the positions in the ListView. We need that to implement
+  /// the functionality of the direct jump to the given letter in the list
+  Map<String, double> letterPositions = {};
+
+  int _letterPos = 0;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +86,8 @@ class _AlphabetScrollListViewState extends State<AlphabetScrollListView> {
     //   }
     // });
 
+    // dev.log(widget.scrollController.offset.toDouble().toString());
+
     void initWords(Map<String, List<Word>> wordsMap,
         Map<String, Word> wordsMapMain, List<Word> words) {
       if (wordsMap.isEmpty) {
@@ -75,201 +101,177 @@ class _AlphabetScrollListViewState extends State<AlphabetScrollListView> {
       }
     }
 
-    List<Widget> buildEmptyView() {
-      return [
-        SliverFillRemaining(
-          child: GestureDetector(
-            onTap: () => DialogUtil.showModalBottomSheet(
-              context: context,
-              builder: (context) => ChangeNotifierProvider<BookModel>.value(
-                value: bookProvider,
-                child: const AddWordPage(),
-              ),
-            ),
-            child: Container(
-              margin: const EdgeInsets.only(bottom: 100),
-              decoration: const BoxDecoration(color: Colors.transparent),
-              child: Center(
-                child: StaggeredGrid.count(
-                  crossAxisCount: 1,
-                  mainAxisSpacing: 15,
-                  children: [
-                    Icon(
-                      CupertinoIcons.pencil_ellipsis_rectangle,
-                      size: ScreenUtil.getSize(context).width / 4,
-                      color: CupertinoColors.systemGrey,
-                    ),
-                    const Text(
-                      "Aggiungi un vocabolo!",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: CupertinoColors.systemGrey,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const Icon(CupertinoIcons.add_circled_solid),
-                  ],
-                ),
-              ),
+    Widget buildEmptyView() {
+      return SliverFillRemaining(
+        child: GestureDetector(
+          onTap: () => DialogUtil.showModalBottomSheet(
+            context: context,
+            builder: (context) => ChangeNotifierProvider<BookModel>.value(
+              value: bookProvider,
+              child: const AddWordPage(),
             ),
           ),
-        )
-      ];
-    }
-
-    // void initWords(Map<String, List<Word>> wordsMap,
-    //     Map<String, Word> wordsMapMain, List<String> words) {
-    //   if (wordsMap.isEmpty) {
-    //     for (String word in words) {
-    //       if (wordsMap[word[0]] == null) {
-    //         wordsMap.putIfAbsent(word[0], () => []);
-    //       }
-    //       wordsMap[word[0]]!.add(
-    //         Word(
-    //           type: Word.verb,
-    //           word: word,
-    //           definitions: ['def1', 'def2'],
-    //           semanticFields: ['sem1', 'sem2'],
-    //           examplePhrases: ['ex1', 'ex2'],
-    //           italianType: Word.literature,
-    //           italianCorrespondence: 'Pog',
-    //           synonyms: ['s1'],
-    //           antonyms: ['a1', 'a2', 'a3'],
-    //         ),
-    //       );
-    //       wordsMapMain.putIfAbsent(
-    //         word,
-    //         () => Word(
-    //           type: Word.verb,
-    //           word: word,
-    //           definitions: ['def1', 'def2'],
-    //           semanticFields: ['sem1', 'sem2'],
-    //           examplePhrases: ['ex1', 'ex2'],
-    //           italianType: Word.literature,
-    //           italianCorrespondence: 'Pog',
-    //           synonyms: ['s1'],
-    //           antonyms: ['a1', 'a2', 'a3'],
-    //         ),
-    //       );
-    //     }
-    //   }
-    // }
-
-    // initWords(_wordsMap, _wordsMapMain, wordsString(words()));
-
-    var searchSliver = SliverPadding(
-      padding: Constants.padding,
-      sliver: SliverStickyHeader.builder(
-        builder: (context, state) => SizedBox(
-          height: 35,
-          child: SearchTextField(
-            onChanged: (searchValue) {
-              setState(() {
-                searching = true;
-                searching = searchValue.isNotEmpty;
-                this.searchValue = searchValue.toLowerCase();
-              });
-            },
-            onStop: (() {
-              setState(() {
-                searching = false;
-                searchValue = "";
-                FocusScope.of(context).unfocus();
-              });
-            }),
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 100),
+            decoration: const BoxDecoration(color: Colors.transparent),
+            child: Center(
+              child: StaggeredGrid.count(
+                crossAxisCount: 1,
+                mainAxisSpacing: 15,
+                children: [
+                  Icon(
+                    CupertinoIcons.pencil_ellipsis_rectangle,
+                    size: ScreenUtil.getSize(context).width / 4,
+                    color: CupertinoColors.systemGrey,
+                  ),
+                  const Text(
+                    "Aggiungi un vocabolo!",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: CupertinoColors.systemGrey,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const Icon(CupertinoIcons.add_circled_solid),
+                ],
+              ),
+            ),
           ),
         ),
-        sliver: const SliverPadding(padding: Constants.padding),
-      ),
-    );
+      );
+    }
 
     List<Widget> getWordList(List<Word> words) {
+      _words.clear();
+      _words.addAll(words);
       List<Widget> slivers = [];
       Map<String, List<Word>> map = {};
+      double totalShift = ThemesUtil.isAndroid(context) ? 0 : 55;
 
       initWords(map, {}, words);
 
       for (var letter in map.keys) {
+        letterPositions[letter] = 0;
+        // int l = map[letter]!.length;
+        // int ct = 0;
+
+        letterPositions[letter] = totalShift;
+
+        // dev.log('$letter $totalShift');
+
+        totalShift += jumpShiftLetter;
+
+        for (Word word in map[letter]!) {
+          totalShift += jumpShiftWord;
+        }
+        totalShift += 25;
+
         slivers.add(
           SliverStickyHeader.builder(
             controller: controller,
-            builder: (context, state) => ClipRect(
-              clipBehavior: Clip.hardEdge,
-              child: BackdropFilter(
-                filter: ImageFilter.blur(
-                  sigmaX: ThemesUtil.isAndroid(context) ? 0 : 10.0,
-                  sigmaY: ThemesUtil.isAndroid(context) ? 0 : 9.5,
-                ),
-                child: Container(
-                  color: ThemesUtil.isAndroid(context)
-                      ? ThemesUtil.getPrimaryColor(context).withOpacity(
-                          !state.isPinned ? state.scrollPercentage : 0.5)
-                      : CupertinoTheme.of(context)
-                          .barBackgroundColor
-                          .withOpacity(
+            builder: (context, state) {
+              return ClipRect(
+                clipBehavior: Clip.hardEdge,
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(
+                    sigmaX: ThemesUtil.isAndroid(context) ? 0 : 10.0,
+                    sigmaY: ThemesUtil.isAndroid(context) ? 0 : 9.5,
+                  ),
+                  child: Container(
+                    height: 35,
+                    // decoration: BoxDecoration(
+                    // border: Border(
+                    //   bottom: BorderSide(
+                    //     color: state.isPinned
+                    //         ? CupertinoColors.systemGrey4
+                    //         : ThemesUtil.getBackgroundColor(context),
+                    //   ),
+                    // ),
+                    color: ThemesUtil.isAndroid(context)
+                        ? ThemesUtil.getPrimaryColor(context).withOpacity(
                             !state.isPinned
                                 ? state.scrollPercentage
-                                : Provider.of<ThemeProvider>(context)
-                                        .isDarkTheme
+                                : ThemesUtil.isAndroid(context)
                                     ? 1
                                     : 0.5,
-                          ),
-                  alignment: Alignment.centerLeft,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                  child: Text(
-                    letter,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: ThemesUtil.isAndroid(context)
-                          ? state.isPinned
-                              ? ThemesUtil.getTextColor(context)
-                              : ThemesUtil.getPrimaryColor(context)
-                          : ThemesUtil.getTextColor(context),
+                          )
+                        : CupertinoTheme.of(context)
+                            .barBackgroundColor
+                            .withOpacity(
+                              !state.isPinned
+                                  ? state.scrollPercentage
+                                  : Provider.of<ThemeProvider>(context)
+                                          .isDarkTheme
+                                      ? 1
+                                      : 0.5,
+                            ),
+                    // ),
+                    alignment: Alignment.centerLeft,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    child: Text(
+                      letter,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: ThemesUtil.isAndroid(context)
+                            ? state.isPinned
+                                ? Colors.white
+                                : ThemesUtil.getPrimaryColor(context)
+                            : ThemesUtil.getTextColor(context),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
+              );
+            },
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate(
-                (context, index) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: StaggeredGrid.count(
-                    crossAxisCount: 1,
-                    children: [
-                      Divider(
-                        height: 0,
-                        color: Colors.grey.withOpacity(.5),
-                      ),
-                      WordItem(
-                        key: Key(map[letter]!.elementAt(index).id),
-                        word: map[letter]!.elementAt(index),
-                        book: widget.book,
-                      ),
-                      Divider(
-                        height: 0,
-                        color: Colors.grey.withOpacity(.5),
-                      ),
-                      if (map[letter]!.elementAt(index).word ==
-                          map[letter]!.last.word)
-                        const SizedBox(height: 25),
-                      if (map[letter]!.elementAt(index).word ==
-                              map[letter]!.last.word &&
-                          letter == map.keys.last)
-                        const SizedBox(
-                          height: 100,
+                (context, index) {
+                  Widget child = Container(
+                    padding: const EdgeInsets.only(left: 10, right: 25),
+                    height: map[letter]!.elementAt(index).word ==
+                            map[letter]!.last.word
+                        ? 75
+                        : 50,
+                    child: StaggeredGrid.count(
+                      crossAxisCount: 1,
+                      children: [
+                        Divider(
+                          height: 0,
+                          color: Colors.grey.withOpacity(.5),
                         ),
-                    ],
-                  ),
-                ),
+                        WordItem(
+                          key: Key(map[letter]!.elementAt(index).id),
+                          word: map[letter]!.elementAt(index),
+                          book: widget.book,
+                        ),
+                        Divider(
+                          height: 0,
+                          color: Colors.grey.withOpacity(.5),
+                        ),
+                        if (map[letter]!.elementAt(index).word ==
+                            map[letter]!.last.word)
+                          const SizedBox(height: 25),
+                        // if (map[letter]!.elementAt(index).word ==
+                        //         map[letter]!.last.word &&
+                        //     letter == map.keys.last)
+                        //   const SizedBox(
+                        //     height: 35,
+                        //   ),
+                      ],
+                    ),
+                  );
+                  // totalShift += 25;
+                  return child;
+                },
                 childCount: map[letter]!.length,
               ),
             ),
           ),
         );
+        // totalShift += 25;
       }
-      return words.isEmpty && !searching ? buildEmptyView() : slivers;
+      return slivers;
     }
 
     List<Widget> getSearchResult() {
@@ -309,20 +311,195 @@ class _AlphabetScrollListViewState extends State<AlphabetScrollListView> {
       return searching ? getSearchResult() : getWordList(words());
     }
 
-    return MultiSliver(
-      children: [
-        CupertinoSliverRefreshControl(
-          onRefresh: () async {
-            bookProvider.setWords(
-              await BookRepository.getWords(
-                  context: context, bookId: bookProvider.id),
-            );
-          },
-          builder: SpinnerRefreshUtil.buildSpinnerOnlyRefreshIndicator,
+    List<Widget> getStartingLetters() {
+      /// This functions goes through all contacts details and finds all starting
+      /// letters of the names in the list. They are later used to implement quick
+      /// jump to the letter functionality
+
+      /// For simplicity, use set to keep unique letter
+      Set<String> outSet = {};
+      for (Word word in _words) {
+        outSet.add(word.word[0]);
+      }
+
+      /// We then need to sort that letters in the alphabetical order
+      var outList = outSet.toList();
+      outList.sort();
+
+      setState(() {
+        _alphabet = outList;
+      });
+
+      // _alphabet.add('G');
+      // _alphabet.add('H');
+      // _alphabet.add('I');
+      // _alphabet.add('P');
+      // _alphabet.add('O');
+      // _alphabet.add('N');
+      // _alphabet.add('X');
+
+      Widget buildLetterButton(Function() onPressed, String letter) {
+        return SizedBox(
+          width: 10,
+          height: 25,
+          child: GestureDetector(
+            onTapDown: (details) {
+              onPressed();
+            },
+            onVerticalDragStart: (_) {},
+            child: Text(
+              letter,
+              textAlign: TextAlign.center,
+              style: ThemesUtil.titleContainerStyle(context).copyWith(
+                color: ThemesUtil.getTextColor(context),
+                fontSize: 12.5,
+                //fontWeight: FontWeight.normal,
+              ),
+            ),
+          ),
+        );
+      }
+
+      /// Now we just build a list of children for the small Column on the right
+      /// hand side
+      List<Widget> out = [];
+      for (var l in outList) {
+        out.add(
+          buildLetterButton(
+            () {
+              dev.log("Pressed: $l");
+
+              widget.scrollController.jumpTo(letterPositions[l]! <=
+                      widget.scrollController.position.maxScrollExtent
+                  ? letterPositions[l]!
+                  : widget.scrollController.position.maxScrollExtent);
+
+              setState(() {
+                selectedLetter = l;
+              });
+            },
+            l,
+          ),
+        );
+      }
+      return out;
+    }
+
+    var sliver = SliverPadding(
+      padding: const EdgeInsets.all(0),
+      sliver: SliverStickyHeader.builder(
+        controller: controller,
+        builder: (context, state) => ClipRect(
+          clipBehavior: Clip.hardEdge,
+          child: BackdropFilter(
+            filter: ImageFilter.blur(
+              sigmaX: ThemesUtil.isAndroid(context) ? 0 : 10.0,
+              sigmaY: ThemesUtil.isAndroid(context) ? 0 : 9.5,
+            ),
+            child: Container(
+              height: 55,
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: state.isPinned
+                        ? CupertinoColors.systemGrey4.withOpacity(.35)
+                        : ThemesUtil.getBackgroundColor(context),
+                  ),
+                ),
+                color: ThemesUtil.isAndroid(context)
+                    ? ThemesUtil.getPrimaryColor(context).withOpacity(
+                        !state.isPinned
+                            ? state.scrollPercentage
+                            : ThemesUtil.isAndroid(context)
+                                ? 1
+                                : 0.5,
+                      )
+                    : CupertinoTheme.of(context).barBackgroundColor.withOpacity(
+                          !state.isPinned
+                              ? state.scrollPercentage
+                              : Provider.of<ThemeProvider>(context).isDarkTheme
+                                  ? 1
+                                  : 0.5,
+                        ),
+              ),
+              padding: Constants.padding,
+              child: SearchTextField(
+                onChanged: (searchValue) {
+                  setState(() {
+                    searching = true;
+                    searching = searchValue.isNotEmpty;
+                    this.searchValue = searchValue.toLowerCase();
+                  });
+                },
+                onStop: (() {
+                  setState(() {
+                    searching = false;
+                    searchValue = "";
+                    FocusScope.of(context).unfocus();
+                  });
+                }),
+              ),
+            ),
+          ),
         ),
-        if (bookProvider.words.isNotEmpty) searchSliver,
+        sliver: SliverPadding(
+          padding: const EdgeInsets.all(0),
+          sliver: MultiSliver(
+            children: [
+              ...getWordsList(),
+              Container(
+                alignment: Alignment.bottomCenter,
+                padding: const EdgeInsets.only(bottom: 25),
+                child: Text(
+                  "${_words.length} vocaboli",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: ThemesUtil.getTextColor(context),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    return SliverStack(
+      // insetOnOverlap: true,
+      children: [
         MultiSliver(
-          children: getWordsList(),
+          children: [
+            CupertinoSliverRefreshControl(
+              onRefresh: () async {
+                bookProvider.setWords(
+                  await BookRepository.getWords(
+                      context: context, bookId: bookProvider.id),
+                );
+              },
+              builder: SpinnerRefreshUtil.buildSpinnerOnlyRefreshIndicator,
+            ),
+            if (bookProvider.words.isNotEmpty) sliver,
+            if (bookProvider.words.isEmpty && !searching) buildEmptyView()
+          ],
+        ),
+        // const SliverFillRemaining(),
+        SliverPositioned.fill(
+          child: Container(
+            margin: EdgeInsets.only(
+              top: ScreenUtil.getSize(context).height / 2 -
+                  (16.5 * getStartingLetters().length) +
+                  (widget.scrollController.offset.isFinite &&
+                          !widget.scrollController.offset.isNegative
+                      ? widget.scrollController.offset
+                      : 0),
+              right: 5,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: getStartingLetters(),
+            ),
+          ),
         ),
       ],
     );

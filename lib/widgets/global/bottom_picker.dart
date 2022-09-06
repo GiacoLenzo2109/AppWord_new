@@ -6,16 +6,18 @@ import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class BottomPickerWidget extends StatefulWidget {
-  List<String> items;
-  Function(int) onSelect;
-  int initialItem;
+  final List<String> items;
+  final Function(int) onSelect;
+  final int initialItem;
+  final String? title;
 
-  BottomPickerWidget(
-      {Key? key,
-      required this.onSelect,
-      required this.items,
-      required this.initialItem})
-      : super(key: key);
+  const BottomPickerWidget({
+    Key? key,
+    required this.onSelect,
+    required this.items,
+    required this.initialItem,
+    this.title,
+  }) : super(key: key);
 
   @override
   State<BottomPickerWidget> createState() => _BottomPickerWidgetState();
@@ -36,7 +38,7 @@ class _BottomPickerWidgetState extends State<BottomPickerWidget> {
     }
 
     var iPicker = Container(
-      height: 350,
+      height: 150,
       color: CupertinoTheme.of(context).scaffoldBackgroundColor,
       padding: const EdgeInsets.only(top: 6.0),
       child: CupertinoPicker(
@@ -50,7 +52,7 @@ class _BottomPickerWidgetState extends State<BottomPickerWidget> {
 
     var picker = BottomPicker(
       items: getItems(),
-      title: 'Scegli la tipologia',
+      title: widget.title ?? "",
       titleStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
       pickerTextStyle: TextStyle(
         fontSize: 21,

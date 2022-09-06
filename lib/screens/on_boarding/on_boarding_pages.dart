@@ -2,29 +2,31 @@ import 'package:app_word/util/screen_util.dart';
 import 'package:app_word/util/themes.dart';
 import 'package:flutter/widgets.dart';
 import 'package:introduction_screen/introduction_screen.dart';
+import 'package:material_dialogs/material_dialogs.dart';
 
 class OnBoardingPages {
   static build(BuildContext context) {
     return [
       OnBoardingPage.build(
         context: context,
-        title: "Memorizza",
+        title: "Memorizza i vocaboli",
         body:
-            "Crea la tua rubrica personale ed impara vocaboli che non conosci!",
-        image: "assets/Google_Logo.png",
+            "Puoi creare una rubrica nel quale salvare tutti i vocaboli che hai bisogno di memorizzare.",
+        animation: "assets/animations/brain.json",
       ),
       OnBoardingPage.build(
         context: context,
-        title: "Condividi",
+        title: "Lavora in squadra",
         body:
-            "Entra a far parte di una rubrica ed inizia ad annotare vocaboli!",
-        image: "assets/Google_Logo.png",
+            "Entra a far parte di una rubrica condivisa e collabora con i tuoi amici.",
+        animation: "assets/animations/teamwork.json",
       ),
       OnBoardingPage.build(
         context: context,
-        title: "Collabora",
-        body: "Collabora con i tuoi amici ed amplia le tue conoscenze!",
-        image: "assets/Google_Logo.png",
+        title: "Continua a crescere",
+        body:
+            "Ogni giorno troverai un nuovo vocabolo che potrai consultare ed aggiungere al tuo bagaglio delle conoscenze.",
+        animation: "assets/animations/student.json",
       ),
     ];
   }
@@ -36,6 +38,7 @@ class OnBoardingPage {
     required String title,
     required String body,
     String? image,
+    String? animation,
   }) {
     return PageViewModel(
       title: title,
@@ -59,7 +62,9 @@ class OnBoardingPage {
               image,
               width: ScreenUtil.getSize(context).width - 100,
             )
-          : null,
+          : animation != null
+              ? LottieBuilder.asset(animation)
+              : null,
     );
   }
 }

@@ -20,7 +20,7 @@ class BookRepository {
     book.members.add(FirebaseGlobal.auth.currentUser!.uid);
     var bookId = FirebaseGlobal.wordBooks.doc().id;
 
-    await FirebaseGlobal.wordBooks.add(book.toMap()).whenComplete(
+    await FirebaseGlobal.wordBooks.doc(bookId).set(book.toMap()).whenComplete(
           () => Navigator.pop(context),
         );
     book.id = bookId;

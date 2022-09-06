@@ -1,4 +1,5 @@
 import 'package:app_word/util/constants.dart';
+import 'package:app_word/util/themes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -27,10 +28,14 @@ class _SearchTextFieldState extends State<SearchTextField> {
         widget.onChanged(value);
         isTyping = true;
       },
+      style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.all(0),
         filled: true,
-        prefixIcon: const Icon(Icons.search),
+        prefixIcon: const Icon(
+          Icons.search,
+          color: Colors.white,
+        ),
         suffixIcon: isTyping
             ? GestureDetector(
                 onTap: () {
@@ -40,14 +45,29 @@ class _SearchTextFieldState extends State<SearchTextField> {
                 },
                 child: const Padding(
                   padding: EdgeInsets.all(10),
-                  child: Text("Annulla"),
+                  child: Text(
+                    "Annulla",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               )
             : const SizedBox(),
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(10)),
         ),
+        enabledBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.white),
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: ThemesUtil.getPrimaryColor(context),
+          ),
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
+        ),
+        fillColor: CupertinoColors.systemGrey4.withOpacity(.55),
         hintText: "Cerca",
+        hintStyle: const TextStyle(color: Colors.white),
       ),
     );
 
@@ -56,6 +76,7 @@ class _SearchTextFieldState extends State<SearchTextField> {
       onChanged: widget.onChanged,
       padding: const EdgeInsets.all(0),
       prefixInsets: const EdgeInsets.symmetric(horizontal: 7.5),
+      backgroundColor: CupertinoColors.systemGrey4,
     );
 
     return Theme.of(context).platform == TargetPlatform.android

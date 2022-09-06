@@ -29,7 +29,7 @@ class AboutPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    "assets/App_Logo.png",
+                    "assets/images/App_Logo.png",
                     width: ScreenUtil.getSize(context).width / 2,
                   ),
                 ],
@@ -59,7 +59,7 @@ class AboutPage extends StatelessWidget {
                   //   borderRadius: BorderRadius.circular(10),
                   // ),
                   child: Image.asset(
-                    "assets/PayPal.png",
+                    "assets/images/PayPal.png",
                     width: ScreenUtil.getSize(context).width / 3,
                   ),
                 ),
@@ -76,7 +76,7 @@ class AboutPage extends StatelessWidget {
               ),
               IconButtonWidget(
                 icon: Image.asset(
-                  "assets/BuyMeACoffee.png",
+                  "assets/images/BuyMeACoffee.png",
                   width: ScreenUtil.getSize(context).width / 2,
                 ),
                 onPressed: () => launchUrl(
