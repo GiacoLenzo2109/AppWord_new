@@ -51,6 +51,8 @@ class _AddWordPageState extends State<AddWordPage> {
 
   String selectedValue = Word.verb;
 
+  List<String> values = [Word.verb, Word.noun, Word.other];
+
   String genderValue = Word.male;
 
   String multeplicityValue = Word.singular;
@@ -180,6 +182,7 @@ class _AddWordPageState extends State<AddWordPage> {
             TabBarWidget(
               tabs: const [Word.verb, Word.noun, Word.other],
               padding: ThemesUtil.isAndroid(context) ? 0 : 10,
+              initialValue: values.indexOf(selectedValue),
               onValueChanged: (value) {
                 setState(() {
                   switch (value) {

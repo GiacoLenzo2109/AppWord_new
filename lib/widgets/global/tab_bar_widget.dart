@@ -14,6 +14,7 @@ class TabBarWidget extends StatefulWidget {
   final List<Widget>? tabsView;
   final Function(int value) onValueChanged;
   final double? padding;
+  final int? initialValue;
 
   const TabBarWidget({
     Key? key,
@@ -21,6 +22,7 @@ class TabBarWidget extends StatefulWidget {
     this.tabsView,
     this.padding,
     required this.onValueChanged,
+    this.initialValue,
   }) : super(key: key);
 
   @override
@@ -34,6 +36,7 @@ class _TabBarWidgetState extends State<TabBarWidget>
   void initState() {
     super.initState();
     _tabController = TabController(length: widget.tabs.length, vsync: this);
+    _tabController.index = widget.initialValue ?? 0;
   }
 
   @override
