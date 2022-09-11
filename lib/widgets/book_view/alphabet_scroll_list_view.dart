@@ -5,6 +5,7 @@ import 'package:app_word/database/repository/book_repository.dart';
 import 'package:app_word/models/word.dart';
 import 'package:app_word/screens/main/book/join_book_page.dart';
 import 'package:app_word/screens/main/book/word/new_word_page.dart';
+import 'package:app_word/service/navigation_service.dart';
 import 'package:app_word/theme/theme_provider.dart';
 import 'package:app_word/util/constants.dart';
 import 'package:app_word/util/dialog_util.dart';
@@ -50,6 +51,8 @@ class _AlphabetScrollListViewState extends State<AlphabetScrollListView> {
 
   bool searching = false;
   var searchValue = "";
+
+  bool searchIsPinned = false;
 
   /// Alphabet list letters
 
@@ -303,7 +306,7 @@ class _AlphabetScrollListViewState extends State<AlphabetScrollListView> {
           ),
           sliver: const SliverPadding(padding: Constants.padding),
         ),
-        MultiSliver(children: getWordList(wordsSearched)),
+        ...getWordList(wordsSearched),
       ];
     }
 
@@ -389,67 +392,83 @@ class _AlphabetScrollListViewState extends State<AlphabetScrollListView> {
       padding: const EdgeInsets.all(0),
       sliver: SliverStickyHeader.builder(
         controller: controller,
-        builder: (context, state) => ClipRect(
-          clipBehavior: Clip.hardEdge,
-          child: BackdropFilter(
-            filter: ImageFilter.blur(
-              sigmaX: ThemesUtil.isAndroid(context) ? 0 : 10.0,
-              sigmaY: ThemesUtil.isAndroid(context) ? 0 : 9.5,
-            ),
-            child: Container(
-              height: 55,
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    color: state.isPinned
-                        ? CupertinoColors.systemGrey4.withOpacity(.35)
-                        : ThemesUtil.getBackgroundColor(context),
-                  ),
-                ),
-                color: ThemesUtil.isAndroid(context)
-                    ? ThemesUtil.getPrimaryColor(context).withOpacity(
-                        !state.isPinned
-                            ? state.scrollPercentage
-                            : ThemesUtil.isAndroid(context)
-                                ? 1
-                                : 0.5,
-                      )
-                    : CupertinoTheme.of(context).barBackgroundColor.withOpacity(
-                          !state.isPinned
-                              ? state.scrollPercentage
-                              : Provider.of<ThemeProvider>(context).isDarkTheme
-                                  ? 1
-                                  : 0.5,
-                        ),
-              ),
-              padding: Constants.padding,
-              child: SearchTextField(
-                onChanged: (searchValue) {
-                  setState(() {
-                    searching = true;
-                    searching = searchValue.isNotEmpty;
-                    this.searchValue = searchValue.toLowerCase();
-                  });
-                },
-                onStop: (() {
-                  setState(() {
-                    searching = false;
-                    searchValue = "";
-                    FocusScope.of(context).unfocus();
-                  });
-                }),
-              ),
-            ),
-          ),
-        ),
+        builder: (context, state) {
+          if (mounted) {
+            Future.delayed(
+              const Duration(seconds: 0),
+              () => setState(() {
+                searchIsPinned = state.isPinned;
+              }),
+            );
+          }
+          return const SizedBox();
+        },
         sliver: SliverPadding(
           padding: const EdgeInsets.all(0),
           sliver: MultiSliver(
             children: [
+              SliverPinnedHeader(
+                child: ClipRect(
+                  clipBehavior: Clip.hardEdge,
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(
+                      sigmaX: ThemesUtil.isAndroid(context) ? 0 : 10.0,
+                      sigmaY: ThemesUtil.isAndroid(context) ? 0 : 9.5,
+                    ),
+                    child: Container(
+                      height: 55,
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: searchIsPinned
+                                ? CupertinoColors.systemGrey4.withOpacity(.35)
+                                : ThemesUtil.getBackgroundColor(context),
+                          ),
+                        ),
+                        color: ThemesUtil.isAndroid(context)
+                            ? ThemesUtil.getPrimaryColor(context).withOpacity(
+                                !searchIsPinned
+                                    ? 0
+                                    : ThemesUtil.isAndroid(context)
+                                        ? 1
+                                        : 0.5,
+                              )
+                            : CupertinoTheme.of(context)
+                                .barBackgroundColor
+                                .withOpacity(
+                                  !searchIsPinned
+                                      ? 0
+                                      : Provider.of<ThemeProvider>(context)
+                                              .isDarkTheme
+                                          ? 1
+                                          : 0.5,
+                                ),
+                      ),
+                      padding: Constants.padding,
+                      child: SearchTextField(
+                        onChanged: (searchValue) {
+                          setState(() {
+                            searching = true;
+                            searching = searchValue.isNotEmpty;
+                            this.searchValue = searchValue.toLowerCase();
+                          });
+                        },
+                        onStop: (() {
+                          setState(() {
+                            searching = false;
+                            searchValue = "";
+                            FocusScope.of(context).unfocus();
+                          });
+                        }),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
               ...getWordsList(),
               Container(
                 alignment: Alignment.bottomCenter,
-                padding: const EdgeInsets.only(bottom: 25),
+                padding: const EdgeInsets.only(bottom: 35),
                 child: Text(
                   "${_words.length} vocaboli",
                   textAlign: TextAlign.center,
@@ -465,42 +484,43 @@ class _AlphabetScrollListViewState extends State<AlphabetScrollListView> {
       ),
     );
 
-    return SliverStack(
-      // insetOnOverlap: true,
+    return MultiSliver(
       children: [
-        MultiSliver(
-          children: [
-            CupertinoSliverRefreshControl(
-              onRefresh: () async {
-                bookProvider.setWords(
-                  await BookRepository.getWords(
-                      context: context, bookId: bookProvider.id),
-                );
-              },
-              builder: SpinnerRefreshUtil.buildSpinnerOnlyRefreshIndicator,
-            ),
-            if (bookProvider.words.isNotEmpty) sliver,
-            if (bookProvider.words.isEmpty && !searching) buildEmptyView()
-          ],
+        CupertinoSliverRefreshControl(
+          onRefresh: () async {
+            bookProvider.setWords(
+              await BookRepository.getWords(
+                  context: context, bookId: bookProvider.id),
+            );
+          },
+          builder: SpinnerRefreshUtil.buildSpinnerOnlyRefreshIndicator,
         ),
-        // const SliverFillRemaining(),
-        SliverPositioned.fill(
-          child: Container(
-            margin: EdgeInsets.only(
-              top: ScreenUtil.getSize(context).height / 2 -
-                  (16.5 * getStartingLetters().length) +
-                  (widget.scrollController.offset.isFinite &&
-                          !widget.scrollController.offset.isNegative
-                      ? widget.scrollController.offset
-                      : 0),
-              right: 5,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: getStartingLetters(),
-            ),
+        if (bookProvider.words.isNotEmpty)
+          SliverStack(
+            children: [
+              sliver,
+              SliverPinnedHeader(
+                child: Container(
+                  width: 5,
+                  height: ScreenUtil.getSize(context).height -
+                      MediaQuery.of(
+                        NavigationService.navigatorKey.currentContext!,
+                      ).viewInsets.bottom -
+                      MediaQuery.of(
+                        NavigationService.navigatorKey.currentContext!,
+                      ).viewInsets.top,
+                  // color: Colors.red,
+                  padding: const EdgeInsets.only(right: 5),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: getStartingLetters(),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ),
+        if (bookProvider.words.isEmpty && !searching) buildEmptyView()
       ],
     );
   }

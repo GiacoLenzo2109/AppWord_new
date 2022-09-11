@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:app_word/database/firebase_global.dart';
 import 'package:app_word/database/repository/book_repository.dart';
 import 'package:app_word/database/repository/daily_word_repository.dart';
 import 'package:app_word/models/book.dart';
@@ -180,8 +181,8 @@ class _AddWordPageState extends State<AddWordPage> {
           crossAxisCount: 1,
           children: [
             TabBarWidget(
-              tabs: const [Word.verb, Word.noun, Word.other],
-              padding: ThemesUtil.isAndroid(context) ? 0 : 10,
+              tabs: const [Word.verb, Word.adjective, Word.noun, Word.other],
+              padding: ThemesUtil.isAndroid(context) ? 0 : 15,
               initialValue: values.indexOf(selectedValue),
               onValueChanged: (value) {
                 setState(() {
@@ -190,13 +191,20 @@ class _AddWordPageState extends State<AddWordPage> {
                       selectedValue = Word.verb;
                       break;
                     case 1:
-                      selectedValue = Word.noun;
+                      selectedValue = Word.adjective;
                       break;
                     case 2:
+                      selectedValue = Word.noun;
+                      break;
+                    case 3:
                       selectedValue = Word.other;
                       break;
                   }
                   switch (selectedValue) {
+                    case Word.adjective:
+                      word.gender = Word.male;
+                      word.multeplicity = Word.singular;
+                      break;
                     case Word.noun:
                       word.gender = Word.male;
                       word.multeplicity = Word.singular;
@@ -218,7 +226,7 @@ class _AddWordPageState extends State<AddWordPage> {
               padding: const EdgeInsets.all(15),
               child: StaggeredGrid.count(
                 crossAxisCount: 1,
-                mainAxisSpacing: 14,
+                mainAxisSpacing: 15,
                 children: [
                   Visibility(
                     visible: selectedValue == Word.other,
@@ -281,7 +289,8 @@ class _AddWordPageState extends State<AddWordPage> {
                     text: widget.word != null ? word.word : null,
                   ),
                   Visibility(
-                    visible: selectedValue == "Sostantivo",
+                    visible: selectedValue == Word.noun ||
+                        selectedValue == Word.adjective,
                     child: StaggeredGrid.count(
                       crossAxisCount: 2,
                       crossAxisSpacing: 10,
@@ -403,12 +412,11 @@ class _AddWordPageState extends State<AddWordPage> {
                             ? word.italianCorrespondence
                             : null),
                   ),
-                  const SizedBox(height: 10),
                 ],
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(15),
+              padding: const EdgeInsets.symmetric(horizontal: 15),
               child: //Expanded(
                   ButtonWidget(
                 text: widget.word != null ? "Aggiorna parola" : "Aggiungi",
@@ -460,12 +468,12 @@ class _AddWordPageState extends State<AddWordPage> {
                       builder: (context) =>
                           const ErrorDialogWidget("Inserire la definizione!"),
                     );
-                  } else if (word.semanticFields.isEmpty) {
-                    DialogUtil.openDialog(
-                      context: context,
-                      builder: (context) => const ErrorDialogWidget(
-                          "Inserire il campo semantico!"),
-                    );
+                    // } else if (word.semanticFields.isEmpty) {
+                    //   DialogUtil.openDialog(
+                    //     context: context,
+                    //     builder: (context) => const ErrorDialogWidget(
+                    //         "Inserire il campo semantico!"),
+                    //   );
                   } else if (word.italianType == Word.literature &&
                       word.italianCorrespondence.isEmpty) {
                     DialogUtil.openDialog(
@@ -485,9 +493,11 @@ class _AddWordPageState extends State<AddWordPage> {
                       log("1. Word to edit: $word");
                       if (isDailyWord) {
                         log("1_ Word to add: $word");
+                        var dailyWord = await DailyWordRepository.getDailyWord(
+                            context: context);
                         await DailyWordRepository.updateDailyWord(
                           context: context,
-                          dailyWord: word,
+                          dailyWord: dailyWord!,
                         ).whenComplete(
                           () {
                             bookProvider.updateWord(word);
@@ -510,48 +520,49 @@ class _AddWordPageState extends State<AddWordPage> {
                     } else {
                       if (isDailyWord) {
                         log("1_ Word to add: $word");
-                        await DailyWordRepository.addDailyWord(
+                        var book = await BookRepository.getBookById(
+                            context: context, id: bookProvider.id);
+                        var dailyWord = await DailyWordRepository.addDailyWord(
                           context: context,
-                          dailyWord: word,
-                        ).whenComplete(
-                          () {
-                            Navigator.pop(context);
+                          word: word,
+                          members: book!.members,
+                        );
+                        word.id = dailyWord.id;
+                        log("3_ Daily Word added");
+                      }
+                      log("1. Word to add: $word");
+                      if (!bookProvider.isWordCreated(word.word)) {
+                        await BookRepository.addWordToBook(
+                          context: context,
+                          bookId: bookProvider.id,
+                          word: word,
+                        ).then(
+                          (word) {
+                            word.author =
+                                FirebaseGlobal.auth.currentUser!.displayName!;
+                            bookProvider.addWord(word);
+                            NavigatorUtil.navigatePopGo(
+                              context: context,
+                              builder: (context) =>
+                                  ChangeNotifierProvider.value(
+                                value: bookProvider,
+                                child: ThemesUtil.isAndroid(context)
+                                    ? WordPage(word: word)
+                                    : CupertinoScaffold(
+                                        body: WordPage(word: word),
+                                      ),
+                              ),
+                            );
                           },
                         );
-                        log("3_ Word added");
                       } else {
-                        log("1. Word to add: $word");
-                        if (!bookProvider.isWordCreated(word.word)) {
-                          await BookRepository.addWordToBook(
-                                  context: context,
-                                  bookId: bookProvider.id,
-                                  word: word)
-                              .then(
-                            (word) {
-                              bookProvider.addWord(word);
-                              NavigatorUtil.navigatePopGo(
-                                context: context,
-                                builder: (context) =>
-                                    ChangeNotifierProvider.value(
-                                  value: bookProvider,
-                                  child: ThemesUtil.isAndroid(context)
-                                      ? WordPage(word: word)
-                                      : CupertinoScaffold(
-                                          body: WordPage(word: word),
-                                        ),
-                                ),
-                              );
-                            },
-                          );
-                        } else {
-                          DialogUtil.openDialog(
-                            context: context,
-                            builder: (context) => const ErrorDialogWidget(
-                                "Vocabolo già esistente!"),
-                          );
-                        }
-                        log("2. Word added!");
+                        DialogUtil.openDialog(
+                          context: context,
+                          builder: (context) => const ErrorDialogWidget(
+                              "Vocabolo già esistente!"),
+                        );
                       }
+                      log("2. Word added!");
                     }
                   }
                 },

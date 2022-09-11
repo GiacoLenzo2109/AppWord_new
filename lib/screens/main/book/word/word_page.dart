@@ -54,20 +54,21 @@ class _WordPageState extends State<WordPage> {
 
     return PageScaffold(
       onRefresh: () async {
-        widget.isDailyWord != null && widget.isDailyWord!
-            ? bookProvider.updateWord(
-                await DailyWordRepository.getWord(
-                  context: context,
-                  wordId: word.id,
-                ),
-              )
-            : bookProvider.updateWord(
-                await BookRepository.getWord(
-                  context: context,
-                  bookId: bookProvider.id,
-                  wordId: word.id,
-                ),
-              );
+        if (widget.isDailyWord != null && widget.isDailyWord!) {
+          var dailyWord = await DailyWordRepository.getWord(
+            context: context,
+            wordId: word.id,
+          );
+          bookProvider.updateWord(dailyWord.word);
+        } else {
+          bookProvider.updateWord(
+            await BookRepository.getWord(
+              context: context,
+              bookId: bookProvider.id,
+              wordId: word.id,
+            ),
+          );
+        }
       },
       scrollable: true,
       title: widget.word.word,
@@ -225,46 +226,49 @@ class _WordPageState extends State<WordPage> {
               ],
             ),
           ),
-          ContainerWidget(
-            child: StaggeredGrid.count(
-              crossAxisCount: 1,
-              children: [
-                Text(
-                  "Campo semantico:",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 25,
-                    color: ThemesUtil.getTextColor(context),
+          Visibility(
+            visible: widget.word.semanticFields.isNotEmpty,
+            child: ContainerWidget(
+              child: StaggeredGrid.count(
+                crossAxisCount: 1,
+                children: [
+                  Text(
+                    "Campo semantico:",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25,
+                      color: ThemesUtil.getTextColor(context),
+                    ),
                   ),
-                ),
-                ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  padding: const EdgeInsets.all(0),
-                  shrinkWrap: true,
-                  itemCount: widget.word.semanticFields.length,
-                  itemBuilder: (context, index) => Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "${index + 1}. ",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: ThemesUtil.getTextColor(context),
-                        ),
-                      ),
-                      SizedBox(
-                        width: ScreenUtil.getSize(context).width - 125,
-                        child: Text(
-                          widget.word.semanticFields.elementAt(index),
+                  ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    padding: const EdgeInsets.all(0),
+                    shrinkWrap: true,
+                    itemCount: widget.word.semanticFields.length,
+                    itemBuilder: (context, index) => Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "${index + 1}. ",
                           style: TextStyle(
+                            fontWeight: FontWeight.bold,
                             color: ThemesUtil.getTextColor(context),
                           ),
                         ),
-                      ),
-                    ],
+                        SizedBox(
+                          width: ScreenUtil.getSize(context).width - 125,
+                          child: Text(
+                            widget.word.semanticFields.elementAt(index),
+                            style: TextStyle(
+                              color: ThemesUtil.getTextColor(context),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           Visibility(

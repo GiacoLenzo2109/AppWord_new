@@ -106,7 +106,7 @@ class BookModel extends ChangeNotifier {
   }
 
   /// Removes all items from the cart.
-  void removeAllWords(String book) {
+  void removeAllWords() {
     _words.clear();
     // This call tells the widgets that are listening to this model to rebuild.
     notifyListeners();

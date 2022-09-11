@@ -107,7 +107,7 @@ class _TabBarWidgetState extends State<TabBarWidget>
       tabsMap.putIfAbsent(
         i,
         () => Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 5),
           child: tabs[i],
         ),
       );

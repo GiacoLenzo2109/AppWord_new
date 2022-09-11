@@ -75,8 +75,8 @@ class _AddBookPageState extends State<AddBookPage> {
                       CupertinoColors.systemGrey.withOpacity(.5),
                   hasTextBorderColor: CupertinoColors.activeGreen,
                   maxLength: 6,
-                  pinBoxWidth: ScreenUtil.getSize(context).width / 9,
-                  pinBoxHeight: ScreenUtil.getSize(context).width / 9,
+                  pinBoxWidth: (ScreenUtil.getSize(context).width - 90) / 6,
+                  pinBoxHeight: (ScreenUtil.getSize(context).width - 90) / 6,
                   hasError: hasError,
                   onTextChanged: (text) {
                     setState(() {
@@ -127,11 +127,11 @@ class _AddBookPageState extends State<AddBookPage> {
                   builder: (context) =>
                       const ErrorDialogWidget("Nome non valido!"),
                 );
-              } else if (book.pin.length < 4) {
+              } else if (book.pin.length != 6) {
                 DialogUtil.openDialog(
                   context: context,
                   builder: (context) =>
-                      const ErrorDialogWidget("Nome non valido!"),
+                      const ErrorDialogWidget("Pin troppo corto!"),
                 );
               } else {
                 var bookCheck = await BookRepository.getBook(

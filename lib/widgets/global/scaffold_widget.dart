@@ -23,6 +23,7 @@ class PageScaffold extends StatefulWidget {
   final Widget? header;
   final ScrollController? controller;
   final Future<void> Function()? onRefresh;
+  final String? previousTitle;
   const PageScaffold({
     Key? key,
     this.leading,
@@ -34,6 +35,7 @@ class PageScaffold extends StatefulWidget {
     this.controller,
     this.child,
     this.childSliver,
+    this.previousTitle,
     required this.scrollable,
     required this.title,
   }) : super(key: key);
@@ -135,7 +137,7 @@ class _ScaffoldWidgetState extends State<PageScaffold> {
           controller: widget.controller,
           slivers: [
             CupertinoSliverNavigationBar(
-              //previousPageTitle: widget.previousPageTitle,
+              previousPageTitle: widget.previousTitle ?? "Indietro",
               border: null,
               stretch: false,
               backgroundColor: CupertinoTheme.of(context).barBackgroundColor,

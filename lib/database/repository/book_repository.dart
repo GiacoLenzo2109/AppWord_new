@@ -63,6 +63,17 @@ class BookRepository {
     return books.isEmpty ? null : books.first;
   }
 
+  /// GET
+  static Future<Book?> getBookById({
+    required BuildContext context,
+    required String id,
+  }) async {
+    var snapshot = await FirebaseGlobal.wordBooks.doc(id).get();
+    Book book = Book.fromJson(snapshot.data() as Map<String, dynamic>, id);
+
+    return book;
+  }
+
   /// JOIN
   static Future<Book?> joinBook({
     required BuildContext context,
@@ -172,7 +183,7 @@ class BookRepository {
     await FirebaseGlobal.wordBooks
         .doc(bookId)
         .collection(FirebaseGlobal.words)
-        .doc(wordId)
+        .doc(word.id.isNotEmpty ? word.id : wordId)
         .set(word.toMap());
     word.id = wordId;
 

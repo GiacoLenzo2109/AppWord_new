@@ -76,7 +76,7 @@ class _SearchTextFieldState extends State<SearchTextField> {
       onChanged: widget.onChanged,
       padding: const EdgeInsets.all(0),
       prefixInsets: const EdgeInsets.symmetric(horizontal: 7.5),
-      backgroundColor: CupertinoColors.systemGrey4,
+      backgroundColor: CupertinoColors.systemGrey4.withOpacity(0.5),
     );
 
     return Theme.of(context).platform == TargetPlatform.android

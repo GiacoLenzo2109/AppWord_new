@@ -65,7 +65,8 @@ class _HomeState extends State<Home> {
     }
 
     Future<Word?> fetchDailyWord() async {
-      return await DailyWordRepository.getDailyWord(context: context);
+      var dailyWord = await DailyWordRepository.getDailyWord(context: context);
+      return dailyWord?.word;
     }
 
     Future<void> fetchUserData() async {
@@ -86,12 +87,12 @@ class _HomeState extends State<Home> {
         setState(() {
           if (word != null) {
             dailyWord = word;
+            dailyWordProvider.removeAllWords();
+            dailyWordProvider.addWord(dailyWord);
           } else {
             dailyWord = Word();
           }
         });
-
-        dailyWordProvider.addWord(dailyWord);
 
         await fetchUserData();
 
@@ -384,7 +385,38 @@ class _HomeState extends State<Home> {
                 context: context,
                 builder: (context) => ChangeNotifierProvider.value(
                   value: dailyWordProvider,
-                  child: const AddWordPage(isDailyWord: true),
+                  child: SimplePageScaffold(
+                    scrollable: true,
+                    title: "Dove vuoi aggiungere il vocabolo?",
+                    body: StaggeredGrid.count(
+                      crossAxisCount: 1,
+                      mainAxisSpacing: 15,
+                      children: [
+                        for (Book book in bookListProvider.books)
+                          ButtonWidget(
+                            text: book.name,
+                            backgroundColor: ThemesUtil.isAndroid(context)
+                                ? Theme.of(context).backgroundColor
+                                : CupertinoThemes.backgroundColor(context),
+                            textColor: ThemesUtil.getTextColor(context),
+                            onPressed: () {
+                              dailyWordProvider.setId(book.id);
+
+                              NavigatorUtil.navigatePopGo(
+                                context: context,
+                                builder: (context) =>
+                                    ChangeNotifierProvider.value(
+                                  value: dailyWordProvider,
+                                  child: const AddWordPage(
+                                    isDailyWord: true,
+                                  ),
+                                ),
+                              );
+                            },
+                          )
+                      ],
+                    ),
+                  ),
                 ),
               ),
               child: const ContainerWidget(

@@ -8,6 +8,7 @@ class Word {
   static const literature = "Ita letteratura";
 
   static const verb = "Verbo";
+  static const adjective = "Aggettivo";
   static const noun = "Sostantivo";
   static const other = "Altro";
 
