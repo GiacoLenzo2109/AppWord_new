@@ -54,7 +54,7 @@ class _TabBarWidgetState extends State<TabBarWidget>
             ? Padding(
                 padding: Constants.padding,
                 child: Text(
-                  tab,
+                  tab.length > 5 ? "${tab.substring(0, 3)}." : tab,
                   style: TextStyle(
                     color: Theme.of(context).appBarTheme.titleTextStyle!.color,
                     fontWeight: FontWeight.bold,

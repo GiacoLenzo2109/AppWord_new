@@ -4,6 +4,7 @@ import 'package:app_word/database/firebase_global.dart';
 import 'package:app_word/database/repository/book_repository.dart';
 import 'package:app_word/database/repository/daily_word_repository.dart';
 import 'package:app_word/models/book.dart';
+import 'package:app_word/models/daily_word.dart';
 import 'package:app_word/models/word.dart';
 import 'package:app_word/providers/book_model.dart';
 import 'package:app_word/providers/navbar_model.dart';
@@ -52,7 +53,7 @@ class _AddWordPageState extends State<AddWordPage> {
 
   String selectedValue = Word.verb;
 
-  List<String> values = [Word.verb, Word.noun, Word.other];
+  List<String> values = [Word.verb, Word.adjective, Word.noun, Word.other];
 
   String genderValue = Word.male;
 
@@ -495,9 +496,10 @@ class _AddWordPageState extends State<AddWordPage> {
                         log("1_ Word to add: $word");
                         var dailyWord = await DailyWordRepository.getDailyWord(
                             context: context);
+                        dailyWord!.word = word;
                         await DailyWordRepository.updateDailyWord(
                           context: context,
-                          dailyWord: dailyWord!,
+                          dailyWord: dailyWord,
                         ).whenComplete(
                           () {
                             bookProvider.updateWord(word);

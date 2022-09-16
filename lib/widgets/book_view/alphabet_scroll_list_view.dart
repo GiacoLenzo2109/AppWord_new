@@ -95,11 +95,13 @@ class _AlphabetScrollListViewState extends State<AlphabetScrollListView> {
         Map<String, Word> wordsMapMain, List<Word> words) {
       if (wordsMap.isEmpty) {
         for (Word word in words) {
-          if (wordsMap[word.word[0]] == null) {
-            wordsMap.putIfAbsent(word.word[0], () => []);
+          if (word.word.isNotEmpty) {
+            if (wordsMap[word.word[0]] == null) {
+              wordsMap.putIfAbsent(word.word[0], () => []);
+            }
+            wordsMap[word.word[0]]!.add(word);
+            wordsMapMain.putIfAbsent(word.word, () => word);
           }
-          wordsMap[word.word[0]]!.add(word);
-          wordsMapMain.putIfAbsent(word.word, () => word);
         }
       }
     }
@@ -322,7 +324,9 @@ class _AlphabetScrollListViewState extends State<AlphabetScrollListView> {
       /// For simplicity, use set to keep unique letter
       Set<String> outSet = {};
       for (Word word in _words) {
-        outSet.add(word.word[0]);
+        if (word.word.isNotEmpty) {
+          outSet.add(word.word[0]);
+        }
       }
 
       /// We then need to sort that letters in the alphabetical order

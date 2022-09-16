@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>684137879377-s1al0p1ko3eg7m7k5sjdb0nt21q31fo2.apps.googleusercontent.com</string>
+	<string>869802379270-bp67hvgs7id5quq2cc6n1nvnmt2vivng.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.684137879377-s1al0p1ko3eg7m7k5sjdb0nt21q31fo2</string>
+	<string>com.googleusercontent.apps.869802379270-bp67hvgs7id5quq2cc6n1nvnmt2vivng</string>
 	<key>API_KEY</key>
-	<string>AIzaSyCliNa_AHapcbKbBzZsydtiOjt6-bYMLJo</string>
+	<string>AIzaSyAK-tR_oj0f3OU0ById5uAX0OxKltxNiJo</string>
 	<key>GCM_SENDER_ID</key>
-	<string>684137879377</string>
+	<string>869802379270</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.starvation.appword.app</string>
+	<string>com.starvation.appword</string>
 	<key>PROJECT_ID</key>
-	<string>starvation-appword</string>
+	<string>st4rv3t10n-appword</string>
 	<key>STORAGE_BUCKET</key>
-	<string>starvation-appword.appspot.com</string>
+	<string>st4rv3t10n-appword.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:684137879377:ios:8774586f846ff7eb6e2570</string>
+	<string>1:869802379270:ios:20224e45d597ae50191b87</string>
 </dict>
 </plist>

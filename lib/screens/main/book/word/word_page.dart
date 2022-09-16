@@ -144,7 +144,7 @@ class _WordPageState extends State<WordPage> {
         mainAxisSpacing: 14,
         children: [
           Text(
-            widget.word.type == Word.noun
+            widget.word.type == Word.noun || widget.word.type == Word.adjective
                 ? "${widget.word.type}, ${widget.word.gender}, ${widget.word.multeplicity}"
                 : widget.word.type == Word.other
                     ? widget.word.tipology

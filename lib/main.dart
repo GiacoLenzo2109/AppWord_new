@@ -148,6 +148,7 @@ class _AppWordState extends State<AppWord> with WidgetsBindingObserver {
             DefaultWidgetsLocalizations.delegate,
           ],
           home: home(),
+          debugShowCheckedModeBanner: false,
           routes: routes,
         );
 
