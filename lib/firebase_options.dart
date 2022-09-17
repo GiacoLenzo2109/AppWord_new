@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCxBAaSMuk2C6c2lng4g1oGQW5sN5Yzw_M',
-    appId: '1:297428211210:android:fc847c0978b99e8022f1f3',
+    appId: '1:297428211210:android:5424872f2384a92d22f1f3',
     messagingSenderId: '297428211210',
     projectId: 'appword-2109',
     storageBucket: 'appword-2109.appspot.com',
@@ -59,12 +59,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDcIR7KOebbV8s8ZPBLkWZES0M_ALLwU50',
-    appId: '1:297428211210:ios:22ebf462608ff03722f1f3',
+    appId: '1:297428211210:ios:ed7c882b686378e022f1f3',
     messagingSenderId: '297428211210',
     projectId: 'appword-2109',
     storageBucket: 'appword-2109.appspot.com',
-    iosClientId:
-        '297428211210-kcd9jenr4ijnvhgfbh3is9kofejce35l.apps.googleusercontent.com',
+    iosClientId: '297428211210-kcd9jenr4ijnvhgfbh3is9kofejce35l.apps.googleusercontent.com',
     iosBundleId: 'com.starvation.appword',
   );
 }

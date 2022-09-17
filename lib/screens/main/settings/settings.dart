@@ -49,14 +49,14 @@ class _SettingsState extends State<Settings> {
 
     return PageScaffold(
       title: "Impostazioni",
-      scrollable: false,
+      scrollable: true,
       padding: 0,
       child: Column(
         // crossAxisCount: 1,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           SizedBox(
-            height: 300,
+            height: 400,
             child: SettingsList(
               physics: const NeverScrollableScrollPhysics(),
               lightTheme: const SettingsThemeData(

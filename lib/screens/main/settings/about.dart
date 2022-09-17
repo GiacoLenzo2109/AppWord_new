@@ -34,6 +34,30 @@ class AboutPage extends StatelessWidget {
                   ),
                 ],
               ),
+              StaggeredGrid.count(
+                crossAxisCount: 1,
+                children: [
+                  Text(
+                    "Made by",
+                    style: TextStyle(
+                      color: ThemesUtil.getPrimaryColor(context),
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  ButtonWidget(
+                    text: "@GiacoLenzo2109",
+                    textColor: ThemesUtil.getPrimaryColor(context),
+                    backgroundColor: Colors.transparent,
+                    onPressed: () => launchUrl(
+                      Uri.parse("https://github.com/GiacoLenzo2109"),
+                      mode: LaunchMode.platformDefault,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 50,
+                  ),
+                ],
+              ),
               // const Text(
               //   "Team Starvation",
               //   textAlign: TextAlign.center,
@@ -89,27 +113,31 @@ class AboutPage extends StatelessWidget {
           StaggeredGrid.count(
             crossAxisCount: 1,
             children: [
-              Text(
-                "Made by",
-                style: TextStyle(
-                  color: ThemesUtil.getPrimaryColor(context),
-                ),
-                textAlign: TextAlign.center,
-              ),
               ButtonWidget(
-                text: "@GiacoLenzo2109",
+                text: "Termini e condizioni",
                 textColor: ThemesUtil.getPrimaryColor(context),
                 backgroundColor: Colors.transparent,
                 onPressed: () => launchUrl(
-                  Uri.parse("https://github.com/GiacoLenzo2109"),
+                  Uri.parse(
+                    "https://sites.google.com/view/starvation-appword/terms-and-conditions",
+                  ),
                   mode: LaunchMode.platformDefault,
                 ),
               ),
-              const SizedBox(
-                height: 50,
+              ButtonWidget(
+                text: "Policy privacy",
+                textColor: ThemesUtil.getPrimaryColor(context),
+                backgroundColor: Colors.transparent,
+                onPressed: () => launchUrl(
+                  Uri.parse(
+                    "https://sites.google.com/view/starvation-appword/policy-privacy",
+                  ),
+                  mode: LaunchMode.platformDefault,
+                ),
               ),
             ],
           ),
+          const SizedBox(height: 0),
         ],
       ),
       scrollable: false,

@@ -28,6 +28,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -45,24 +46,26 @@ class _RegisterPageState extends State<RegisterPage> {
 
   var confirmPasswordController = TextEditingController();
 
+  var isTermsAccepted = false;
+
   @override
   Widget build(BuildContext context) {
     var error = "";
 
     bool areValidFields() {
-      if (usernameController.text.isEmpty) {
-        error = "Username non valido!";
-      }
-      if (!GlobalFunc.isEmail(emailController.text)) {
+      if (!isTermsAccepted) {
+        error = "Accettare i termini e le condizioni!";
+      } else if (usernameController.text.isEmpty) {
+        error = "Inserire uno username!";
+      } else if (!GlobalFunc.isEmail(emailController.text)) {
         error = "Email non valida!";
-      }
-      if (passwordController.text.isEmpty) {
-        error = "Password non valida!";
-      }
-      if (passwordController.text != confirmPasswordController.text) {
+      } else if (passwordController.text.isEmpty) {
+        error = "Inserire una password!";
+      } else if (passwordController.text != confirmPasswordController.text) {
         error = "Le password non combaciano!";
       }
-      return usernameController.text.isNotEmpty &&
+      return isTermsAccepted &&
+          usernameController.text.isNotEmpty &&
           GlobalFunc.isEmail(emailController.text) &&
           passwordController.text.isNotEmpty &&
           confirmPasswordController.text.isNotEmpty &&
@@ -119,6 +122,45 @@ class _RegisterPageState extends State<RegisterPage> {
                     icon: CupertinoIcons.lock,
                     isPassword: true,
                   ),
+                  Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            isTermsAccepted = !isTermsAccepted;
+                            log(
+                              isTermsAccepted
+                                  ? "I've accepted Terms and conditions"
+                                  : "I refused Terms and Conditions",
+                            );
+                          });
+                        },
+                        child: Icon(
+                          isTermsAccepted
+                              ? CupertinoIcons.checkmark_circle_fill
+                              : CupertinoIcons.checkmark_circle,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      const Text(
+                        "Sono d'accordo con i ",
+                        style: TextStyle(fontSize: 12),
+                      ),
+                      GestureDetector(
+                        child: const Text(
+                          "Termini e Condizioni",
+                          style: TextStyle(
+                              color: CupertinoColors.activeBlue, fontSize: 13),
+                        ),
+                        onTap: () => launchUrl(
+                          Uri.parse(
+                            "https://sites.google.com/view/starvation-appword/terms-and-conditions",
+                          ),
+                          mode: LaunchMode.platformDefault,
+                        ),
+                      ),
+                    ],
+                  )
                 ],
               ),
               StaggeredGrid.count(
