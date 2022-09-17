@@ -14,7 +14,11 @@ class UserRepository {
     required User user,
   }) async {
     var _user = await getUser(context: context, uid: user.uid);
-    var userDb = UserDb(email: user.email!, username: user.displayName!);
+    var userDb = UserDb(
+      email: user.email!,
+      username: user.displayName!,
+      isAdmin: false,
+    );
     if (_user != null) {
       userDb.isAdmin = _user.isAdmin;
     }
@@ -48,7 +52,13 @@ class UserRepository {
     required BuildContext context,
     required User user,
   }) async {
-    FirebaseGlobal.users.doc(FirebaseGlobal.auth.currentUser!.uid).update(
-        UserDb(email: user.email!, username: user.displayName!).toMap());
+    var _user = await getUser(context: context, uid: user.uid);
+    FirebaseGlobal.users
+        .doc(FirebaseGlobal.auth.currentUser!.uid)
+        .update(UserDb(
+          email: user.email!,
+          username: user.displayName!,
+          isAdmin: _user!.isAdmin,
+        ).toMap());
   }
 }

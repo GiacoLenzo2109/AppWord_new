@@ -11,6 +11,7 @@ import 'package:app_word/widgets/global/button_widget.dart';
 import 'package:app_word/widgets/global/loading_widget.dart';
 import 'package:app_word/widgets/global/scaffold_widget.dart';
 import 'package:app_word/widgets/global/text_field.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -147,9 +148,19 @@ class _UpdateUserPageState extends State<UpdateUserPage> {
                       passwordController.text == confirmPassController.text) {
                     log("1. Aggiornamento password");
                     LoadingWidget.show(context);
-                    await FirebaseGlobal.auth.currentUser!
-                        .updatePassword(passwordController.text);
-                    log("2. Password aggiornata");
+                    try {
+                      await FirebaseGlobal.auth.currentUser!
+                          .updatePassword(passwordController.text)
+                          .whenComplete(
+                            () => log("2. Password aggiornata"),
+                          );
+                    } on FirebaseAuthException catch (e) {
+                      if (e.code == 'weak-password') {
+                        error = "Password debole!";
+                        log('The password provided is too weak.');
+                        Navigator.pop(context);
+                      }
+                    }
                   } else {
                     setState(() {
                       error = passwordController.text.isEmpty

@@ -12,7 +12,11 @@ class UserDb {
   String username;
   bool isAdmin = false;
 
-  UserDb({required this.email, required this.username});
+  UserDb({
+    required this.email,
+    required this.username,
+    required this.isAdmin,
+  });
 
   Map<String, dynamic> toMap() {
     return {
@@ -26,9 +30,8 @@ class UserDb {
     var user = UserDb(
       email: json[EMAIL],
       username: json[USERNAME],
+      isAdmin: json[ADMIN],
     );
-
-    user.isAdmin = json[ADMIN];
 
     return user;
   }

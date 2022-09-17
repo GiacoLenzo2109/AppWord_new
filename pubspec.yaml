@@ -37,8 +37,6 @@ dependencies:
   cupertino_icons: ^1.0.2
     # FIREBASE
   firebase_core: ^1.21.0
-  # Add the dependency for the FlutterFire plugin for Google Analytics
-  firebase_analytics: ^9.3.2
 
   # Add the dependencies for any other Firebase products you want to use in your app
   # For example, to use Firebase Authentication and Cloud Firestore
