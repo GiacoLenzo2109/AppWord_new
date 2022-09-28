@@ -75,6 +75,8 @@ class _RegisterPageState extends State<RegisterPage> {
     return SimplePageScaffold(
       scrollable: false,
       padding: 0,
+      backgroundColor: ThemesUtil.getBackgroundColor(context),
+      titleColor: ThemesUtil.getContrastingColor(context),
       body: Padding(
         padding: const EdgeInsets.all(25),
         child: Center(

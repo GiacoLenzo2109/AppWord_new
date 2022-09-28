@@ -43,17 +43,18 @@ class _ButtonWidgetState extends State<ButtonWidget> {
                   Size(ScreenUtil.getSize(context).width, widget.height ?? 50)),
             ),
             child: widget.icon != null
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                ? Stack(
                     children: [
                       widget.icon ?? const Text(""),
-                      const SizedBox(width: 10),
-                      Text(
-                        widget.text,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18.0,
-                            color: widget.textColor ?? Colors.white),
+                      Center(
+                        // mainAxisAlignment: MainAxisAlignment.center,
+                        child: Text(
+                          widget.text,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.0,
+                              color: widget.textColor ?? Colors.white),
+                        ),
                       ),
                     ],
                   )

@@ -258,14 +258,13 @@ class _SimpleScaffoldWidgetState extends State<SimplePageScaffold> {
         title: Text(
           widget.title ?? "",
           style: TextStyle(
-            color: widget.titleColor ?? Theme.of(context).primaryColorDark,
+            color: widget.titleColor ?? Colors.white,
           ),
         ),
         backgroundColor:
             widget.backgroundColor ?? ThemesUtil.getPrimaryColor(context),
         elevation: 0,
-        foregroundColor:
-            widget.titleColor ?? Theme.of(context).primaryColorDark,
+        foregroundColor: widget.titleColor ?? Colors.white,
       ),
       body: SafeArea(
         child: GestureDetector(

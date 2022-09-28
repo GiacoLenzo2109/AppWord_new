@@ -20,6 +20,8 @@ class SignInPage extends StatelessWidget {
     return SimplePageScaffold(
       scrollable: false,
       isFullScreen: true,
+      backgroundColor: ThemesUtil.getBackgroundColor(context),
+      titleColor: ThemesUtil.getContrastingColor(context),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [

@@ -512,7 +512,8 @@ class _AlphabetScrollListViewState extends State<AlphabetScrollListView> {
                       ).viewInsets.bottom -
                       MediaQuery.of(
                         NavigationService.navigatorKey.currentContext!,
-                      ).viewInsets.top,
+                      ).viewInsets.top -
+                      (ThemesUtil.isAndroid(context) ? 75 : 0),
                   // color: Colors.red,
                   padding: const EdgeInsets.only(right: 5),
                   child: Column(

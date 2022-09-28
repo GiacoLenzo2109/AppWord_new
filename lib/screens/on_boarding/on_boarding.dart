@@ -19,6 +19,7 @@ class OnBoardingPage extends StatelessWidget {
     return SimplePageScaffold(
       scrollable: false,
       padding: 0,
+      backgroundColor: ThemesUtil.getBackgroundColor(context),
       body: IntroductionScreen(
         pages: OnBoardingPages.build(context),
         onDone: () => NavigatorUtil.navigateTo(

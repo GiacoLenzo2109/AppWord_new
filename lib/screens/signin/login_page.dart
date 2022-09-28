@@ -151,6 +151,8 @@ class _LoginPageState extends State<LoginPage> {
       scrollable: false,
       padding: 0,
       body: child,
+      backgroundColor: ThemesUtil.getBackgroundColor(context),
+      titleColor: ThemesUtil.getContrastingColor(context),
     );
   }
 }
