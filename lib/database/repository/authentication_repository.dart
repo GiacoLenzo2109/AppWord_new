@@ -20,9 +20,11 @@ class AuthenticationRepository {
   static const USER_TYPE = "USER_TYPE";
 
   /// Check if is google user
-  static bool isGoogleLogged() {
+  static bool isGoogleOrAppleLogged() {
     for (var value in FirebaseGlobal.auth.currentUser!.providerData) {
-      if (value.providerId == 'google.com') return true;
+      if (value.providerId == 'google.com' || value.providerId == 'apple.com') {
+        return true;
+      }
     }
     return false;
   }
@@ -204,7 +206,8 @@ class AuthenticationRepository {
     return;
   }
 
-  static Future<void> signInWithApple({required BuildContext context}) async {
+  static Future<void> signInWithApple(
+      {required BuildContext context, required String username}) async {
     try {
       // Request credential for the currently signed in Apple account.
       final appleCredential = await SignInWithApple.getAppleIDCredential(
@@ -226,12 +229,11 @@ class AuthenticationRepository {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString(USER_TYPE, APPLE_USER);
 
-      final displayName =
-          '${appleCredential.givenName} ${appleCredential.familyName}';
-      final userEmail = '${appleCredential.email}';
+      final displayName = username;
+
+      // final userEmail = '${appleCredential.email}';
 
       await FirebaseGlobal.auth.currentUser!.updateDisplayName(displayName);
-      await FirebaseGlobal.auth.currentUser!.updateEmail(userEmail);
 
       var user = await UserRepository.getUser(
         context: context,
@@ -246,6 +248,64 @@ class AuthenticationRepository {
         context: context,
         route: NavigatorUtil.MAIN,
       );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'account-exists-with-different-credential') {
+        // handle the error here
+      } else if (e.code == 'invalid-credential') {
+        // handle the error here
+      }
+    } catch (e) {
+      // handle the error here
+    }
+    return;
+  }
+
+  static Future<void> loginWithApple(
+      {required BuildContext context, required String username}) async {
+    try {
+      // Request credential for the currently signed in Apple account.
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+
+      FirebaseAuth auth = FirebaseGlobal.auth;
+
+      // Create an `OAuthCredential` from the credential returned by Apple.
+      final oauthCredential = OAuthProvider("apple.com").credential(
+        idToken: appleCredential.identityToken,
+      );
+
+      await auth.signInWithCredential(oauthCredential);
+
+      // SharedPreferences prefs = await SharedPreferences.getInstance();
+      // await prefs.setString(USER_TYPE, APPLE_USER);
+
+      // final displayName = username;
+
+      // final userEmail = '${appleCredential.email}';
+
+      // await FirebaseGlobal.auth.currentUser!.updateDisplayName(displayName);
+
+      var user = await UserRepository.getUser(
+        context: context,
+        uid: FirebaseGlobal.auth.currentUser!.uid,
+      );
+
+      if (user == null || user.username.isEmpty) {
+        deleteAccount(context: context);
+        NavigatorUtil.navigateAndReplace(
+          context: context,
+          route: NavigatorUtil.REGISTER,
+        );
+      } else {
+        NavigatorUtil.navigateAndReplace(
+          context: context,
+          route: NavigatorUtil.MAIN,
+        );
+      }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'account-exists-with-different-credential') {
         // handle the error here
@@ -275,17 +335,21 @@ class AuthenticationRepository {
     return;
   }
 
-  static Future<void> delteAccount({required BuildContext context}) async {
+  static Future<void> deleteAccount({required BuildContext context}) async {
     LoadingWidget.show(context);
 
     final GoogleSignIn googleSignIn = GoogleSignIn();
 
     try {
-      FirebaseAuth.instance.currentUser!.delete();
-      UserRepository.deleteUser(context: context);
+      await UserRepository.deleteUser(context: context);
+      await FirebaseAuth.instance.currentUser!.delete();
+
+      await googleSignIn.signOut();
+      await FirebaseAuth.instance.signOut();
     } catch (e) {
       log(e.toString());
     }
+
     return;
   }
 }

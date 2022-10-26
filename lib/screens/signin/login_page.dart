@@ -19,6 +19,7 @@ import 'package:app_word/widgets/global/loading_widget.dart';
 import 'package:app_word/widgets/global/scaffold_widget.dart';
 import 'package:app_word/widgets/global/text_field.dart';
 import 'package:app_word/widgets/global/text_field_tags.dart';
+import 'package:app_word/widgets/singin/apple_login_button.dart';
 import 'package:app_word/widgets/singin/google_login_button.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -120,6 +121,10 @@ class _LoginPageState extends State<LoginPage> {
                   color: CupertinoColors.systemGrey,
                 ),
                 const GoogleLogInButton(title: "Accedi con Google"),
+                const AppleLogInButton(
+                  title: "Accedi con Apple",
+                  isLogin: true,
+                ),
               ],
             ),
             StaggeredGrid.count(

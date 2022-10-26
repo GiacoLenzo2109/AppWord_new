@@ -38,19 +38,34 @@ class AboutPage extends StatelessWidget {
                 crossAxisCount: 1,
                 children: [
                   Text(
+                    "1.9.12",
+                    style: TextStyle(
+                      color: ThemesUtil.getPrimaryColor(context),
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(
+                    height: 100,
+                  ),
+                ],
+              ),
+              StaggeredGrid.count(
+                crossAxisCount: 1,
+                children: [
+                  Text(
                     "Made by",
                     style: TextStyle(
                       color: ThemesUtil.getPrimaryColor(context),
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  Text(
-                    "@GiacoLenzo2109",
-                    style: TextStyle(
-                      color: ThemesUtil.getPrimaryColor(context),
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
+                  // Text(
+                  //   "@GiacoLenzo2109",
+                  //   style: TextStyle(
+                  //     color: ThemesUtil.getPrimaryColor(context),
+                  //   ),
+                  //   textAlign: TextAlign.center,
+                  // ),
                   ButtonWidget(
                     text: "@GiacoLenzo2109",
                     textColor: ThemesUtil.getPrimaryColor(context),
@@ -128,7 +143,7 @@ class AboutPage extends StatelessWidget {
                   Uri.parse(
                     "https://sites.google.com/view/starvation-appword/terms-and-conditions",
                   ),
-                  mode: LaunchMode.externalApplication,
+                  mode: LaunchMode.platformDefault,
                 ),
               ),
               ButtonWidget(
@@ -139,7 +154,7 @@ class AboutPage extends StatelessWidget {
                   Uri.parse(
                     "https://sites.google.com/view/starvation-appword/policy-privacy",
                   ),
-                  mode: LaunchMode.externalApplication,
+                  mode: LaunchMode.platformDefault,
                 ),
               ),
             ],

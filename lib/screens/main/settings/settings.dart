@@ -86,7 +86,7 @@ class _SettingsState extends State<Settings> {
                         route: NavigatorUtil.CHANGE_USERNAME,
                       ),
                     ),
-                    if (!AuthenticationRepository.isGoogleLogged())
+                    if (!AuthenticationRepository.isGoogleOrAppleLogged())
                       SettingsTile.navigation(
                         leading: const Icon(CupertinoIcons.mail),
                         title: Text(
@@ -101,7 +101,7 @@ class _SettingsState extends State<Settings> {
                           route: NavigatorUtil.CHANGE_EMAIL,
                         ),
                       ),
-                    if (!AuthenticationRepository.isGoogleLogged())
+                    if (!AuthenticationRepository.isGoogleOrAppleLogged())
                       SettingsTile.navigation(
                         leading: const Icon(CupertinoIcons.lock),
                         title: Text(
@@ -116,19 +116,6 @@ class _SettingsState extends State<Settings> {
                           route: NavigatorUtil.CHANGE_PASSWORD,
                         ),
                       ),
-                    SettingsTile.navigation(
-                      leading: const Icon(CupertinoIcons.trash),
-                      title: Text(
-                        'Cambia password',
-                        style: TextStyle(
-                          color: ThemesUtil.getTextColor(context),
-                        ),
-                      ),
-                      onPressed: (context) => NavigatorUtil.navigateToNamed(
-                        context: NavigationService.navigatorKey.currentContext!,
-                        route: NavigatorUtil.CHANGE_PASSWORD,
-                      ),
-                    ),
                   ],
                 ),
                 SettingsSection(
@@ -220,6 +207,22 @@ class _SettingsState extends State<Settings> {
           StaggeredGrid.count(
             crossAxisCount: 1,
             children: [
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: ButtonWidget(
+                  text: "Elimina account",
+                  backgroundColor: CupertinoColors.systemRed,
+                  onPressed: () async {
+                    await AuthenticationRepository.deleteAccount(
+                        context:
+                            NavigationService.navigatorKey.currentContext!);
+                    NavigatorUtil.navigateAndReplace(
+                      context: NavigationService.navigatorKey.currentContext!,
+                      route: NavigatorUtil.SIGNIN,
+                    );
+                  },
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.all(20),
                 child: ButtonWidget(

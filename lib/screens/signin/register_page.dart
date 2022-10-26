@@ -19,6 +19,7 @@ import 'package:app_word/widgets/global/loading_widget.dart';
 import 'package:app_word/widgets/global/scaffold_widget.dart';
 import 'package:app_word/widgets/global/text_field.dart';
 import 'package:app_word/widgets/global/text_field_tags.dart';
+import 'package:app_word/widgets/singin/apple_login_button.dart';
 import 'package:app_word/widgets/singin/google_login_button.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -73,7 +74,7 @@ class _RegisterPageState extends State<RegisterPage> {
     }
 
     return SimplePageScaffold(
-      scrollable: false,
+      scrollable: true,
       padding: 0,
       backgroundColor: ThemesUtil.getBackgroundColor(context),
       titleColor: ThemesUtil.getContrastingColor(context),
@@ -82,7 +83,7 @@ class _RegisterPageState extends State<RegisterPage> {
         child: Center(
           child: StaggeredGrid.count(
             crossAxisCount: 1,
-            mainAxisSpacing: 50,
+            mainAxisSpacing: 25,
             children: [
               StaggeredGrid.count(
                 crossAxisCount: 1,
@@ -189,6 +190,10 @@ class _RegisterPageState extends State<RegisterPage> {
                     color: CupertinoColors.systemGrey,
                   ),
                   const GoogleLogInButton(title: "Registrati con Google"),
+                  const AppleLogInButton(
+                    title: "Registrati con Apple",
+                    isLogin: false,
+                  )
                 ],
               ),
               StaggeredGrid.count(
