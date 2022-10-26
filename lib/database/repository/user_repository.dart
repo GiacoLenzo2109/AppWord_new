@@ -61,4 +61,8 @@ class UserRepository {
           isAdmin: _user!.isAdmin,
         ).toMap());
   }
+
+  static Future<void> deleteUser({required BuildContext context}) async {
+    FirebaseGlobal.users.doc(FirebaseGlobal.auth.currentUser!.uid).delete();
+  }
 }

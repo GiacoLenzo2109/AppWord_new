@@ -9,11 +9,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../util/dialog_util.dart';
 
 class AuthenticationRepository {
   static const GOOGLE_USER = "GOOGLE";
+  static const APPLE_USER = "APPLE";
   static const NORMAL_USER = "NORMAL";
   static const USER_TYPE = "USER_TYPE";
 
@@ -202,6 +204,60 @@ class AuthenticationRepository {
     return;
   }
 
+  static Future<void> signInWithApple({required BuildContext context}) async {
+    try {
+      // Request credential for the currently signed in Apple account.
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+
+      FirebaseAuth auth = FirebaseGlobal.auth;
+
+      // Create an `OAuthCredential` from the credential returned by Apple.
+      final oauthCredential = OAuthProvider("apple.com").credential(
+        idToken: appleCredential.identityToken,
+      );
+
+      await auth.signInWithCredential(oauthCredential);
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString(USER_TYPE, APPLE_USER);
+
+      final displayName =
+          '${appleCredential.givenName} ${appleCredential.familyName}';
+      final userEmail = '${appleCredential.email}';
+
+      await FirebaseGlobal.auth.currentUser!.updateDisplayName(displayName);
+      await FirebaseGlobal.auth.currentUser!.updateEmail(userEmail);
+
+      var user = await UserRepository.getUser(
+        context: context,
+        uid: FirebaseGlobal.auth.currentUser!.uid,
+      );
+
+      if (user == null) {
+        await UserRepository.createUser(
+            context: context, user: FirebaseGlobal.auth.currentUser!);
+      }
+      NavigatorUtil.navigateAndReplace(
+        context: context,
+        route: NavigatorUtil.MAIN,
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'account-exists-with-different-credential') {
+        // handle the error here
+      } else if (e.code == 'invalid-credential') {
+        // handle the error here
+      }
+    } catch (e) {
+      // handle the error here
+    }
+    return;
+  }
+
   static Future<void> signOut({required BuildContext context}) async {
     LoadingWidget.show(context);
 
@@ -213,6 +269,20 @@ class AuthenticationRepository {
       await FirebaseAuth.instance.signOut().whenComplete(
             () => Navigator.of(context).pop(),
           );
+    } catch (e) {
+      log(e.toString());
+    }
+    return;
+  }
+
+  static Future<void> delteAccount({required BuildContext context}) async {
+    LoadingWidget.show(context);
+
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+
+    try {
+      FirebaseAuth.instance.currentUser!.delete();
+      UserRepository.deleteUser(context: context);
     } catch (e) {
       log(e.toString());
     }

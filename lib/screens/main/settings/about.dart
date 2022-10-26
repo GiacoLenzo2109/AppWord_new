@@ -44,6 +44,13 @@ class AboutPage extends StatelessWidget {
                     ),
                     textAlign: TextAlign.center,
                   ),
+                  Text(
+                    "@GiacoLenzo2109",
+                    style: TextStyle(
+                      color: ThemesUtil.getPrimaryColor(context),
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
                   ButtonWidget(
                     text: "@GiacoLenzo2109",
                     textColor: ThemesUtil.getPrimaryColor(context),
@@ -65,51 +72,51 @@ class AboutPage extends StatelessWidget {
               // ),
             ],
           ),
-          Column(
-            children: [
-              IconButtonWidget(
-                icon: Container(
-                  margin: const EdgeInsets.all(0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.amber,
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 10,
-                    horizontal: 32.5,
-                  ),
-                  // decoration: BoxDecoration(
-                  //   color: CupertinoColors.systemYellow,
-                  //   borderRadius: BorderRadius.circular(10),
-                  // ),
-                  child: Image.asset(
-                    "assets/images/PayPal.png",
-                    width: ScreenUtil.getSize(context).width / 3,
-                  ),
-                ),
-                //backgroundColor: Colors.amber,
-                onPressed: () => launchUrl(
-                  Uri.parse(
-                    "https://www.paypal.com/donate?hosted_button_id=492UNJ9QPTDUE",
-                  ),
-                  mode: LaunchMode.platformDefault,
-                ),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              IconButtonWidget(
-                icon: Image.asset(
-                  "assets/images/BuyMeACoffee.png",
-                  width: ScreenUtil.getSize(context).width / 2,
-                ),
-                onPressed: () => launchUrl(
-                  Uri.parse("https://www.buymeacoffee.com/GiacoLenzo2109"),
-                  mode: LaunchMode.platformDefault,
-                ),
-              )
-            ],
-          ),
+          // Column(
+          //   children: [
+          //     IconButtonWidget(
+          //       icon: Container(
+          //         margin: const EdgeInsets.all(0),
+          //         decoration: BoxDecoration(
+          //           borderRadius: BorderRadius.circular(10),
+          //           color: Colors.amber,
+          //         ),
+          //         padding: const EdgeInsets.symmetric(
+          //           vertical: 10,
+          //           horizontal: 32.5,
+          //         ),
+          //         // decoration: BoxDecoration(
+          //         //   color: CupertinoColors.systemYellow,
+          //         //   borderRadius: BorderRadius.circular(10),
+          //         // ),
+          //         child: Image.asset(
+          //           "assets/images/PayPal.png",
+          //           width: ScreenUtil.getSize(context).width / 3,
+          //         ),
+          //       ),
+          //       //backgroundColor: Colors.amber,
+          //       onPressed: () => launchUrl(
+          //         Uri.parse(
+          //           "https://www.paypal.com/donate?hosted_button_id=492UNJ9QPTDUE",
+          //         ),
+          //         mode: LaunchMode.platformDefault,
+          //       ),
+          //     ),
+          //     const SizedBox(
+          //       height: 15,
+          //     ),
+          //     IconButtonWidget(
+          //       icon: Image.asset(
+          //         "assets/images/BuyMeACoffee.png",
+          //         width: ScreenUtil.getSize(context).width / 2,
+          //       ),
+          //       onPressed: () => launchUrl(
+          //         Uri.parse("https://www.buymeacoffee.com/GiacoLenzo2109"),
+          //         mode: LaunchMode.platformDefault,
+          //       ),
+          //     )
+          //   ],
+          // ),
           StaggeredGrid.count(
             crossAxisCount: 1,
             children: [
@@ -121,7 +128,7 @@ class AboutPage extends StatelessWidget {
                   Uri.parse(
                     "https://sites.google.com/view/starvation-appword/terms-and-conditions",
                   ),
-                  mode: LaunchMode.platformDefault,
+                  mode: LaunchMode.externalApplication,
                 ),
               ),
               ButtonWidget(
@@ -132,7 +139,7 @@ class AboutPage extends StatelessWidget {
                   Uri.parse(
                     "https://sites.google.com/view/starvation-appword/policy-privacy",
                   ),
-                  mode: LaunchMode.platformDefault,
+                  mode: LaunchMode.externalApplication,
                 ),
               ),
             ],

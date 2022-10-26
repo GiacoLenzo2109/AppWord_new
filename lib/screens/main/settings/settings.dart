@@ -116,6 +116,19 @@ class _SettingsState extends State<Settings> {
                           route: NavigatorUtil.CHANGE_PASSWORD,
                         ),
                       ),
+                    SettingsTile.navigation(
+                      leading: const Icon(CupertinoIcons.trash),
+                      title: Text(
+                        'Cambia password',
+                        style: TextStyle(
+                          color: ThemesUtil.getTextColor(context),
+                        ),
+                      ),
+                      onPressed: (context) => NavigatorUtil.navigateToNamed(
+                        context: NavigationService.navigatorKey.currentContext!,
+                        route: NavigatorUtil.CHANGE_PASSWORD,
+                      ),
+                    ),
                   ],
                 ),
                 SettingsSection(
